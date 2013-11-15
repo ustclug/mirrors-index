@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset='utf-8'>
+	<title>USTC Open Source Software Mirror</title>
+	<style type="text/css">
+		/* css reset */
+		html{color:#000;background:transparent;}body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td{margin:0;padding:0}table{border-collapse:collapse;border-spacing:0}fieldset,img{border:0}address,caption,cite,code,dfn,em,strong,th,var{font-style:normal;font-weight:normal}li{list-style:none}caption,th{text-align:left}h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal}q:before,q:after{content:''}abbr,acronym{border:0;font-variant:normal}sup{vertical-align:text-top}sub{vertical-align:text-bottom}input,textarea,select{font-family:inherit;font-size:inherit;font-weight:inherit}input,textarea,select{*font-size:100%}legend{color:#000}
+
+		/*stylesheet here*/
+		body{
+			background-color: #FDFFFD;
+			
+		}
+		#header{
+			width:75%;
+			margin:0 auto;
+
+		}
+		#headlinks{
+			float:right;
+			margin-right: 10px;
+			padding: 10px 0;
+		}
+		#headlinks li{
+			float:left;
+			margin-left:25px;
+			font-family: "Open Sans","Ubuntu",Helvetica, Arial, Geneva, sans-serif;
+			font-size:16px;
+			color:#EEECDF;
+		}
+		#headlinks li:hover{
+			color:#FFF;
+		}
+		#headlinks li a{
+			font-family: "Open Sans","Ubuntu",Helvetica, Arial, Geneva, sans-serif;
+			font-size:16px;
+			color:#EEECDF;
+			text-decoration:none;
+		}
+		#headlinks li a:hover{
+			color:#FFF;
+		}
+		#welcome{
+			width: 100%;
+			padding: 40px 15px 40px 0px;
+			background: #40bd97; /* Old browsers */
+			background: -moz-linear-gradient(top, #40bd97 0%, #07a878 100%); /* FF3.6+ */
+			background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#40bd97), color-stop(100%,#07a878)); /* Chrome,Safari4+ */
+			background: -webkit-linear-gradient(top, #40bd97 0%,#07a878 100%); /* Chrome10+,Safari5.1+ */
+			background: -o-linear-gradient(top, #40bd97 0%,#07a878 100%); /* Opera 11.10+ */
+			background: -ms-linear-gradient(top, #40bd97 0%,#07a878 100%); /* IE10+ */
+			background: linear-gradient(to bottom, #40bd97 0%,#07a878 100%); /* W3C */
+		}
+		#intro{
+			margin:0 auto;
+			width:75%;
+			color:#F1F1F1;
+		}
+		#intro h1{
+			font-family: "Open Sans","Ubuntu",Helvetica, Arial, Geneva, sans-serif;
+			font-weight:400;
+			font-size:48px;
+			margin-top:10px;
+			color:#FFF;
+		}
+		#intro h2{
+			font-family: "Open Sans","Ubuntu",Helvetica, Arial, Geneva, sans-serif;
+			font-weight:300;
+			font-size:24px;
+			margin-top:10px;
+			margin-bottom:10px;
+		}
+		#intro p{
+			margin-bottom:0px;
+			line-height:1.3em;
+			font-family: "Open Sans","Ubuntu",Helvetica, Arial, Geneva, sans-serif;
+			font-weight:300;
+			font-size:18px;
+		}
+		#wrapper{
+			width:75%;
+			margin:25px auto;
+		}
+		#filelist{
+			float:left;
+			width:60%;
+			border-right: 1px solid #eee;
+			padding-right: 30px;
+		}
+		#filelist h3{
+			color:#07A878;
+			font-family: "Open Sans","Ubuntu","Hiragino Sans GB", "Wenquanyi Micro Hei", "WenQuanYi Micro Hei Mono", "WenQuanYi Zen Hei", "WenQuanYi Zen Hei", "Apple LiGothic Medium", "STXihei", "ST Heiti", "WenQuanYi Zen Hei Sharp";
+			font-weight:100;
+			font-size:24px;
+			margin:0px 0 15px 0;
+		}
+		#filelist table{
+		width:100%;
+ 		empty-cells:hide;
+		}
+		th{
+			font-weight:normal;
+			text-align:left;
+			font-size:16px;
+			font-family: "Open Sans","Ubuntu",Helvetica, Arial, Geneva, sans-serif;
+			padding:3px 0px;
+			
+		}
+		thead{
+			/*border-bottom:thin dotted #000;*/
+		}
+		#name{
+			text-align:left; 
+			padding:3px 0 3px 3px;
+			}
+		#help{
+			text-align:left;
+			padding:3px 3px 3px 0;
+			}
+		#filelist td{
+			font-size:14px;
+			line-height:20px;
+			font-family: "Open Sans","Ubuntu",Helvetica, Arial, Geneva, sans-serif;
+		}
+		#filelist td.help{
+			padding:0px 3px 0px 0px;
+			text-align: left;
+		}
+		#filelist td.filename
+		{
+			padding-left:3px;
+		}
+		#filelist td a{
+			color:#0B486B;
+			text-decoration: none;
+		}
+		#filelist a:hover{
+			text-decoration: underline;
+		}
+		#filename{						
+			text-align:left;
+			width:15%;
+		}
+		.filesize{
+			disply:none;
+			text-align:right;
+			width:0%;
+		}
+		.filetime{
+			text-align:left;
+			width:35%;		
+		}
+
+		.help{
+			text-align:left;
+			width:20px;
+		}	
+		tbody tr:hover{
+			background-color:#DDEADD;
+			}
+
+		#sidebar{
+			float:right;
+			width:33%;
+		}
+		#sidebar div{
+			margin-bottom: 25px;
+		}
+		#sidebar h3{
+			color:#07A878;
+			font-family: "Hiragino Sans GB", "Wenquanyi Micro Hei", "WenQuanYi Micro Hei Mono", "WenQuanYi Zen Hei", "WenQuanYi Zen Hei", "Apple LiGothic Medium", "STXihei", "ST Heiti", "WenQuanYi Zen Hei Sharp";
+			font-weight:300;
+			font-size:24px;
+			margin:0px 0 15px 0;
+		}
+		#sidebar p,a{
+			line-height: 1.5em;
+			font-family: "Open Sans","Ubuntu","Hiragino Sans GB", "Wenquanyi Micro Hei", "WenQuanYi Micro Hei Mono", "WenQuanYi Zen Hei", "WenQuanYi Zen Hei", "Apple LiGothic Medium", "STXihei", "ST Heiti", "WenQuanYi Zen Hei Sharp";
+		}
+		#sidebar a{
+			color:#030303;
+			text-decoration: none;
+		}
+		#sidebar a:hover{
+			text-decoration: underline;
+		}
+		.btn{
+			display: inline-block;
+			background-color: #07A878;
+			margin:12px auto 12px auto;
+			padding:3px 20px;
+			line-height: 1.5em;
+			font-family: "Open Sans","Ubuntu","Hiragino Sans GB", "Wenquanyi Micro Hei", "WenQuanYi Micro Hei Mono", "WenQuanYi Zen Hei", "WenQuanYi Zen Hei", "Apple LiGothic Medium", "STXihei", "ST Heiti", "WenQuanYi Zen Hei Sharp";
+			font-size: 20px;
+			color:#f3f3f3;
+			text-align: center;
+			
+			-webkit-transition: background 0.3s linear;
+			-moz-transition: background 0.3s linear;
+			-ms-transition: background 0.3s linear;
+			-o-transition: background 0.3s linear;
+			transition: background 0.3s linear;
+			cursor:pointer;
+
+		}
+		.btn:hover{
+			background-color:#40BD97;
+		}
+		#footer{
+			background-color: #333;
+			color:#bbb;
+			padding:30px 0;
+		}
+		#footercontent{
+			width:75%;
+			margin:0 auto;
+		}
+		#footerleft{
+			font-family: "Open Sans","Ubuntu","Hiragino Sans GB", "Wenquanyi Micro Hei", "WenQuanYi Micro Hei Mono", "WenQuanYi Zen Hei", "WenQuanYi Zen Hei", "Apple LiGothic Medium", "STXihei", "ST Heiti", "WenQuanYi Zen Hei Sharp";
+			width:60%;
+			float:left;
+			font-size: 14px;
+			line-height: 1.5em;
+		}
+		#footerleft a{
+			color:#ccc;
+		}
+		#footerright{
+			width:33%;
+			float:right;
+			text-align: center;
+		}
+		#footerright p{
+			margin-top:5px;
+		}
+		.modal
+		{
+		    visibility: hidden;
+		    position: fixed;
+		    left: 0;
+		    top: 0;
+		    width: 100%;
+		   height: 100%;
+		    text-align: center;
+		    z-index: 5;
+		}
+		.modalclear{
+			width:100%;
+			background-color:rgba(255,255,255,0.85);
+			height:100%;
+			z-index: 6;
+		}
+
+		.modalcontainer
+		{
+			position: absolute;
+		    width: 40%;
+		    top:200px;
+		    left:30%;
+		    margin:0 auto;
+		    background-color: #FCFCFC;
+		    border: 3px solid #ccc;
+		    padding: 0px;
+		    text-align: left;
+		    overflow: hidden;
+		    -webkit-box-shadow: 0px 0px 6px 3px rgba(128, 128, 128, 128);
+			box-shadow: 0px 0px 6px 3px rgba(128, 128, 128, 128);
+			opacity: 1;
+			z-index:7;
+		}
+		.modaltitle{
+			font-family: "Open Sans","Ubuntu",Helvetica, Arial, Geneva, sans-serif;
+			font-weight:300;
+			font-size:22px;
+			padding:8px 20px;
+			background-color: #07A878;
+			color:#FCFCFC;
+		}
+		.modalcontent{
+			font-family: "Open Sans","Ubuntu","Hiragino Sans GB", "Wenquanyi Micro Hei", "WenQuanYi Micro Hei Mono", "WenQuanYi Zen Hei", "WenQuanYi Zen Hei", "Apple LiGothic Medium", "STXihei", "ST Heiti", "WenQuanYi Zen Hei Sharp";
+			font-size:22px;
+			padding:8px 20px;
+			background-color: #FFFFFFF;
+			line-height: 1.8em;
+		}
+		.modalcontent p{
+			margin-bottom: 10px;
+		}
+		.modalcontent select{
+			width:300px;
+		}
+
+	</style>
+	<script type="text/javascript">
+			function modal() 
+			{
+                bx = document.getElementById("isomodal");
+                bx.style.visibility = (bx.style.visibility == "visible") ? "hidden" : "visible";
+            }
+            function switchdistro(element)
+            {
+            	var idx=element.selectedIndex;
+            	//alert(idx);
+            	switch(idx)
+            	{
+            		case 1:
+            		{
+            			//Ubuntu
+            			var s= document.getElementById('isoversion');
+            			s.options.length = 0;
+            			s.options[s.options.length]= new Option('-', '0');
+						s.options[s.options.length]= new Option('13.10 64Bit', '1');
+						s.options[s.options.length]= new Option('13.10 32Bit', '2');
+						s.options[s.options.length]= new Option('12.04 LTS 64Bit', '3');
+						s.options[s.options.length]= new Option('12.04 LTS 32Bit', '4');
+						break;
+            		}
+            		case 2:
+            		{
+            			//Debian
+            			var s= document.getElementById('isoversion');
+            			s.options.length = 0;
+            			s.options[s.options.length]= new Option('-', '0');
+						s.options[s.options.length]= new Option('Current 7.2 64Bit', '1');
+						s.options[s.options.length]= new Option('Current 7.2 32Bit', '2');
+						s.options[s.options.length]= new Option('Current 7.2 Live 64Bit', '3');
+						s.options[s.options.length]= new Option('Current 7.2 Live 32Bit', '4');
+						break;
+            		}
+            		case 3:
+            		{
+            			//Fedora
+            			var s= document.getElementById('isoversion');
+            			s.options.length = 0;
+            			s.options[s.options.length]= new Option('-', '0');
+						s.options[s.options.length]= new Option('Fedora Stable - 19 64Bit', '1');
+						s.options[s.options.length]= new Option('Fedora Stable - 19 32Bit', '2');
+						break;
+            		}
+            		case 4:
+            		{
+            			//Archlinux
+            			var s= document.getElementById('isoversion');
+            			s.options.length = 0;
+            			s.options[s.options.length]= new Option('-', '0');
+						s.options[s.options.length]= new Option('Latest - 2013.11 Dual', '1');
+						break;
+            		}
+            		case 5:
+            		{
+            			//OpenSUSE
+            			var s= document.getElementById('isoversion');
+            			s.options.length = 0;
+            			s.options[s.options.length]= new Option('-', '0');
+						s.options[s.options.length]= new Option('12.3 DVD i586', '1');
+						s.options[s.options.length]= new Option('12.3 DVD x86_64', '2');
+						s.options[s.options.length]= new Option('12.3 Live KDE i586', '3');
+						s.options[s.options.length]= new Option('12.3 Live KDE x86_64', '4');
+						s.options[s.options.length]= new Option('12.3 Live GNOME i586', '5');
+						s.options[s.options.length]= new Option('12.3 Live GNOME x86_64', '6');
+						break;
+						break;
+            		}
+            		case 6:
+            		{
+            			//LinuxDeepin
+            			var s= document.getElementById('isoversion');
+            			s.options.length = 0;
+            			s.options[s.options.length]= new Option('-', '0');
+						s.options[s.options.length]= new Option('12.12.1 amd64', '1');
+						s.options[s.options.length]= new Option('12.12.1 i386', '2');
+						break;
+            		}
+            	}
+			    var val=element.options[idx].value;
+			    var content=element.options[idx].innerHTML;
+			    //alert(val + " " + content);
+            }
+            function downloadiso()
+            {
+            	var dstro=document.getElementById("isodistro");
+            	var detail=document.getElementById("isoversion");
+            	var idx=dstro.selectedIndex;
+            	var iidx=detail.selectedIndex;
+            	var option=idx*10+iidx;
+            	//alert(option);
+            	switch(option)
+            	{
+            		case 11:
+            		{
+            			var link="http://mirrors.ustc.edu.cn/ubuntu-releases/13.10/ubuntu-13.10-desktop-amd64.iso";
+            			window.open(link);
+            			break;
+            		}
+            		case 12:
+            		{
+            			var link="http://mirrors.ustc.edu.cn/ubuntu-releases/13.10/ubuntu-13.10-desktop-i386.iso";
+            			window.open(link);
+            			break;
+            		}
+            		case 13:
+            		{
+            			var link="http://mirrors.ustc.edu.cn/ubuntu-releases/12.04.3/ubuntu-12.04.3-desktop-amd64.iso";
+            			window.open(link);
+            			break;
+            		}
+            		case 14:
+            		{
+            			var link="http://mirrors.ustc.edu.cn/ubuntu-releases/12.04.3/ubuntu-12.04.3-desktop-i386.iso";
+            			window.open(link);
+            			break;
+            		}
+            		case 21:
+            		{
+            			var link="http://mirrors.ustc.edu.cn/debian-cd/7.2.0/amd64/iso-cd/debian-7.2.0-amd64-CD-1.iso";
+            			window.open(link);
+            			break;
+            		}
+            		case 22:
+            		{
+            			var link="http://mirrors.ustc.edu.cn/debian-cd/7.2.0/i386/iso-cd/debian-7.2.0-i386-CD-1.iso";
+            			window.open(link);
+            			break;
+            		}
+            		case 23:
+            		{
+            			var link="http://mirrors.ustc.edu.cn/debian-cd/7.2.0-live/amd64/iso-hybrid/debian-live-7.2-amd64-kde-desktop.iso";
+            			window.open(link);
+            			break;
+            		}
+            		case 24:
+            		{
+            			var link="http://mirrors.ustc.edu.cn/debian-cd/7.2.0-live/i386/iso-hybrid/debian-live-7.2-i386-kde-desktop.iso";
+            			window.open(link);
+            			break;
+            		}
+            		case 31:
+            		{
+            			var link="http://mirrors.ustc.edu.cn/fedora/linux/releases/19/Live/x86_64/Fedora-Live-KDE-x86_64-19-1.iso";
+            			window.open(link);
+            			break;
+            		}
+            		case 32:
+            		{
+            			var link="http://mirrors.ustc.edu.cn/fedora/linux/releases/19/Live/i386/Fedora-Live-KDE-i686-19-1.iso";
+            			window.open(link);
+            			break;
+            		}
+            		case 41:
+            		{
+            			var link="http://mirrors.ustc.edu.cn/archlinux/iso/2013.11.01/archlinux-2013.11.01-dual.iso";
+            			window.open(link);
+            			break;
+            		}
+            		case 51:
+            		{
+            			var link="http://mirrors.ustc.edu.cn/opensuse/distribution/openSUSE-stable/iso/openSUSE-12.3-DVD-i586.iso";
+            			window.open(link);
+            			break;
+            		}
+            		case 52:
+            		{
+            			var link="http://mirrors.ustc.edu.cn/opensuse/distribution/openSUSE-stable/iso/openSUSE-12.3-DVD-x86_64.iso";
+            			window.open(link);
+            			break;
+            		}
+            		case 53:
+            		{
+            			var link="http://mirrors.ustc.edu.cn/opensuse/distribution/openSUSE-stable/iso/openSUSE-12.3-KDE-Live-i686.iso";
+            			window.open(link);
+            			break;
+            		}
+            		case 54:
+            		{
+            			var link="http://mirrors.ustc.edu.cn/opensuse/distribution/openSUSE-stable/iso/openSUSE-12.3-KDE-Live-x86_64.iso";
+            			window.open(link);
+            			break;
+            		}
+            		case 55:
+            		{
+            			var link="http://mirrors.ustc.edu.cn/opensuse/distribution/openSUSE-stable/iso/openSUSE-12.3-GNOME-Live-i686.iso";
+            			window.open(link);
+            			break;
+            		}
+            		case 56:
+            		{
+            			var link="http://mirrors.ustc.edu.cn/opensuse/distribution/openSUSE-stable/iso/openSUSE-12.3-GNOME-Live-x86_64.iso";
+            			window.open(link);
+            			break;
+            		}
+            		case 61:
+            		{
+            			var link="http://mirrors.ustc.edu.cn/deepin-cd/12.12.1/desktop/deepin_12.12.1_zh-hans_final_amd64.iso";
+            			window.open(link);
+            			break;
+            		}
+            		case 62:
+            		{
+            			var link="http://mirrors.ustc.edu.cn/deepin-cd/12.12.1/desktop/deepin_12.12.1_zh-hans_final_i386.iso";
+            			window.open(link);
+            			break;
+            		}2
+            	}
+            }
+	</script>
+</head>
+
+<body>
+	<div id="header">
+		<ul id="headlinks">
+			<li><a href="http://mirrors.ustc.edu.cn/status/" target="_blank">Status</a></li>
+			<li><a href="https://servers.blog.ustc.edu.cn/" target="_blank">News</a></li>
+			<li><a href="https://lug.ustc.edu.cn/wiki/mirrors/help" target="_blank">Help</a></li>
+			<li><a href="http://lug.ustc.edu.cn" target="_blank">About</a></li>
+		</ul>
+	</div>
+	<div id="welcome">
+		
+		<div id="intro">
+			<h1>Another infinity</h1>
+		    <h2>Welcome to the USTC open source mirror.</h2>
+		    <p>Brought to you by University of Science and Technology of China and USTCLUG.</p>
+		</div>
+	</div>
+	
+	<div id="wrapper">
+		<div id="filelist">
+			<h3>文件列表</h3>
+			<table cellpadding="0" cellspacing="0" class="filelist">
+			<thead><tr id="firstline"><th id="name">Folder</th><th>Last Update</th><th id="help">Help</th></tr></thead>
+			<tr><td class="filename"><a href="/CPAN">CPAN</a></td><td class="filetime">2013-11-10 14:02:17</td><td class="help"><a href="help/CPAN">Help</a></td></tr>
+			<tr><td class="filename"><a href="/CRAN">CRAN</a></td><td class="filetime">2013-11-10 14:02:01</td><td class="help"><a href="help/CRAN">Help</a></td></tr>
+			<tr><td class="filename"><a href="/CTAN">CTAN</a></td><td class="filetime">2013-11-10 14:02:27</td><td class="help"><a href="help/CTAN">Help</a></td></tr>
+			<tr><td class="filename"><a href="/Xorg">Xorg</a></td><td class="filetime">2013-11-10 05:05:34</td><td class="help"><a href="help/Xorg">Help</a></td></tr>
+			<tr><td class="filename"><a href="/anthon">anthon</a></td><td class="filetime">2013-10-29 05:05:04</td><td class="help"><a href="help/anthon">Help</a></td></tr>
+			<tr><td class="filename"><a href="/apache">apache</a></td><td class="filetime">2013-10-18 04:04:11</td><td class="help"><a href="help/apache">Help</a></td></tr>
+			<tr><td class="filename"><a href="/archive.raspberrypi.org">archive.raspberrypi.org</a></td><td class="filetime">2013-07-02 00:12:49</td><td class="help"><a href="help/archive.raspberrypi.org">Help</a></td></tr>
+			<tr><td class="filename"><a href="/archlinux">archlinux</a></td><td class="filetime">2013-11-10 18:06:26</td><td class="help"><a href="help/archlinux">Help</a></td></tr>
+			<tr><td class="filename"><a href="/archlinuxarm">archlinuxarm</a></td><td class="filetime">2013-07-02 00:12:49</td><td class="help"><a href="help/archlinuxarm">Help</a></td></tr>
+			<tr><td class="filename"><a href="/backtrack">backtrack</a></td><td class="filetime">2013-11-10 06:06:57</td><td class="help"><a href="help/backtrack">Help</a></td></tr>
+			<tr><td class="filename"><a href="/bioc">bioc</a></td><td class="filetime">2013-09-03 20:08:56</td><td class="help"><a href="help/bioc">Help</a></td></tr>
+			<tr><td class="filename"><a href="/centos">centos</a></td><td class="filetime">2013-11-10 19:07:19</td><td class="help"><a href="help/centos">Help</a></td></tr>
+			<tr><td class="filename"><a href="/chakra">chakra</a></td><td class="filetime">2013-10-29 15:03:31</td><td class="help"><a href="help/chakra">Help</a></td></tr>
+			<tr><td class="filename"><a href="/cygwin">cygwin</a></td><td class="filetime">2013-11-10 07:07:46</td><td class="help"><a href="help/cygwin">Help</a></td></tr>
+			<tr><td class="filename"><a href="/debian">debian</a></td><td class="filetime">2013-11-10 18:06:40</td><td class="help"><a href="help/debian">Help</a></td></tr>
+			<tr><td class="filename"><a href="/debian-backports">debian-backports</a></td><td class="filetime">2013-11-10 17:05:10</td><td class="help"><a href="help/debian-backports">Help</a></td></tr>
+			<tr><td class="filename"><a href="/debian-cd">debian-cd</a></td><td class="filetime">2013-11-05 03:03:45</td><td class="help"><a href="help/debian-cd">Help</a></td></tr>
+			<tr><td class="filename"><a href="/debian-multimedia">debian-multimedia</a></td><td class="filetime">2013-11-10 03:03:08</td><td class="help"><a href="help/debian-multimedia">Help</a></td></tr>
+			<tr><td class="filename"><a href="/debian-security">debian-security</a></td><td class="filetime">2013-11-10 16:04:42</td><td class="help"><a href="help/debian-security">Help</a></td></tr>
+			<tr><td class="filename"><a href="/debian-volatile">debian-volatile</a></td><td class="filetime">2013-09-02 16:04:10</td><td class="help"><a href="help/debian-volatile">Help</a></td></tr>
+			<tr><td class="filename"><a href="/deepin">deepin</a></td><td class="filetime">2013-11-10 16:04:21</td><td class="help"><a href="help/deepin">Help</a></td></tr>
+			<tr><td class="filename"><a href="/deepin-cd">deepin-cd</a></td><td class="filetime">2013-11-10 02:02:43</td><td class="help"><a href="help/deepin-cd">Help</a></td></tr>
+			<tr><td class="filename"><a href="/dotdeb">dotdeb</a></td><td class="filetime">2013-11-10 04:04:11</td><td class="help"><a href="help/dotdeb">Help</a></td></tr>
+			<tr><td class="filename"><a href="/eclipse">eclipse</a></td><td class="filetime">2013-11-10 04:04:28</td><td class="help"><a href="help/eclipse">Help</a></td></tr>
+			<tr><td class="filename"><a href="/emdebian">emdebian</a></td><td class="filetime">2013-11-10 03:03:53</td><td class="help"><a href="help/emdebian">Help</a></td></tr>
+			<tr><td class="filename"><a href="/epel">epel</a></td><td class="filetime">2013-11-10 19:07:46</td><td class="help"><a href="help/epel">Help</a></td></tr>
+			<tr><td class="filename"><a href="/fedora">fedora</a></td><td class="filetime">2013-11-10 19:07:07</td><td class="help"><a href="help/fedora">Help</a></td></tr>
+			<tr><td class="filename"><a href="/fink">fink</a></td><td class="filetime">2013-11-10 07:07:37</td><td class="help"><a href="help/fink">Help</a></td></tr>
+			<tr><td class="filename"><a href="/freebsd">freebsd</a></td><td class="filetime">2013-11-09 03:03:47</td><td class="help"><a href="help/freebsd">Help</a></td></tr>
+			<tr><td class="filename"><a href="/gentoo">gentoo</a></td><td class="filetime">2013-11-10 16:04:52</td><td class="help"><a href="help/gentoo">Help</a></td></tr>
+			<tr><td class="filename"><a href="/gentoo-portage">gentoo-portage</a></td><td class="filetime">2013-11-10 19:07:17</td><td class="help"><a href="help/gentoo-portage">Help</a></td></tr>
+			<tr><td class="filename"><a href="/gimp">gimp</a></td><td class="filetime">2013-07-02 00:12:49</td><td class="help"><a href="help/gimp">Help</a></td></tr>
+			<tr><td class="filename"><a href="/gnome">gnome</a></td><td class="filetime">2013-11-10 06:06:22</td><td class="help"><a href="help/gnome">Help</a></td></tr>
+			<tr><td class="filename"><a href="/gnu">gnu</a></td><td class="filetime">2013-11-10 04:04:41</td><td class="help"><a href="help/gnu">Help</a></td></tr>
+			<tr><td class="filename"><a href="/homebrew.git">homebrew.git</a></td><td class="filetime">2012-10-13 18:06:48</td><td class="help"><a href="help/homebrew.git">Help</a></td></tr>
+			<tr><td class="filename"><a href="/kali">kali</a></td><td class="filetime">2013-10-27 04:04:12</td><td class="help"><a href="help/kali">Help</a></td></tr>
+			<tr><td class="filename"><a href="/kali-images">kali-images</a></td><td class="filetime">2013-11-10 03:03:11</td><td class="help"><a href="help/kali-images">Help</a></td></tr>
+			<tr><td class="filename"><a href="/kali-security">kali-security</a></td><td class="filetime">2013-10-26 19:07:02</td><td class="help"><a href="help/kali-security">Help</a></td></tr>
+			<tr><td class="filename"><a href="/kde">kde</a></td><td class="filetime">2013-11-10 06:06:22</td><td class="help"><a href="help/kde">Help</a></td></tr>
+			<tr><td class="filename"><a href="/kde-application">kde-application</a></td><td class="filetime">2013-11-10 08:08:23</td><td class="help"><a href="help/kde-application">Help</a></td></tr>
+			<tr><td class="filename"><a href="/kdemod">kdemod</a></td><td class="filetime">2013-11-10 18:06:21</td><td class="help"><a href="help/kdemod">Help</a></td></tr>
+			<tr><td class="filename"><a href="/kernel.org">kernel.org</a></td><td class="filetime">2013-07-02 00:12:49</td><td class="help"><a href="help/kernel.org">Help</a></td></tr>
+			<tr><td class="filename"><a href="/knoppix">knoppix</a></td><td class="filetime">2013-11-10 11:11:10</td><td class="help"><a href="help/knoppix">Help</a></td></tr>
+			<tr><td class="filename"><a href="/knoppix-dvd">knoppix-dvd</a></td><td class="filetime">2013-11-10 12:12:11</td><td class="help"><a href="help/knoppix-dvd">Help</a></td></tr>
+			<tr><td class="filename"><a href="/lfs">lfs</a></td><td class="filetime">2013-04-16 19:07:19</td><td class="help"><a href="help/lfs">Help</a></td></tr>
+			<tr><td class="filename"><a href="/linux-2.6.git">linux-2.6.git</a></td><td class="filetime">2011-08-23 14:02:13</td><td class="help"><a href="help/linux-2.6.git">Help</a></td></tr>
+			<tr><td class="filename"><a href="/linux-kernel">linux-kernel</a></td><td class="filetime">2013-11-10 18:06:16</td><td class="help"><a href="help/linux-kernel">Help</a></td></tr>
+			<tr><td class="filename"><a href="/linux.git">linux.git</a></td><td class="filetime">2013-06-15 14:02:24</td><td class="help"><a href="help/linux.git">Help</a></td></tr>
+			<tr><td class="filename"><a href="/linuxmint">linuxmint</a></td><td class="filetime">2013-11-10 03:03:13</td><td class="help"><a href="help/linuxmint">Help</a></td></tr>
+			<tr><td class="filename"><a href="/linuxmint-cd">linuxmint-cd</a></td><td class="filetime">2013-11-10 02:02:24</td><td class="help"><a href="help/linuxmint-cd">Help</a></td></tr>
+			<tr><td class="filename"><a href="/loongson2f">loongson2f</a></td><td class="filetime">2013-11-10 06:06:08</td><td class="help"><a href="help/loongson2f">Help</a></td></tr>
+			<tr><td class="filename"><a href="/macports">macports</a></td><td class="filetime">2013-11-10 07:07:28</td><td class="help"><a href="help/macports">Help</a></td></tr>
+			<tr><td class="filename"><a href="/mageia">mageia</a></td><td class="filetime">2013-07-02 00:12:49</td><td class="help"><a href="help/mageia">Help</a></td></tr>
+			<tr><td class="filename"><a href="/manjaro">manjaro</a></td><td class="filetime">2013-07-02 00:12:49</td><td class="help"><a href="help/manjaro">Help</a></td></tr>
+			<tr><td class="filename"><a href="/mariadb">mariadb</a></td><td class="filetime">2013-10-18 11:11:03</td><td class="help"><a href="help/mariadb">Help</a></td></tr>
+			<tr><td class="filename"><a href="/npm">npm</a></td><td class="filetime">2013-11-06 23:11:44</td><td class="help"><a href="help/npm">Help</a></td></tr>
+			<tr><td class="filename"><a href="/opensuse">opensuse</a></td><td class="filetime">2013-11-10 18:06:23</td><td class="help"><a href="help/opensuse">Help</a></td></tr>
+			<tr><td class="filename"><a href="/openvz">openvz</a></td><td class="filetime">2013-07-02 00:12:49</td><td class="help"><a href="help/openvz">Help</a></td></tr>
+			<tr><td class="filename"><a href="/postgresql">postgresql</a></td><td class="filetime">2013-07-02 00:12:49</td><td class="help"><a href="help/postgresql">Help</a></td></tr>
+			<tr><td class="filename"><a href="/progress-linux">progress-linux</a></td><td class="filetime">2013-09-01 21:09:47</td><td class="help"><a href="help/progress-linux">Help</a></td></tr>
+			<tr><td class="filename"><a href="/puppy">puppy</a></td><td class="filetime">2013-11-10 18:06:11</td><td class="help"><a href="help/puppy">Help</a></td></tr>
+			<tr><td class="filename"><a href="/pypi">pypi</a></td><td class="filetime">2013-09-17 12:12:20</td><td class="help"><a href="help/pypi">Help</a></td></tr>
+			<tr><td class="filename"><a href="/pythonxy">pythonxy</a></td><td class="filetime">2013-07-02 00:12:49</td><td class="help"><a href="help/pythonxy">Help</a></td></tr>
+			<tr><td class="filename"><a href="/qomo">qomo</a></td><td class="filetime">2013-11-10 06:06:02</td><td class="help"><a href="help/qomo">Help</a></td></tr>
+			<tr><td class="filename"><a href="/qtproject">qtproject</a></td><td class="filetime">2013-11-10 16:04:15</td><td class="help"><a href="help/qtproject">Help</a></td></tr>
+			<tr><td class="filename"><a href="/raspberrypi">raspberrypi</a></td><td class="filetime">2013-07-02 00:12:49</td><td class="help"><a href="help/raspberrypi">Help</a></td></tr>
+			<tr><td class="filename"><a href="/raspbian">raspbian</a></td><td class="filetime">2013-11-10 09:09:54</td><td class="help"><a href="help/raspbian">Help</a></td></tr>
+			<tr><td class="filename"><a href="/rfc">rfc</a></td><td class="filetime">2013-07-02 00:12:49</td><td class="help"><a href="help/rfc">Help</a></td></tr>
+			<tr><td class="filename"><a href="/rpmfusion">rpmfusion</a></td><td class="filetime">2013-11-10 18:06:55</td><td class="help"><a href="help/rpmfusion">Help</a></td></tr>
+			<tr><td class="filename"><a href="/ruby">ruby</a></td><td class="filetime">2013-07-02 00:12:49</td><td class="help"><a href="help/ruby">Help</a></td></tr>
+			<tr><td class="filename"><a href="/rubygems">rubygems</a></td><td class="filetime">2013-07-02 00:12:49</td><td class="help"><a href="help/rubygems">Help</a></td></tr>
+			<tr><td class="filename"><a href="/sagemath">sagemath</a></td><td class="filetime">2013-07-02 00:12:49</td><td class="help"><a href="help/sagemath">Help</a></td></tr>
+			<tr><td class="filename"><a href="/scientificlinux">scientificlinux</a></td><td class="filetime">2013-11-10 18:06:50</td><td class="help"><a href="help/scientificlinux">Help</a></td></tr>
+			<tr><td class="filename"><a href="/slackware">slackware</a></td><td class="filetime">2013-11-10 18:06:10</td><td class="help"><a href="help/slackware">Help</a></td></tr>
+			<tr><td class="filename"><a href="/sourceware.org">sourceware.org</a></td><td class="filetime">2013-11-10 07:07:46</td><td class="help"><a href="help/sourceware.org">Help</a></td></tr>
+			<tr><td class="filename"><a href="/startos">startos</a></td><td class="filetime">2013-11-09 21:09:07</td><td class="help"><a href="help/startos">Help</a></td></tr>
+			<tr><td class="filename"><a href="/tdf">tdf</a></td><td class="filetime">2013-11-10 18:06:24</td><td class="help"><a href="help/tdf">Help</a></td></tr>
+			<tr><td class="filename"><a href="/tldp">tldp</a></td><td class="filetime">2013-07-02 00:12:49</td><td class="help"><a href="help/tldp">Help</a></td></tr>
+			<tr><td class="filename"><a href="/tlpretest">tlpretest</a></td><td class="filetime">2013-11-10 03:03:07</td><td class="help"><a href="help/tlpretest">Help</a></td></tr>
+			<tr><td class="filename"><a href="/trisquel">trisquel</a></td><td class="filetime">2013-07-02 00:12:49</td><td class="help"><a href="help/trisquel">Help</a></td></tr>
+			<tr><td class="filename"><a href="/turnkeylinux">turnkeylinux</a></td><td class="filetime">2013-11-10 08:08:48</td><td class="help"><a href="help/turnkeylinux">Help</a></td></tr>
+			<tr><td class="filename"><a href="/ubuntu">ubuntu</a></td><td class="filetime">2013-11-10 17:05:15</td><td class="help"><a href="help/ubuntu">Help</a></td></tr>
+			<tr><td class="filename"><a href="/ubuntu-old-releases">ubuntu-old-releases</a></td><td class="filetime">2013-07-02 00:12:49</td><td class="help"><a href="help/ubuntu-old-releases">Help</a></td></tr>
+			<tr><td class="filename"><a href="/ubuntu-releases">ubuntu-releases</a></td><td class="filetime">2013-11-10 16:04:40</td><td class="help"><a href="help/ubuntu-releases">Help</a></td></tr>
+			<tr><td class="filename"><a href="/videolan-ftp">videolan-ftp</a></td><td class="filetime">2013-11-10 15:03:22</td><td class="help"><a href="help/videolan-ftp">Help</a></td></tr>
+			<tr><td class="filename"><a href="/vim">vim</a></td><td class="filetime">2013-11-10 15:03:18</td><td class="help"><a href="help/vim">Help</a></td></tr>
+			</table>
+		</div>
+		<div id="sidebar">
+			<div id="cdimages">
+				<h3>获取发行版映像</h3>
+				<p>这里为您提供各大主流Linux发行版的安装镜像 / ISO文件，请根据您的发行版及其详细版本进行选择：</p>
+				<p></p>
+				<span class="btn" onclick="modal()">获取安装镜像 ></span>
+			</div>
+			<div id="mirrorshelp">
+				<h3>Mirrors帮助</h3>
+				<p>如果您不了解如何配置Linux发行版 / 软件的安装源， 这里为您提供了主流发行版的软件源配置帮助：</p>
+				<span class="btn" onclick="window.open('https://lug.ustc.edu.cn/wiki/mirrors/help')">配置软件源  ></span>
+				<p>您也可以通过左边的文件列表中相应源的Help链接寻求帮助。</p>
+				<span></span>
+			</div>	
+			<div id="mirrorlinks">
+				<h3>常用链接</h3>
+				<a href="http://mirrors.ustc.edu.cn/status/" target="_black">系统状态 / Status</a><br/>
+				<a href="https://servers.blog.ustc.edu.cn/" target="_blank">LUG 服务器新闻 / News</a><br/>
+				<a href="http://lug.ustc.edu.cn/" target="_blank">LUG@USTC</a><br/>
+				<a href="mailto:lug@ustc.edu.cn">联系我们 / Contact US</a><br/>
+				<span></span>
+			</div>
+		</div>
+		<div style="clear: both;" mce_style="clear: both;"></div>  
+	</div>
+	<div id="footer">
+		<div id="footercontent">
+				<div id="footerleft">
+						<p>中国科学技术大学开源软件镜像由<a href="http://ustcnet.ustc.edu.cn/">中国科学技术大学网络信息中心</a>提供支持。</p>
+						<p>mirrors.ustc.edu.cn是Debian, Ubuntu,  Fedora,  Archlinux.  CentOS等多个发行版的官方源和Debian, ArchlinuxARM在中国的官方镜像。目前是中国大陆高校访问量最大，收录最全的开源软件镜像。</p>
+						<p>中国科学技术大学Linux用户协会是由中国科学技术大学在校的GNU/Linux爱好者发起并组成的一个全校性群众团体。成立协会的目的在于联合科大的GNU/Linux使用者，搭建信息交流共享的平台，宣传自由软件的价值，提高自由软件社区文化氛围, 推广自由软件在科大校园乃至合肥地区的应用。</p>
+					
+				</div>
+				<div id="footerright">
+					
+					<p ><span style="font-family:'Open Sans','Seoge UI','Ubuntu',sans-serif; font-size:32px; font-weight:400">LUG</span><span style="font-family:'Open Sans','Seoge UI','Ubuntu',sans-serif; font-size:32px; font-weight:100" >@USTC</span></p>
+					<p style="font-family:'clicker script','segoe script','Comic Sans MS'; font-size:28px">"life,love,linux"</p>
+
+
+				</div>
+				<div style="clear: both;" mce_style="clear: both;"></div>			
+		</div>
+	</div>
+	<div class="modal" id="isomodal">    
+		<div class="modalclear" id="isomodalclear" onclick="modal()"></div>
+	    <div class="modalcontainer" id="isomodalcontainer" onclick="">            
+			<div class="modaltitle" id="isomodaltitle"><span>获取安装镜像</span><span onclick="modal()" style="float:right">X</span></div> 
+			<div class="modalcontent" id="isomodalcontent">
+				<p>选择安装发行版： <select id="isodistro" onchange="switchdistro(this)">
+				  <option value="none">-</option>
+				  <option value="Ubuntu">Ubuntu</option>
+				  <option value="Debian">Debian</option>
+				  <option value="Fedora">Fedora</option>
+				  <option value="Archlinux">Archlinux</option>
+				  <option value="OpenSUSE">OpenSUSE</option>
+				  <option value="LinuxDeepin">LinuxDeepin</option>
+				</select>
+				</p>
+				<p>选择发行版版本： <select id="isoversion">
+					<option value="none">-</option>
+				</select>
+				</p>
+				<span class="btn" onclick="downloadiso();">获取ISO ></span>
+
+			</div> 
+			
+	     </div>
+	</div>
+	<link href='http://fonts.googleapis.com/css?family=Clicker+Script|Open+Sans:400,300' rel='stylesheet' type='text/css'>
+</body>
+</html>
+<!-- Designed by Miaomiao Li. It's a wonderful life! -->
