@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
 	<meta charset='utf-8'>
@@ -10,12 +10,10 @@
 		/*stylesheet here*/
 		body{
 			background-color: #FDFFFD;
-			
 		}
 		#header{
 			width:75%;
 			margin:0 auto;
-
 		}
 		#headlinks{
 			float:right;
@@ -97,7 +95,7 @@
 		}
 		#filelist table{
 		width:100%;
- 		empty-cells:hide;
+		empty-cells:hide;
 		}
 		th{
 			font-weight:normal;
@@ -105,13 +103,12 @@
 			font-size:16px;
 			font-family: "Open Sans","Ubuntu",Helvetica, Arial, Geneva, sans-serif;
 			padding:3px 0px;
-			
 		}
 		thead{
 			/*border-bottom:thin dotted #000;*/
 		}
 		#name{
-			text-align:left; 
+			text-align:left;
 			padding:3px 0 3px 3px;
 			}
 		#help{
@@ -138,7 +135,7 @@
 		#filelist a:hover{
 			text-decoration: underline;
 		}
-		#filename{						
+		#filename{
 			text-align:left;
 			width:15%;
 		}
@@ -149,17 +146,16 @@
 		}
 		.filetime{
 			text-align:left;
-			width:35%;		
+			width:35%;
 		}
 
 		.help{
 			text-align:left;
 			width:20px;
-		}	
+		}
 		tbody tr:hover{
 			background-color:#DDEADD;
-			}
-
+		}
 		#sidebar{
 			float:right;
 			width:33%;
@@ -195,7 +191,6 @@
 			font-size: 20px;
 			color:#f3f3f3;
 			text-align: center;
-			
 			-webkit-transition: background 0.3s linear;
 			-moz-transition: background 0.3s linear;
 			-ms-transition: background 0.3s linear;
@@ -236,14 +231,14 @@
 		}
 		.modal
 		{
-		    visibility: hidden;
-		    position: fixed;
-		    left: 0;
-		    top: 0;
-		    width: 100%;
-		   height: 100%;
-		    text-align: center;
-		    z-index: 5;
+			visibility: hidden;
+			position: fixed;
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			text-align: center;
+			z-index: 5;
 		}
 		.modalclear{
 			width:100%;
@@ -255,16 +250,16 @@
 		.modalcontainer
 		{
 			position: absolute;
-		    width: 40%;
-		    top:200px;
-		    left:30%;
-		    margin:0 auto;
-		    background-color: #FCFCFC;
-		    border: 3px solid #ccc;
-		    padding: 0px;
-		    text-align: left;
-		    overflow: hidden;
-		    -webkit-box-shadow: 0px 0px 6px 3px rgba(128, 128, 128, 128);
+			width: 40%;
+			top:200px;
+			left:30%;
+			margin:0 auto;
+			background-color: #FCFCFC;
+			border: 3px solid #ccc;
+			padding: 0px;
+			text-align: left;
+			overflow: hidden;
+			-webkit-box-shadow: 0px 0px 6px 3px rgba(128, 128, 128, 128);
 			box-shadow: 0px 0px 6px 3px rgba(128, 128, 128, 128);
 			opacity: 1;
 			z-index:7;
@@ -293,66 +288,68 @@
 
 	</style>
 	<script type="text/javascript">
-			function modal() 
+			function modal()
 			{
-                bx = document.getElementById("isomodal");
-                bx.style.visibility = (bx.style.visibility == "visible") ? "hidden" : "visible";
-            }
-            function switchdistro(element)
-            {
-            	var idx=element.selectedIndex;
-            	//alert(idx);
-            	switch(idx)
-            	{
-            		case 1:
-            		{
-            			//Ubuntu
-            			var s= document.getElementById('isoversion');
-            			s.options.length = 0;
-            			s.options[s.options.length]= new Option('-', '0');
+				bx = document.getElementById("isomodal");
+				bx.style.visibility = (bx.style.visibility == "visible") ? "hidden" : "visible";
+			}
+			function switchdistro(element)
+			{
+		var idx=element.selectedIndex;
+		//alert(idx);
+		switch(idx)
+		{
+			case 1:
+			{
+				//Ubuntu
+				var s= document.getElementById('isoversion');
+				s.options.length = 0;
+				s.options[s.options.length]= new Option('-', '0');
 						s.options[s.options.length]= new Option('13.10 64Bit', '1');
 						s.options[s.options.length]= new Option('13.10 32Bit', '2');
-						s.options[s.options.length]= new Option('12.04 LTS 64Bit', '3');
-						s.options[s.options.length]= new Option('12.04 LTS 32Bit', '4');
+						s.options[s.options.length]= new Option('12.04.3 LTS 64Bit', '3');
+						s.options[s.options.length]= new Option('12.04.3 LTS 32Bit', '4');
+						s.options[s.options.length]= new Option('10.04.4 LTS 64Bit', '5');
+						s.options[s.options.length]= new Option('10.04.4 LTS 32Bit', '6');
 						break;
-            		}
-            		case 2:
-            		{
-            			//Debian
-            			var s= document.getElementById('isoversion');
-            			s.options.length = 0;
-            			s.options[s.options.length]= new Option('-', '0');
+			}
+			case 2:
+			{
+				//Debian
+				var s= document.getElementById('isoversion');
+				s.options.length = 0;
+				s.options[s.options.length]= new Option('-', '0');
 						s.options[s.options.length]= new Option('Current 7.2 64Bit', '1');
 						s.options[s.options.length]= new Option('Current 7.2 32Bit', '2');
 						s.options[s.options.length]= new Option('Current 7.2 Live 64Bit', '3');
 						s.options[s.options.length]= new Option('Current 7.2 Live 32Bit', '4');
 						break;
-            		}
-            		case 3:
-            		{
-            			//Fedora
-            			var s= document.getElementById('isoversion');
-            			s.options.length = 0;
-            			s.options[s.options.length]= new Option('-', '0');
+			}
+			case 3:
+			{
+				//Fedora
+				var s= document.getElementById('isoversion');
+				s.options.length = 0;
+				s.options[s.options.length]= new Option('-', '0');
 						s.options[s.options.length]= new Option('Fedora Stable - 19 64Bit', '1');
 						s.options[s.options.length]= new Option('Fedora Stable - 19 32Bit', '2');
 						break;
-            		}
-            		case 4:
-            		{
-            			//Archlinux
-            			var s= document.getElementById('isoversion');
-            			s.options.length = 0;
-            			s.options[s.options.length]= new Option('-', '0');
+			}
+			case 4:
+			{
+				//Archlinux
+				var s= document.getElementById('isoversion');
+				s.options.length = 0;
+				s.options[s.options.length]= new Option('-', '0');
 						s.options[s.options.length]= new Option('Latest - 2013.11 Dual', '1');
 						break;
-            		}
-            		case 5:
-            		{
-            			//OpenSUSE
-            			var s= document.getElementById('isoversion');
-            			s.options.length = 0;
-            			s.options[s.options.length]= new Option('-', '0');
+			}
+			case 5:
+			{
+				//OpenSUSE
+				var s= document.getElementById('isoversion');
+				s.options.length = 0;
+				s.options[s.options.length]= new Option('-', '0');
 						s.options[s.options.length]= new Option('12.3 DVD i586', '1');
 						s.options[s.options.length]= new Option('12.3 DVD x86_64', '2');
 						s.options[s.options.length]= new Option('12.3 Live KDE i586', '3');
@@ -361,148 +358,154 @@
 						s.options[s.options.length]= new Option('12.3 Live GNOME x86_64', '6');
 						break;
 						break;
-            		}
-            		case 6:
-            		{
-            			//LinuxDeepin
-            			var s= document.getElementById('isoversion');
-            			s.options.length = 0;
-            			s.options[s.options.length]= new Option('-', '0');
+			}
+			case 6:
+			{
+				//LinuxDeepin
+				var s= document.getElementById('isoversion');
+				s.options.length = 0;
+				s.options[s.options.length]= new Option('-', '0');
 						s.options[s.options.length]= new Option('12.12.1 amd64', '1');
 						s.options[s.options.length]= new Option('12.12.1 i386', '2');
 						break;
-            		}
-            	}
+			}
+		}
 			    var val=element.options[idx].value;
 			    var content=element.options[idx].innerHTML;
 			    //alert(val + " " + content);
-            }
-            function downloadiso()
-            {
-            	var dstro=document.getElementById("isodistro");
-            	var detail=document.getElementById("isoversion");
-            	var idx=dstro.selectedIndex;
-            	var iidx=detail.selectedIndex;
-            	var option=idx*10+iidx;
-            	//alert(option);
-            	switch(option)
-            	{
-            		case 11:
-            		{
-            			var link="http://mirrors.ustc.edu.cn/ubuntu-releases/13.10/ubuntu-13.10-desktop-amd64.iso";
-            			window.open(link);
-            			break;
-            		}
-            		case 12:
-            		{
-            			var link="http://mirrors.ustc.edu.cn/ubuntu-releases/13.10/ubuntu-13.10-desktop-i386.iso";
-            			window.open(link);
-            			break;
-            		}
-            		case 13:
-            		{
-            			var link="http://mirrors.ustc.edu.cn/ubuntu-releases/12.04.3/ubuntu-12.04.3-desktop-amd64.iso";
-            			window.open(link);
-            			break;
-            		}
-            		case 14:
-            		{
-            			var link="http://mirrors.ustc.edu.cn/ubuntu-releases/12.04.3/ubuntu-12.04.3-desktop-i386.iso";
-            			window.open(link);
-            			break;
-            		}
-            		case 21:
-            		{
-            			var link="http://mirrors.ustc.edu.cn/debian-cd/7.2.0/amd64/iso-cd/debian-7.2.0-amd64-CD-1.iso";
-            			window.open(link);
-            			break;
-            		}
-            		case 22:
-            		{
-            			var link="http://mirrors.ustc.edu.cn/debian-cd/7.2.0/i386/iso-cd/debian-7.2.0-i386-CD-1.iso";
-            			window.open(link);
-            			break;
-            		}
-            		case 23:
-            		{
-            			var link="http://mirrors.ustc.edu.cn/debian-cd/7.2.0-live/amd64/iso-hybrid/debian-live-7.2-amd64-kde-desktop.iso";
-            			window.open(link);
-            			break;
-            		}
-            		case 24:
-            		{
-            			var link="http://mirrors.ustc.edu.cn/debian-cd/7.2.0-live/i386/iso-hybrid/debian-live-7.2-i386-kde-desktop.iso";
-            			window.open(link);
-            			break;
-            		}
-            		case 31:
-            		{
-            			var link="http://mirrors.ustc.edu.cn/fedora/linux/releases/19/Live/x86_64/Fedora-Live-KDE-x86_64-19-1.iso";
-            			window.open(link);
-            			break;
-            		}
-            		case 32:
-            		{
-            			var link="http://mirrors.ustc.edu.cn/fedora/linux/releases/19/Live/i386/Fedora-Live-KDE-i686-19-1.iso";
-            			window.open(link);
-            			break;
-            		}
-            		case 41:
-            		{
-            			var link="http://mirrors.ustc.edu.cn/archlinux/iso/2013.11.01/archlinux-2013.11.01-dual.iso";
-            			window.open(link);
-            			break;
-            		}
-            		case 51:
-            		{
-            			var link="http://mirrors.ustc.edu.cn/opensuse/distribution/openSUSE-stable/iso/openSUSE-12.3-DVD-i586.iso";
-            			window.open(link);
-            			break;
-            		}
-            		case 52:
-            		{
-            			var link="http://mirrors.ustc.edu.cn/opensuse/distribution/openSUSE-stable/iso/openSUSE-12.3-DVD-x86_64.iso";
-            			window.open(link);
-            			break;
-            		}
-            		case 53:
-            		{
-            			var link="http://mirrors.ustc.edu.cn/opensuse/distribution/openSUSE-stable/iso/openSUSE-12.3-KDE-Live-i686.iso";
-            			window.open(link);
-            			break;
-            		}
-            		case 54:
-            		{
-            			var link="http://mirrors.ustc.edu.cn/opensuse/distribution/openSUSE-stable/iso/openSUSE-12.3-KDE-Live-x86_64.iso";
-            			window.open(link);
-            			break;
-            		}
-            		case 55:
-            		{
-            			var link="http://mirrors.ustc.edu.cn/opensuse/distribution/openSUSE-stable/iso/openSUSE-12.3-GNOME-Live-i686.iso";
-            			window.open(link);
-            			break;
-            		}
-            		case 56:
-            		{
-            			var link="http://mirrors.ustc.edu.cn/opensuse/distribution/openSUSE-stable/iso/openSUSE-12.3-GNOME-Live-x86_64.iso";
-            			window.open(link);
-            			break;
-            		}
-            		case 61:
-            		{
-            			var link="http://mirrors.ustc.edu.cn/deepin-cd/12.12.1/desktop/deepin_12.12.1_zh-hans_final_amd64.iso";
-            			window.open(link);
-            			break;
-            		}
-            		case 62:
-            		{
-            			var link="http://mirrors.ustc.edu.cn/deepin-cd/12.12.1/desktop/deepin_12.12.1_zh-hans_final_i386.iso";
-            			window.open(link);
-            			break;
-            		}2
-            	}
-            }
+		}
+		function downloadiso()
+		{
+		var dstro=document.getElementById("isodistro");
+		var detail=document.getElementById("isoversion");
+		var idx=dstro.selectedIndex;
+		var iidx=detail.selectedIndex;
+		var option=idx*10+iidx;
+		//alert(option);
+		switch(option)
+		{
+			case 11:
+			{
+				var link="http://mirrors.ustc.edu.cn/ubuntu-releases/13.10/ubuntu-13.10-desktop-amd64.iso";
+				window.open(link);
+				break;
+			}
+			case 12:
+			{
+				var link="http://mirrors.ustc.edu.cn/ubuntu-releases/13.10/ubuntu-13.10-desktop-i386.iso";
+				window.open(link);
+				break;
+			}
+			case 13:
+			{
+				var link="http://mirrors.ustc.edu.cn/ubuntu-releases/12.04.3/ubuntu-12.04.3-desktop-amd64.iso";
+				window.open(link);
+				break;
+			}
+			case 14:
+			{
+				var link="http://mirrors.ustc.edu.cn/ubuntu-releases/12.04.3/ubuntu-12.04.3-desktop-i386.iso";
+				window.open(link);
+				break;
+			}
+			case 15:
+			{
+				var link="http://mirrors.ustc.edu.cn/ubuntu-releases/releases/10.04.4/ubuntu-10.04.4-server-amd64.iso";
+				window.open(link);
+				break;
+			}
+			case 21:
+			{
+				var link="http://mirrors.ustc.edu.cn/ubuntu-releases/releases/10.04.4/ubuntu-10.04.4-server-i386.iso";
+				window.open(link);
+				break;
+			}
+			case 22:
+			{
+				var link="http://mirrors.ustc.edu.cn/debian-cd/7.2.0/i386/iso-cd/debian-7.2.0-i386-CD-1.iso";
+				window.open(link);
+				break;
+			}
+			case 23:
+			{
+				var link="http://mirrors.ustc.edu.cn/debian-cd/7.2.0-live/amd64/iso-hybrid/debian-live-7.2-amd64-kde-desktop.iso";
+				window.open(link);
+				break;
+			}
+			case 24:
+			{
+				var link="http://mirrors.ustc.edu.cn/debian-cd/7.2.0-live/i386/iso-hybrid/debian-live-7.2-i386-kde-desktop.iso";
+				window.open(link);
+				break;
+			}
+			case 31:
+			{
+				var link="http://mirrors.ustc.edu.cn/fedora/linux/releases/19/Live/x86_64/Fedora-Live-KDE-x86_64-19-1.iso";
+				window.open(link);
+				break;
+			}
+			case 32:
+			{
+				var link="http://mirrors.ustc.edu.cn/fedora/linux/releases/19/Live/i386/Fedora-Live-KDE-i686-19-1.iso";
+				window.open(link);
+				break;
+			}
+			case 41:
+			{
+				var link="http://mirrors.ustc.edu.cn/archlinux/iso/2013.11.01/archlinux-2013.11.01-dual.iso";
+				window.open(link);
+				break;
+			}
+			case 51:
+			{
+				var link="http://mirrors.ustc.edu.cn/opensuse/distribution/openSUSE-stable/iso/openSUSE-12.3-DVD-i586.iso";
+				window.open(link);
+				break;
+			}
+			case 52:
+			{
+				var link="http://mirrors.ustc.edu.cn/opensuse/distribution/openSUSE-stable/iso/openSUSE-12.3-DVD-x86_64.iso";
+				window.open(link);
+				break;
+			}
+			case 53:
+			{
+				var link="http://mirrors.ustc.edu.cn/opensuse/distribution/openSUSE-stable/iso/openSUSE-12.3-KDE-Live-i686.iso";
+				window.open(link);
+				break;
+			}
+			case 54:
+			{
+				var link="http://mirrors.ustc.edu.cn/opensuse/distribution/openSUSE-stable/iso/openSUSE-12.3-KDE-Live-x86_64.iso";
+				window.open(link);
+				break;
+			}
+			case 55:
+			{
+				var link="http://mirrors.ustc.edu.cn/opensuse/distribution/openSUSE-stable/iso/openSUSE-12.3-GNOME-Live-i686.iso";
+				window.open(link);
+				break;
+			}
+			case 56:
+			{
+				var link="http://mirrors.ustc.edu.cn/opensuse/distribution/openSUSE-stable/iso/openSUSE-12.3-GNOME-Live-x86_64.iso";
+				window.open(link);
+				break;
+			}
+			case 61:
+			{
+				var link="http://mirrors.ustc.edu.cn/deepin-cd/12.12.1/desktop/deepin_12.12.1_zh-hans_final_amd64.iso";
+				window.open(link);
+				break;
+			}
+			case 62:
+			{
+				var link="http://mirrors.ustc.edu.cn/deepin-cd/12.12.1/desktop/deepin_12.12.1_zh-hans_final_i386.iso";
+				window.open(link);
+				break;
+			}2
+		}
+	}
 	</script>
 </head>
 
@@ -516,14 +519,15 @@
 		</ul>
 	</div>
 	<div id="welcome">
-		
 		<div id="intro">
 			<h1>Another infinity</h1>
-		    <h2>Welcome to the USTC open source mirror.</h2>
-		    <p>Brought to you by University of Science and Technology of China and USTCLUG.</p>
+			<h2>Welcome to the USTC open source mirror.</h2>
+			<p>Brought to you by University of Science and Technology of China and USTCLUG.</p>
 		</div>
 	</div>
-	
 	<div id="wrapper">
 		<div id="filelist">
 			<h3>文件列表</h3>
+<!--
+vim:ai:et:noexpandtab:sts=8:sw=8
+-->
