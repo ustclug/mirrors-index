@@ -1,0 +1,529 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<meta charset='utf-8'>
+	<title>USTC Open Source Software Mirror</title>
+	<style type="text/css">
+		/* css reset */
+		html{color:#000;background:transparent;}body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td{margin:0;padding:0}table{border-collapse:collapse;border-spacing:0}fieldset,img{border:0}address,caption,cite,code,dfn,em,strong,th,var{font-style:normal;font-weight:normal}li{list-style:none}caption,th{text-align:left}h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal}q:before,q:after{content:''}abbr,acronym{border:0;font-variant:normal}sup{vertical-align:text-top}sub{vertical-align:text-bottom}input,textarea,select{font-family:inherit;font-size:inherit;font-weight:inherit}input,textarea,select{*font-size:100%}legend{color:#000}
+
+		/*stylesheet here*/
+		body{
+			background-color: #FDFFFD;
+			
+		}
+		#header{
+			width:75%;
+			margin:0 auto;
+
+		}
+		#headlinks{
+			float:right;
+			margin-right: 10px;
+			padding: 10px 0;
+		}
+		#headlinks li{
+			float:left;
+			margin-left:25px;
+			font-family: "Open Sans","Ubuntu",Helvetica, Arial, Geneva, sans-serif;
+			font-size:16px;
+			color:#EEECDF;
+		}
+		#headlinks li:hover{
+			color:#FFF;
+		}
+		#headlinks li a{
+			font-family: "Open Sans","Ubuntu",Helvetica, Arial, Geneva, sans-serif;
+			font-size:16px;
+			color:#EEECDF;
+			text-decoration:none;
+		}
+		#headlinks li a:hover{
+			color:#FFF;
+		}
+		#welcome{
+			width: 100%;
+			padding: 40px 15px 40px 0px;
+			background: #40bd97; /* Old browsers */
+			background: -moz-linear-gradient(top, #40bd97 0%, #07a878 100%); /* FF3.6+ */
+			background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#40bd97), color-stop(100%,#07a878)); /* Chrome,Safari4+ */
+			background: -webkit-linear-gradient(top, #40bd97 0%,#07a878 100%); /* Chrome10+,Safari5.1+ */
+			background: -o-linear-gradient(top, #40bd97 0%,#07a878 100%); /* Opera 11.10+ */
+			background: -ms-linear-gradient(top, #40bd97 0%,#07a878 100%); /* IE10+ */
+			background: linear-gradient(to bottom, #40bd97 0%,#07a878 100%); /* W3C */
+		}
+		#intro{
+			margin:0 auto;
+			width:75%;
+			color:#F1F1F1;
+		}
+		#intro h1{
+			font-family: "Open Sans","Ubuntu",Helvetica, Arial, Geneva, sans-serif;
+			font-weight:400;
+			font-size:48px;
+			margin-top:10px;
+			color:#FFF;
+		}
+		#intro h2{
+			font-family: "Open Sans","Ubuntu",Helvetica, Arial, Geneva, sans-serif;
+			font-weight:300;
+			font-size:24px;
+			margin-top:10px;
+			margin-bottom:10px;
+		}
+		#intro p{
+			margin-bottom:0px;
+			line-height:1.3em;
+			font-family: "Open Sans","Ubuntu",Helvetica, Arial, Geneva, sans-serif;
+			font-weight:300;
+			font-size:18px;
+		}
+		#wrapper{
+			width:75%;
+			margin:25px auto;
+		}
+		#filelist{
+			float:left;
+			width:60%;
+			border-right: 1px solid #eee;
+			padding-right: 30px;
+		}
+		#filelist h3{
+			color:#07A878;
+			font-family: "Open Sans","Ubuntu","Hiragino Sans GB", "Wenquanyi Micro Hei", "WenQuanYi Micro Hei Mono", "WenQuanYi Zen Hei", "WenQuanYi Zen Hei", "Apple LiGothic Medium", "STXihei", "ST Heiti", "WenQuanYi Zen Hei Sharp";
+			font-weight:100;
+			font-size:24px;
+			margin:0px 0 15px 0;
+		}
+		#filelist table{
+		width:100%;
+ 		empty-cells:hide;
+		}
+		th{
+			font-weight:normal;
+			text-align:left;
+			font-size:16px;
+			font-family: "Open Sans","Ubuntu",Helvetica, Arial, Geneva, sans-serif;
+			padding:3px 0px;
+			
+		}
+		thead{
+			/*border-bottom:thin dotted #000;*/
+		}
+		#name{
+			text-align:left; 
+			padding:3px 0 3px 3px;
+			}
+		#help{
+			text-align:left;
+			padding:3px 3px 3px 0;
+			}
+		#filelist td{
+			font-size:14px;
+			line-height:20px;
+			font-family: "Open Sans","Ubuntu",Helvetica, Arial, Geneva, sans-serif;
+		}
+		#filelist td.help{
+			padding:0px 3px 0px 0px;
+			text-align: left;
+		}
+		#filelist td.filename
+		{
+			padding-left:3px;
+		}
+		#filelist td a{
+			color:#0B486B;
+			text-decoration: none;
+		}
+		#filelist a:hover{
+			text-decoration: underline;
+		}
+		#filename{						
+			text-align:left;
+			width:15%;
+		}
+		.filesize{
+			disply:none;
+			text-align:right;
+			width:0%;
+		}
+		.filetime{
+			text-align:left;
+			width:35%;		
+		}
+
+		.help{
+			text-align:left;
+			width:20px;
+		}	
+		tbody tr:hover{
+			background-color:#DDEADD;
+			}
+
+		#sidebar{
+			float:right;
+			width:33%;
+		}
+		#sidebar div{
+			margin-bottom: 25px;
+		}
+		#sidebar h3{
+			color:#07A878;
+			font-family: "Hiragino Sans GB", "Wenquanyi Micro Hei", "WenQuanYi Micro Hei Mono", "WenQuanYi Zen Hei", "WenQuanYi Zen Hei", "Apple LiGothic Medium", "STXihei", "ST Heiti", "WenQuanYi Zen Hei Sharp";
+			font-weight:300;
+			font-size:24px;
+			margin:0px 0 15px 0;
+		}
+		#sidebar p,a{
+			line-height: 1.5em;
+			font-family: "Open Sans","Ubuntu","Hiragino Sans GB", "Wenquanyi Micro Hei", "WenQuanYi Micro Hei Mono", "WenQuanYi Zen Hei", "WenQuanYi Zen Hei", "Apple LiGothic Medium", "STXihei", "ST Heiti", "WenQuanYi Zen Hei Sharp";
+		}
+		#sidebar a{
+			color:#030303;
+			text-decoration: none;
+		}
+		#sidebar a:hover{
+			text-decoration: underline;
+		}
+		.btn{
+			display: inline-block;
+			background-color: #07A878;
+			margin:12px auto 12px auto;
+			padding:3px 20px;
+			line-height: 1.5em;
+			font-family: "Open Sans","Ubuntu","Hiragino Sans GB", "Wenquanyi Micro Hei", "WenQuanYi Micro Hei Mono", "WenQuanYi Zen Hei", "WenQuanYi Zen Hei", "Apple LiGothic Medium", "STXihei", "ST Heiti", "WenQuanYi Zen Hei Sharp";
+			font-size: 20px;
+			color:#f3f3f3;
+			text-align: center;
+			
+			-webkit-transition: background 0.3s linear;
+			-moz-transition: background 0.3s linear;
+			-ms-transition: background 0.3s linear;
+			-o-transition: background 0.3s linear;
+			transition: background 0.3s linear;
+			cursor:pointer;
+
+		}
+		.btn:hover{
+			background-color:#40BD97;
+		}
+		#footer{
+			background-color: #333;
+			color:#bbb;
+			padding:30px 0;
+		}
+		#footercontent{
+			width:75%;
+			margin:0 auto;
+		}
+		#footerleft{
+			font-family: "Open Sans","Ubuntu","Hiragino Sans GB", "Wenquanyi Micro Hei", "WenQuanYi Micro Hei Mono", "WenQuanYi Zen Hei", "WenQuanYi Zen Hei", "Apple LiGothic Medium", "STXihei", "ST Heiti", "WenQuanYi Zen Hei Sharp";
+			width:60%;
+			float:left;
+			font-size: 14px;
+			line-height: 1.5em;
+		}
+		#footerleft a{
+			color:#ccc;
+		}
+		#footerright{
+			width:33%;
+			float:right;
+			text-align: center;
+		}
+		#footerright p{
+			margin-top:5px;
+		}
+		.modal
+		{
+		    visibility: hidden;
+		    position: fixed;
+		    left: 0;
+		    top: 0;
+		    width: 100%;
+		   height: 100%;
+		    text-align: center;
+		    z-index: 5;
+		}
+		.modalclear{
+			width:100%;
+			background-color:rgba(255,255,255,0.85);
+			height:100%;
+			z-index: 6;
+		}
+
+		.modalcontainer
+		{
+			position: absolute;
+		    width: 40%;
+		    top:200px;
+		    left:30%;
+		    margin:0 auto;
+		    background-color: #FCFCFC;
+		    border: 3px solid #ccc;
+		    padding: 0px;
+		    text-align: left;
+		    overflow: hidden;
+		    -webkit-box-shadow: 0px 0px 6px 3px rgba(128, 128, 128, 128);
+			box-shadow: 0px 0px 6px 3px rgba(128, 128, 128, 128);
+			opacity: 1;
+			z-index:7;
+		}
+		.modaltitle{
+			font-family: "Open Sans","Ubuntu",Helvetica, Arial, Geneva, sans-serif;
+			font-weight:300;
+			font-size:22px;
+			padding:8px 20px;
+			background-color: #07A878;
+			color:#FCFCFC;
+		}
+		.modalcontent{
+			font-family: "Open Sans","Ubuntu","Hiragino Sans GB", "Wenquanyi Micro Hei", "WenQuanYi Micro Hei Mono", "WenQuanYi Zen Hei", "WenQuanYi Zen Hei", "Apple LiGothic Medium", "STXihei", "ST Heiti", "WenQuanYi Zen Hei Sharp";
+			font-size:22px;
+			padding:8px 20px;
+			background-color: #FFFFFFF;
+			line-height: 1.8em;
+		}
+		.modalcontent p{
+			margin-bottom: 10px;
+		}
+		.modalcontent select{
+			width:300px;
+		}
+
+	</style>
+	<script type="text/javascript">
+			function modal() 
+			{
+                bx = document.getElementById("isomodal");
+                bx.style.visibility = (bx.style.visibility == "visible") ? "hidden" : "visible";
+            }
+            function switchdistro(element)
+            {
+            	var idx=element.selectedIndex;
+            	//alert(idx);
+            	switch(idx)
+            	{
+            		case 1:
+            		{
+            			//Ubuntu
+            			var s= document.getElementById('isoversion');
+            			s.options.length = 0;
+            			s.options[s.options.length]= new Option('-', '0');
+						s.options[s.options.length]= new Option('13.10 64Bit', '1');
+						s.options[s.options.length]= new Option('13.10 32Bit', '2');
+						s.options[s.options.length]= new Option('12.04 LTS 64Bit', '3');
+						s.options[s.options.length]= new Option('12.04 LTS 32Bit', '4');
+						break;
+            		}
+            		case 2:
+            		{
+            			//Debian
+            			var s= document.getElementById('isoversion');
+            			s.options.length = 0;
+            			s.options[s.options.length]= new Option('-', '0');
+						s.options[s.options.length]= new Option('Current 7.2 64Bit', '1');
+						s.options[s.options.length]= new Option('Current 7.2 32Bit', '2');
+						s.options[s.options.length]= new Option('Current 7.2 Live 64Bit', '3');
+						s.options[s.options.length]= new Option('Current 7.2 Live 32Bit', '4');
+						break;
+            		}
+            		case 3:
+            		{
+            			//Fedora
+            			var s= document.getElementById('isoversion');
+            			s.options.length = 0;
+            			s.options[s.options.length]= new Option('-', '0');
+						s.options[s.options.length]= new Option('Fedora Stable - 19 64Bit', '1');
+						s.options[s.options.length]= new Option('Fedora Stable - 19 32Bit', '2');
+						break;
+            		}
+            		case 4:
+            		{
+            			//Archlinux
+            			var s= document.getElementById('isoversion');
+            			s.options.length = 0;
+            			s.options[s.options.length]= new Option('-', '0');
+						s.options[s.options.length]= new Option('Latest - 2013.11 Dual', '1');
+						break;
+            		}
+            		case 5:
+            		{
+            			//OpenSUSE
+            			var s= document.getElementById('isoversion');
+            			s.options.length = 0;
+            			s.options[s.options.length]= new Option('-', '0');
+						s.options[s.options.length]= new Option('12.3 DVD i586', '1');
+						s.options[s.options.length]= new Option('12.3 DVD x86_64', '2');
+						s.options[s.options.length]= new Option('12.3 Live KDE i586', '3');
+						s.options[s.options.length]= new Option('12.3 Live KDE x86_64', '4');
+						s.options[s.options.length]= new Option('12.3 Live GNOME i586', '5');
+						s.options[s.options.length]= new Option('12.3 Live GNOME x86_64', '6');
+						break;
+						break;
+            		}
+            		case 6:
+            		{
+            			//LinuxDeepin
+            			var s= document.getElementById('isoversion');
+            			s.options.length = 0;
+            			s.options[s.options.length]= new Option('-', '0');
+						s.options[s.options.length]= new Option('12.12.1 amd64', '1');
+						s.options[s.options.length]= new Option('12.12.1 i386', '2');
+						break;
+            		}
+            	}
+			    var val=element.options[idx].value;
+			    var content=element.options[idx].innerHTML;
+			    //alert(val + " " + content);
+            }
+            function downloadiso()
+            {
+            	var dstro=document.getElementById("isodistro");
+            	var detail=document.getElementById("isoversion");
+            	var idx=dstro.selectedIndex;
+            	var iidx=detail.selectedIndex;
+            	var option=idx*10+iidx;
+            	//alert(option);
+            	switch(option)
+            	{
+            		case 11:
+            		{
+            			var link="http://mirrors.ustc.edu.cn/ubuntu-releases/13.10/ubuntu-13.10-desktop-amd64.iso";
+            			window.open(link);
+            			break;
+            		}
+            		case 12:
+            		{
+            			var link="http://mirrors.ustc.edu.cn/ubuntu-releases/13.10/ubuntu-13.10-desktop-i386.iso";
+            			window.open(link);
+            			break;
+            		}
+            		case 13:
+            		{
+            			var link="http://mirrors.ustc.edu.cn/ubuntu-releases/12.04.3/ubuntu-12.04.3-desktop-amd64.iso";
+            			window.open(link);
+            			break;
+            		}
+            		case 14:
+            		{
+            			var link="http://mirrors.ustc.edu.cn/ubuntu-releases/12.04.3/ubuntu-12.04.3-desktop-i386.iso";
+            			window.open(link);
+            			break;
+            		}
+            		case 21:
+            		{
+            			var link="http://mirrors.ustc.edu.cn/debian-cd/7.2.0/amd64/iso-cd/debian-7.2.0-amd64-CD-1.iso";
+            			window.open(link);
+            			break;
+            		}
+            		case 22:
+            		{
+            			var link="http://mirrors.ustc.edu.cn/debian-cd/7.2.0/i386/iso-cd/debian-7.2.0-i386-CD-1.iso";
+            			window.open(link);
+            			break;
+            		}
+            		case 23:
+            		{
+            			var link="http://mirrors.ustc.edu.cn/debian-cd/7.2.0-live/amd64/iso-hybrid/debian-live-7.2-amd64-kde-desktop.iso";
+            			window.open(link);
+            			break;
+            		}
+            		case 24:
+            		{
+            			var link="http://mirrors.ustc.edu.cn/debian-cd/7.2.0-live/i386/iso-hybrid/debian-live-7.2-i386-kde-desktop.iso";
+            			window.open(link);
+            			break;
+            		}
+            		case 31:
+            		{
+            			var link="http://mirrors.ustc.edu.cn/fedora/linux/releases/19/Live/x86_64/Fedora-Live-KDE-x86_64-19-1.iso";
+            			window.open(link);
+            			break;
+            		}
+            		case 32:
+            		{
+            			var link="http://mirrors.ustc.edu.cn/fedora/linux/releases/19/Live/i386/Fedora-Live-KDE-i686-19-1.iso";
+            			window.open(link);
+            			break;
+            		}
+            		case 41:
+            		{
+            			var link="http://mirrors.ustc.edu.cn/archlinux/iso/2013.11.01/archlinux-2013.11.01-dual.iso";
+            			window.open(link);
+            			break;
+            		}
+            		case 51:
+            		{
+            			var link="http://mirrors.ustc.edu.cn/opensuse/distribution/openSUSE-stable/iso/openSUSE-12.3-DVD-i586.iso";
+            			window.open(link);
+            			break;
+            		}
+            		case 52:
+            		{
+            			var link="http://mirrors.ustc.edu.cn/opensuse/distribution/openSUSE-stable/iso/openSUSE-12.3-DVD-x86_64.iso";
+            			window.open(link);
+            			break;
+            		}
+            		case 53:
+            		{
+            			var link="http://mirrors.ustc.edu.cn/opensuse/distribution/openSUSE-stable/iso/openSUSE-12.3-KDE-Live-i686.iso";
+            			window.open(link);
+            			break;
+            		}
+            		case 54:
+            		{
+            			var link="http://mirrors.ustc.edu.cn/opensuse/distribution/openSUSE-stable/iso/openSUSE-12.3-KDE-Live-x86_64.iso";
+            			window.open(link);
+            			break;
+            		}
+            		case 55:
+            		{
+            			var link="http://mirrors.ustc.edu.cn/opensuse/distribution/openSUSE-stable/iso/openSUSE-12.3-GNOME-Live-i686.iso";
+            			window.open(link);
+            			break;
+            		}
+            		case 56:
+            		{
+            			var link="http://mirrors.ustc.edu.cn/opensuse/distribution/openSUSE-stable/iso/openSUSE-12.3-GNOME-Live-x86_64.iso";
+            			window.open(link);
+            			break;
+            		}
+            		case 61:
+            		{
+            			var link="http://mirrors.ustc.edu.cn/deepin-cd/12.12.1/desktop/deepin_12.12.1_zh-hans_final_amd64.iso";
+            			window.open(link);
+            			break;
+            		}
+            		case 62:
+            		{
+            			var link="http://mirrors.ustc.edu.cn/deepin-cd/12.12.1/desktop/deepin_12.12.1_zh-hans_final_i386.iso";
+            			window.open(link);
+            			break;
+            		}2
+            	}
+            }
+	</script>
+</head>
+
+<body>
+	<div id="header">
+		<ul id="headlinks">
+			<li><a href="http://mirrors.ustc.edu.cn/status/" target="_blank">Status</a></li>
+			<li><a href="https://servers.blog.ustc.edu.cn/" target="_blank">News</a></li>
+			<li><a href="https://lug.ustc.edu.cn/wiki/mirrors/help" target="_blank">Help</a></li>
+			<li><a href="http://lug.ustc.edu.cn" target="_blank">About</a></li>
+		</ul>
+	</div>
+	<div id="welcome">
+		
+		<div id="intro">
+			<h1>Another infinity</h1>
+		    <h2>Welcome to the USTC open source mirror.</h2>
+		    <p>Brought to you by University of Science and Technology of China and USTCLUG.</p>
+		</div>
+	</div>
+	
+	<div id="wrapper">
+		<div id="filelist">
+			<h3>文件列表</h3>
