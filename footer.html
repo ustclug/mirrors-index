@@ -47,7 +47,7 @@
 		<div class="modalcontainer" id="isomodalcontainer" onclick="">
 			<div class="modaltitle" id="isomodaltitle"><span>获取安装镜像</span><span onclick="modal()" style="float:right">X</span></div>
 			<div class="modalcontent" id="isomodalcontent">
-				<p>选择安装发行版： <select id="isodistro" onchange="switchdistro(this)">
+				<p>选择安装发行版： <select id="isodistro" onchange="switchdistro()">
 					<option value="none">-</option>
 					<option value="Ubuntu">Ubuntu</option>
 					<option value="Debian">Debian</option>
@@ -68,6 +68,101 @@
 		</div>
 	</div>
 	<link href='http://fonts.googleapis.com/css?family=Clicker+Script|Open+Sans:400,300' rel='stylesheet' type='text/css'>
+
+<script type="text/javascript">
+	//var isoinfo = "INCLUDE isoinfo.json";
+	var isoinfo = [
+		{
+			"distro": "Ubuntu",
+			"urls": [
+				{ "name": "13.10 64Bit", "url": "http://mirrors.ustc.edu.cn/ubuntu-releases/13.10/ubuntu-13.10-desktop-amd64.iso" },
+				{ "name": "13.10 32Bit", "url": "http://mirrors.ustc.edu.cn/ubuntu-releases/13.10/ubuntu-13.10-desktop-i386.iso" },
+				{ "name": "12.04.3 64Bit", "url": "http://mirrors.ustc.edu.cn/ubuntu-releases/12.04.3/ubuntu-12.04.3-desktop-amd64.iso" },
+				{ "name": "12.04.3 32Bit", "url": "http://mirrors.ustc.edu.cn/ubuntu-releases/12.04.3/ubuntu-12.04.3-desktop-i386.iso" },
+				{ "name": "10.04.4 64Bit", "url": "http://mirrors.ustc.edu.cn/ubuntu-releases/10.04.4/ubuntu-10.04.4-server-amd64.iso" },
+				{ "name": "10.04.4 32Bit", "url": "http://mirrors.ustc.edu.cn/ubuntu-releases/10.04.4/ubuntu-10.04.4-server-i386.iso" },
+				]
+		},
+		{
+			"distro": "Debian",
+			"urls": [
+			{ "name": "Current 7.2 64Bit", "url": "http://mirrors.ustc.edu.cn/debian-cd/7.2.0/amd64/iso-cd/debian-7.2.0-amd64-CD-1.iso" },
+			{ "name": "Current 7.2 32Bit", "url": "http://mirrors.ustc.edu.cn/debian-cd/7.2.0/i386/iso-cd/debian-7.2.0-i386-CD-1.iso" },
+			{ "name": "Current 7.2 Live 64Bit", "url": "http://mirrors.ustc.edu.cn/debian-cd/7.2.0-live/amd64/iso-hybrid/debian-live-7.2-amd64-kde-desktop.iso" },
+			{ "name": "Current 7.2 Live 32Bit", "url": "http://mirrors.ustc.edu.cn/debian-cd/7.2.0-live/i386/iso-hybrid/debian-live-7.2-i386-kde-desktop.iso" },
+			]
+		},
+		{
+			"distro": "Fedora",
+			"urls": [
+			{ "name": "Fedora Stable - 19 64Bit", "url": "http://mirrors.ustc.edu.cn/fedora/linux/releases/19/Live/x86_64/Fedora-Live-KDE-x86_64-19-1.iso" },
+			{ "name": "Fedora Stable - 19 32Bit", "url": "http://mirrors.ustc.edu.cn/fedora/linux/releases/19/Live/i386/Fedora-Live-KDE-i686-19-1.iso" },
+			]
+		},
+		{
+			"distro": "Archlinux",
+			"urls": [
+			{ "name": "Latest - 2013.11 Dual", "url": "http://mirrors.ustc.edu.cn/archlinux/iso/2013.11.01/archlinux-2013.11.01-dual.iso" },
+			]
+		},
+		{
+			"distro": "OpenSUSE",
+			"urls": [
+			{ "name": "12.3 DVD i586", "url": "http://mirrors.ustc.edu.cn/opensuse/distribution/openSUSE-stable/iso/openSUSE-12.3-DVD-i586.iso" },
+			{ "name": "12.3 DVD x86_64", "url": "http://mirrors.ustc.edu.cn/opensuse/distribution/openSUSE-stable/iso/openSUSE-12.3-DVD-x86_64.iso" },
+			{ "name": "12.3 Live KDE i586", "url": "http://mirrors.ustc.edu.cn/opensuse/distribution/openSUSE-stable/iso/openSUSE-12.3-KDE-Live-i686.iso" },
+			{ "name": "12.3 Live KDE x86_64", "url": "http://mirrors.ustc.edu.cn/opensuse/distribution/openSUSE-stable/iso/openSUSE-12.3-KDE-Live-x86_64.iso" },
+			{ "name": "12.3 Live GNOME i586", "url": "http://mirrors.ustc.edu.cn/opensuse/distribution/openSUSE-stable/iso/openSUSE-12.3-GNOME-Live-i686.iso" },
+			{ "name": "12.3 Live GNOME x86_64", "url": "http://mirrors.ustc.edu.cn/opensuse/distribution/openSUSE-stable/iso/openSUSE-12.3-GNOME-Live-x86_64.iso" },
+			]
+		},
+		{
+			"distro": "LinuxDeepin",
+			"urls": [
+			{ "name": "12.12.1 amd64", "url": "http://mirrors.ustc.edu.cn/deepin-cd/12.12.1/desktop/deepin_12.12.1_zh-hans_final_amd64.iso" },
+			{ "name": "12.12.1 i386", "url": "http://mirrors.ustc.edu.cn/deepin-cd/12.12.1/desktop/deepin_12.12.1_zh-hans_final_i386.iso" },
+			]
+		}
+	];
+
+	function update_isodistro_options() {
+		var s = document.getElementById("isodistro");
+		s.options.length = 0;
+		for (var i=0; i<isoinfo.length; i++) {
+			s.options[s.options.length] = new Option(isoinfo[i].distro, i);
+		}
+		switchdistro();
+	}
+
+	function modal()
+	{
+		var bx = document.getElementById("isomodal");
+		bx.style.visibility = (bx.style.visibility == "visible") ? "hidden" : "visible";
+	}
+
+	function switchdistro()
+	{
+		var distro = document.getElementById("isodistro");
+		var idx = distro.selectedIndex;
+		var s = document.getElementById('isoversion');
+		s.options.length = 0;
+		for (var i=0; i<isoinfo[idx].urls.length; i++) {
+			s.options[s.options.length] = new Option(isoinfo[idx].urls[i].name, i)
+		}
+	}
+	function downloadiso()
+	{
+		var distro=document.getElementById("isodistro");
+		var version=document.getElementById("isoversion");
+		var i=distro.selectedIndex;
+		var j=version.selectedIndex;
+		var link = isoinfo[i].urls[j].url;
+		window.open(link);
+	}
+
+	update_isodistro_options();
+</script>
+
 </body>
 </html>
 <!-- Designed by Miaomiao Li. It's a wonderful life! -->
