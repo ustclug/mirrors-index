@@ -78,29 +78,23 @@
   {
     "distro": "OpenSUSE",
     "urls": [
-      {
-        "name": "12.3 DVD i586",
-        "url": "http://mirrors.ustc.edu.cn/opensuse/distribution/openSUSE-stable/iso/openSUSE-12.3-DVD-i586.iso"
+      { "name": "13.1 DVD i586",
+        "url": "http://mirrors.ustc.edu.cn/opensuse/distribution/13.1/iso/openSUSE-13.1-DVD-i586.iso"
       },
-      {
-        "name": "12.3 DVD x86_64",
-        "url": "http://mirrors.ustc.edu.cn/opensuse/distribution/openSUSE-stable/iso/openSUSE-12.3-DVD-x86_64.iso"
+      { "name": "13.1 DVD x86_64",
+        "url": "http://mirrors.ustc.edu.cn/opensuse/distribution/13.1/iso/openSUSE-13.1-DVD-x86_64.iso"
       },
-      {
-        "name": "12.3 Live KDE i586",
-        "url": "http://mirrors.ustc.edu.cn/opensuse/distribution/openSUSE-stable/iso/openSUSE-12.3-KDE-Live-i686.iso"
+      { "name": "13.1 Live KDE i686",
+        "url": "http://mirrors.ustc.edu.cn/opensuse/distribution/13.1/iso/openSUSE-13.1-KDE-Live-i686.iso"
       },
-      {
-        "name": "12.3 Live KDE x86_64",
-        "url": "http://mirrors.ustc.edu.cn/opensuse/distribution/openSUSE-stable/iso/openSUSE-12.3-KDE-Live-x86_64.iso"
+      { "name": "13.1 Live KDE x86_64",
+        "url": "http://mirrors.ustc.edu.cn/opensuse/distribution/13.1/iso/openSUSE-13.1-KDE-Live-x86_64.iso"
       },
-      {
-        "name": "12.3 Live GNOME i586",
-        "url": "http://mirrors.ustc.edu.cn/opensuse/distribution/openSUSE-stable/iso/openSUSE-12.3-GNOME-Live-i686.iso"
+      { "name": "13.1 Live GNOME i686",
+        "url": "http://mirrors.ustc.edu.cn/opensuse/distribution/13.1/iso/openSUSE-13.1-GNOME-Live-i686.iso"
       },
-      {
-        "name": "12.3 Live GNOME x86_64",
-        "url": "http://mirrors.ustc.edu.cn/opensuse/distribution/openSUSE-stable/iso/openSUSE-12.3-GNOME-Live-x86_64.iso"
+      { "name": "13.1 Live GNOME x86_64",
+        "url": "http://mirrors.ustc.edu.cn/opensuse/distribution/13.1/iso/openSUSE-13.1-GNOME-Live-x86_64.iso"
       },
     ]
   },
