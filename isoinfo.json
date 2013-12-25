@@ -32,12 +32,12 @@
     "distro": "Debian",
     "urls": [
       {
-        "name": "Current 7.2 64Bit",
-        "url": "http://mirrors.ustc.edu.cn/debian-cd/7.2.0/amd64/iso-cd/debian-7.2.0-amd64-CD-1.iso"
+        "name": "Current 7.3 64Bit",
+        "url": "http://mirrors.ustc.edu.cn/debian-cd/7.3.0/amd64/iso-cd/debian-7.3.0-amd64-CD-1.iso"
       },
       {
-        "name": "Current 7.2 32Bit",
-        "url": "http://mirrors.ustc.edu.cn/debian-cd/7.2.0/i386/iso-cd/debian-7.2.0-i386-CD-1.iso"
+        "name": "Current 7.3 32Bit",
+        "url": "http://mirrors.ustc.edu.cn/debian-cd/7.3.0/i386/iso-cd/debian-7.3.0-i386-CD-1.iso"
       },
       {
         "name": "Current 7.2 Live 64Bit",
