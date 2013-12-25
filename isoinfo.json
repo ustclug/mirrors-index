@@ -53,6 +53,14 @@
     "distro": "Fedora",
     "urls": [
       {
+        "name": "Fedora Stable - 20 64Bit",
+        "url": "http://mirrors.ustc.edu.cn/fedora/linux/releases/20/Live/x86_64/Fedora-Live-KDE-x86_64-20-1.iso"
+      },
+      {
+        "name": "Fedora Stable - 20 32Bit",
+        "url": "http://mirrors.ustc.edu.cn/fedora/linux/releases/20/Live/i386/Fedora-Live-KDE-i686-20-1.iso"
+      },
+      {
         "name": "Fedora Stable - 19 64Bit",
         "url": "http://mirrors.ustc.edu.cn/fedora/linux/releases/19/Live/x86_64/Fedora-Live-KDE-x86_64-19-1.iso"
       },
