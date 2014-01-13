@@ -25,7 +25,7 @@
       {
         "name": "10.04.4 32Bit",
         "url": "http://mirrors.ustc.edu.cn/ubuntu-releases/10.04.4/ubuntu-10.04.4-server-i386.iso"
-      },
+      }
     ]
   },
   {
@@ -46,7 +46,7 @@
       {
         "name": "Current 7.2 Live 32Bit",
         "url": "http://mirrors.ustc.edu.cn/debian-cd/7.2.0-live/i386/iso-hybrid/debian-live-7.2-i386-kde-desktop.iso"
-      },
+      }
     ]
   },
   {
@@ -67,20 +67,24 @@
       {
         "name": "Fedora Stable - 19 32Bit",
         "url": "http://mirrors.ustc.edu.cn/fedora/linux/releases/19/Live/i386/Fedora-Live-KDE-i686-19-1.iso"
-      },
+      }
     ]
   },
   {
     "distro": "Archlinux",
     "urls": [
       {
-        "name": "Latest - 2013.12 Dual",
+        "name": "Latest - 2014.1 Dual",
+        "url": "http://mirrors.ustc.edu.cn/archlinux/iso/2014.01.05/archlinux-2014.01.05-dual.iso"
+      },
+      {
+        "name": "2013.12 Dual",
         "url": "http://mirrors.ustc.edu.cn/archlinux/iso/2013.12.01/archlinux-2013.12.01-dual.iso"
       },
       {
         "name": "2013.11 Dual",
         "url": "http://mirrors.ustc.edu.cn/archlinux/iso/2013.11.01/archlinux-2013.11.01-dual.iso"
-      },
+      }
     ]
   },
   {
@@ -103,7 +107,7 @@
       },
       { "name": "13.1 Live GNOME x86_64",
         "url": "http://mirrors.ustc.edu.cn/opensuse/distribution/13.1/iso/openSUSE-13.1-GNOME-Live-x86_64.iso"
-      },
+      }
     ]
   },
   {
@@ -132,7 +136,7 @@
       {
         "name": "Daily Live Current i386",
         "url": "http://mirrors.ustc.edu.cn/deepin-cd/daily-live/desktop/current/deepin-desktop-i386.iso"
-      },
+      }
     ]
   }
 ]
