@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import os, time, os.path
-from get-mirror-status import *
+from get_mirror_status import *
 import json
 
 homedir='/home/mirror/'
@@ -44,17 +44,17 @@ for file in sorted(os.listdir(serverdir)):
                 #         modtime=time.strftime('%Y-%m-%d %H:%I:%S', time.localtime(os.path.getmtime(logdir)))
                 # except os.error:
                 #         modtime=time.strftime('%Y-%m-%d %H:%I:%S', time.localtime(os.path.getmtime(dir+file)))
-                repo_info = getRepoInfo(_file)
+                repo_info = getRepoInfo(_file.lower())
                 if repo_info is not None:
                         log_filename = getLogFileName(repo_info['log_path'], repo_info['script_type'])
                         status = getSyncStatus(log_filename)
-                        if "sync_time" in repo.keys():
-                                modtime = repo["sync_time"]
+                        if "sync_time" in repo_info.keys():
+                                modtime = repo_info["sync_time"]
                         else:
-                                modtime = getArchiveSyncTime(log_filename, status)
+                                modtime = getArchiveSyncTime(log_filename, status).strftime("%Y-%m-%d %H:%M:%S")
                 else:
                         modtime = 'Not Syncing'
-                output+='<tr><td class="filename"><a href="/'+file+'">'+file+'</a></td><td class="filetime">'+modtime+'</td><td class="help"><a href="help/'+file+'">Help</a></td></tr>\n'
+                output+='<tr><td class="filename"><a href="/'+file+'">'+file+'</a></td><td class="filetime">'+str(modtime)+'</td><td class="help"><a href="help/'+file+'">Help</a></td></tr>\n'
 
 output+='</table>'
 m=open(basedir+'middle.html','r')
