@@ -25,6 +25,12 @@ for file in sorted(os.listdir(dir)):
                     modtime=time.strftime('%Y-%m-%d %H:%I:%S', time.localtime(os.path.getmtime(dir+file)))
 		output+='<tr><td class="filename"><a href="/'+file+'">'+file+'</a></td><td class="filetime">'+modtime+'</td><td class="help"><a href="help/'+file+'">Help</a></td></tr>\n'
 output+='</table>'
+m=open('/home/mirror/newindex/middle.html','r')
+output+=m.read()
+m.close
+info=open('/home/mirror/newindex/isoinfo.json','r')
+output+=info.read()
+info.close
 f=open('/home/mirror/newindex/footer.html','r')
 output+=f.read()
 f.close()
