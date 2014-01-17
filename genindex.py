@@ -41,6 +41,8 @@ for file in sorted(os.listdir(serverdir)):
                         _file = 'kde-application'
                 if file == 'bioc':
                         _file = 'bioc_2_13'
+                if file == 'archive.raspberrypi.org':
+                        _file = 'raspberrypi'
                 logdir=(homedir+'log/'+_file).lower()
                 # try:
                 #         modtime=time.strftime('%Y-%m-%d %H:%I:%S', time.localtime(os.path.getmtime(logdir)))
