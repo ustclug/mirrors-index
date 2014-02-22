@@ -32,20 +32,20 @@
     "distro": "Debian",
     "urls": [
       {
-        "name": "Current 7.3 64Bit",
-        "url": "http://mirrors.ustc.edu.cn/debian-cd/7.3.0/amd64/iso-cd/debian-7.3.0-amd64-CD-1.iso"
+        "name": "Current 7.4 64Bit",
+        "url": "http://mirrors.ustc.edu.cn/debian-cd/7.4.0/amd64/iso-cd/debian-7.4.0-amd64-CD-1.iso"
       },
       {
-        "name": "Current 7.3 32Bit",
-        "url": "http://mirrors.ustc.edu.cn/debian-cd/7.3.0/i386/iso-cd/debian-7.3.0-i386-CD-1.iso"
+        "name": "Current 7.4 32Bit",
+        "url": "http://mirrors.ustc.edu.cn/debian-cd/7.4.0/i386/iso-cd/debian-7.4.0-i386-CD-1.iso"
       },
       {
-        "name": "Current 7.2 Live 64Bit",
-        "url": "http://mirrors.ustc.edu.cn/debian-cd/7.2.0-live/amd64/iso-hybrid/debian-live-7.2-amd64-kde-desktop.iso"
+        "name": "Current 7.4 Live 64Bit",
+        "url": "http://mirrors.ustc.edu.cn/debian-cd/7.4.0-live/amd64/iso-hybrid/debian-live-7.4-amd64-kde-desktop.iso"
       },
       {
-        "name": "Current 7.2 Live 32Bit",
-        "url": "http://mirrors.ustc.edu.cn/debian-cd/7.2.0-live/i386/iso-hybrid/debian-live-7.2-i386-kde-desktop.iso"
+        "name": "Current 7.4 Live 32Bit",
+        "url": "http://mirrors.ustc.edu.cn/debian-cd/7.4.0-live/i386/iso-hybrid/debian-live-7.4-i386-kde-desktop.iso"
       }
     ]
   },
