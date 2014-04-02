@@ -74,24 +74,16 @@
     "distro": "Archlinux",
     "urls": [
       {
-        "name": "Latest - 2014.3 Dual",
+        "name": "Latest - 2014.4 Dual",
+        "url": "http://mirrors.ustc.edu.cn/archlinux/iso/2014.04.01/archlinux-2014.04.01-dual.iso"
+      },
+	  {
+        "name": "2014.3 Dual",
         "url": "http://mirrors.ustc.edu.cn/archlinux/iso/2014.03.01/archlinux-2014.03.01-dual.iso"
       },
       {
         "name": "2014.2 Dual",
         "url": "http://mirrors.ustc.edu.cn/archlinux/iso/2014.02.01/archlinux-2014.02.01-dual.iso"
-      },
-      {
-        "name": "2014.1 Dual",
-        "url": "http://mirrors.ustc.edu.cn/archlinux/iso/2014.01.05/archlinux-2014.01.05-dual.iso"
-      },
-      {
-        "name": "2013.12 Dual",
-        "url": "http://mirrors.ustc.edu.cn/archlinux/iso/2013.12.01/archlinux-2013.12.01-dual.iso"
-      },
-      {
-        "name": "2013.11 Dual",
-        "url": "http://mirrors.ustc.edu.cn/archlinux/iso/2013.11.01/archlinux-2013.11.01-dual.iso"
       }
     ]
   },
