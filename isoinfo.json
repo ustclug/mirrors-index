@@ -3,6 +3,14 @@
     "distro": "Ubuntu",
     "urls": [
       {
+        "name": "14.04 64Bit",
+        "url": "http://mirrors.ustc.edu.cn/ubuntu-releases/14.04/ubuntu-14.04-desktop-amd64.iso"
+      },
+      {
+        "name": "14.04 32Bit",
+        "url": "http://mirrors.ustc.edu.cn/ubuntu-releases/14.04/ubuntu-14.04-desktop-i386.iso"
+      },
+      {
         "name": "13.10 64Bit",
         "url": "http://mirrors.ustc.edu.cn/ubuntu-releases/13.10/ubuntu-13.10-desktop-amd64.iso"
       },
