@@ -122,28 +122,20 @@
     "distro": "LinuxDeepin",
     "urls": [
       {
-        "name": "2013 amd64",
-        "url": "http://mirrors.ustc.edu.cn/deepin-cd/releases/2013/desktop/deepin_2013_zh-hans_amd64.iso"
+        "name": "2013.1 amd64",
+        "url": "http://mirrors.ustc.edu.cn/deepin-cd/releases/2013.1/desktop/deepin_2013.1_zh-hans_amd64.iso"
       },
       {
-        "name": "2013 i386",
-        "url": "http://mirrors.ustc.edu.cn/deepin-cd/releases/2013/desktop/deepin_2013_zh-hans_i386.iso"
-      },
-      {
-        "name": "12.12.1 amd64",
-        "url": "http://mirrors.ustc.edu.cn/deepin-cd/releases/12.12.1/desktop/deepin_12.12.1_zh-hans_final_adm64.iso"
-      },
-      {
-        "name": "12.12.1 i386",
-        "url": "http://mirrors.ustc.edu.cn/deepin-cd/releases/12.12.1/desktop/deepin_12.12.1_zh-hans_final_i386.iso"
+        "name": "2013.1 i386",
+        "url": "http://mirrors.ustc.edu.cn/deepin-cd/releases/2013.1/desktop/deepin_2013.1_zh-hans_i386.iso"
       },
       {
         "name": "Daily Live Current amd64",
-        "url": "http://mirrors.ustc.edu.cn/deepin-cd/daily-live/desktop/current/deepin-desktop-amd64.iso"
+        "url": "http://mirrors.ustc.edu.cn/deepin-cd/daily-live/desktop/deepin-desktop-amd64.iso"
       },
       {
         "name": "Daily Live Current i386",
-        "url": "http://mirrors.ustc.edu.cn/deepin-cd/daily-live/desktop/current/deepin-desktop-i386.iso"
+        "url": "http://mirrors.ustc.edu.cn/deepin-cd/daily-live/desktop/deepin-desktop-i386.iso"
       }
     ]
   }
