@@ -49,11 +49,11 @@
       },
       {
         "name": "Current 7.5 Live 64Bit",
-        "url": "http://mirrors.ustc.edu.cn/debian-cd/7.5.0-live/amd64/iso-hybrid/debian-live-7.5-amd64-kde-desktop.iso"
+        "url": "http://mirrors.ustc.edu.cn/debian-cd/7.5.0-live/amd64/iso-hybrid/debian-live-7.5.0-amd64-kde-desktop.iso"
       },
       {
         "name": "Current 7.5 Live 32Bit",
-        "url": "http://mirrors.ustc.edu.cn/debian-cd/7.5.0-live/i386/iso-hybrid/debian-live-7.5-i386-kde-desktop.iso"
+        "url": "http://mirrors.ustc.edu.cn/debian-cd/7.5.0-live/i386/iso-hybrid/debian-live-7.5.0-i386-kde-desktop.iso"
       }
     ]
   },
