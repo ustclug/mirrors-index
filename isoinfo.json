@@ -82,16 +82,16 @@
     "distro": "Archlinux",
     "urls": [
       {
-        "name": "Latest - 2014.6 Dual",
+        "name": "Latest - 2014.7 Dual",
+        "url": "http://mirrors.ustc.edu.cn/archlinux/iso/2014.07.03/archlinux-2014.07.03-dual.iso"
+      },
+      {
+        "name": "2014.6 Dual",
         "url": "http://mirrors.ustc.edu.cn/archlinux/iso/2014.06.01/archlinux-2014.06.01-dual.iso"
       },
       {
         "name": "2014.5 Dual",
         "url": "http://mirrors.ustc.edu.cn/archlinux/iso/2014.05.01/archlinux-2014.05.01-dual.iso"
-      },
-      {
-        "name": "2014.4 Dual",
-        "url": "http://mirrors.ustc.edu.cn/archlinux/iso/2014.04.01/archlinux-2014.04.01-dual.iso"
       },
     ]
   },
