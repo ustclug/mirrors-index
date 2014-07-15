@@ -40,12 +40,12 @@
     "distro": "Debian",
     "urls": [
       {
-        "name": "Current 7.5 64Bit",
-        "url": "http://mirrors.ustc.edu.cn/debian-cd/7.5.0/amd64/iso-cd/debian-7.5.0-amd64-CD-1.iso"
+        "name": "Current 7.6 64Bit",
+        "url": "http://mirrors.ustc.edu.cn/debian-cd/7.6.0/amd64/iso-cd/debian-7.6.0-amd64-CD-1.iso"
       },
       {
-        "name": "Current 7.5 32Bit",
-        "url": "http://mirrors.ustc.edu.cn/debian-cd/7.5.0/i386/iso-cd/debian-7.5.0-i386-CD-1.iso"
+        "name": "Current 7.6 32Bit",
+        "url": "http://mirrors.ustc.edu.cn/debian-cd/7.6.0/i386/iso-cd/debian-7.6.0-i386-CD-1.iso"
       },
       {
         "name": "Current 7.5 Live 64Bit",
