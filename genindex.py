@@ -17,7 +17,7 @@ repo_list = json.load(mirrors)
 
 def getRepoInfo(repo_name) :
         for repo in repo_list:
-                if repo['log_path'] == repo_name:
+                if repo.get('log_path', '') == repo_name:
                         return repo
 
         return None
@@ -52,7 +52,7 @@ for file in sorted(os.listdir(serverdir)):
                 #         modtime=time.strftime('%Y-%m-%d %H:%I:%S', time.localtime(os.path.getmtime(dir+file)))
                 repo_info = getRepoInfo(_file.lower())
                 if repo_info is not None:
-                        log_filename = getLogFileName(repo_info['log_path'], repo_info['script_type'])
+                        log_filename = getLogFileName(repo_info['log_path'], repo_info.get('script_type', ''))
                         status = getSyncStatus(log_filename)
                         if "sync_time" in repo_info.keys():
                                 modtime = repo_info["sync_time"]

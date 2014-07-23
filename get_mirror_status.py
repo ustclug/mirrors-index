@@ -2,11 +2,11 @@
 # -*- coding: utf-8 -*-
 
 # Copyright (C) 2011 USTC LUG
-#		2011 Cheng Zhang
+#               2011 Cheng Zhang
 #
-# Origin Author: 	Cheng Zhang <StephenPCG@gmail.com>
-# Edit by:      	Yuanchong Zhu <redsky0802@gmail.com>
-# Maintainer:   	Yuanchong Zhu <redsky0802@gmail.com>
+# Origin Author: Cheng Zhang <StephenPCG@gmail.com>
+# Edit by:       Yuanchong Zhu <redsky0802@gmail.com>
+# Maintainer:    Yuanchong Zhu <redsky0802@gmail.com>
 
 import os.path, time, datetime
 import re
@@ -62,11 +62,15 @@ def getSyncStatus(log_file_name):
 
 def getSyncErrorAndArchiveSize(log_file_name):
     ''' parse log file, get ERROR status and archive size, returns a tuple (error, size, size_in_byte) '''
+    
+    if log_file_name == "":
+        return False, "", 0
+
     log_file_name = log_file_name + ".0"
     if not os.path.isfile(log_file_name):
         return False, "", 0
     error = False
-    size = "" 
+    size = ""
     size_in_byte = 0
     for line in open(log_file_name):
         if line.find("ERROR") != -1 or line.find("rsync error") != -1:
@@ -125,10 +129,12 @@ if __name__ == "__main__":
     repo_list = json.load(mirrors)
 
     for repo in repo_list:
-
         name = '<a href="/{0}/">{1}</a>'.format(repo["repo_path"], repo["repo_name"])
 
-        log_filename = getLogFileName(repo["log_path"], repo["script_type"])
+        if "log_path" in repo.keys() and "script_type" in repo.keys():
+            log_filename = getLogFileName(repo["log_path"], repo["script_type"])
+        else:
+            log_filename = ""
 
         status = getSyncStatus(log_filename)
         _has_error, size, size_in_byte = getSyncErrorAndArchiveSize(log_filename)
@@ -145,6 +151,8 @@ if __name__ == "__main__":
         else:
             try:
                 upstream = getArchiveUpstream(repo["log_path"], repo["script_type"])
+            except KeyError:
+                upstream = "unknown"
             except IOError:
                 continue
 
