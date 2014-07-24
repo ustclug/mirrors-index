@@ -3,6 +3,7 @@
 import os, time, os.path
 from get_mirror_status import *
 import json
+import getisolist
 
 homedir='/home/mirror/'
 basedir='/home/mirror/newindex/' # must has a '/' in the end
@@ -66,9 +67,12 @@ output+='</table>'
 m=open(basedir+'middle.html','r')
 output+=m.read()
 m.close()
-info=open(basedir+'isoinfo.json','r')
-output+=info.read()
-info.close()
+
+#info=open(basedir+'isoinfo.json','r')
+#output+=info.read()
+#info.close()
+output += genisolist.getImageList()
+
 f=open(basedir+'footer.html','r')
 output+=f.read()
 f.close()
