@@ -3,7 +3,7 @@
 import os, time, os.path
 from get_mirror_status import *
 import json
-import getisolist
+import genisolist
 
 homedir='/home/mirror/'
 basedir='/home/mirror/newindex/' # must has a '/' in the end
