@@ -1,81 +1,124 @@
-#!/usr/bin/python
+#!/usr/bin/env python2
 
-import os, time, os.path
-from get_mirror_status import *
-import json
-import genisolist
+import os
+import sys
+import time
+import urlparse
+import urllib2
+import fnmatch
+from cStringIO import StringIO as StrIO
+from genisolist import getImageList
 
-homedir='/home/mirror/'
-basedir='/home/mirror/newindex/' # must has a '/' in the end
-serverdir = '/srv/www/'
+BASEDIR = os.path.dirname(__file__)
+HTTPDIR = '/srv/www'
 
-h=open(basedir+'header.html','r')
-output=h.read()
-h.close()
+# When debugging, pass an argument to the script to override output file path.
+OUTFILE = os.path.join(HTTPDIR, 'index.html')
+# Directories match these glob will be ignored.
+EXCLUDE = ("tmpfs", ".*")
 
-mirrors = open(homedir+'etc/mirrors.json')
-repo_list = json.load(mirrors)
 
-def getRepoInfo(repo_name) :
-        for repo in repo_list:
-                if repo.get('log_path', '') == repo_name:
-                        return repo
+def addStatic (filepath, str_out):
+    fin = open(filepath)
+    str_out.write(fin.read())
+    fin.close()
 
-        return None
 
-output+='<table cellpadding="0" cellspacing="0" class="filelist">\n'
-output+='<thead><tr id="firstline"><th id="name">Folder</th><th>Last Update</th><th id="help">Help</th></tr></thead>\n'
-for file in sorted(os.listdir(serverdir)):
-        if file[0] != '.' and not file.endswith('.html') and file != 'tmpfs':
-                _file = file    # a wrapper for the real log file name
-                if file == 'sourceware.org':
-                        _file = 'cygwinports'
-                if file == 'scientificlinux':
-                        _file = 'scientific'
-                if file == 'progress-linux':
-                        _file = 'progress'
-                if file == 'uksm-kernel':
-                        _file = 'uksm'
-                if file == 'fedora':
-                        _file = 'fedora-linux'
-                if file == 'kde-applicationdata':
-                        _file = 'kde-application'
-                if file == 'bioc':
-                        _file = 'bioc_2_13'
-                if file == 'archive.raspberrypi.org':
-                        _file = 'raspberrypi'
-                if file == 'kernel.org':
-                        _file = 'kernelorg'
-                logdir=(homedir+'log/'+_file).lower()
-                # try:
-                #         modtime=time.strftime('%Y-%m-%d %H:%I:%S', time.localtime(os.path.getmtime(logdir)))
-                # except os.error:
-                #         modtime=time.strftime('%Y-%m-%d %H:%I:%S', time.localtime(os.path.getmtime(dir+file)))
-                repo_info = getRepoInfo(_file.lower())
-                if repo_info is not None:
-                        log_filename = getLogFileName(repo_info['log_path'], repo_info.get('script_type', ''))
-                        status = getSyncStatus(log_filename)
-                        if "sync_time" in repo_info.keys():
-                                modtime = repo_info["sync_time"]
-                        else:
-                                modtime = getArchiveSyncTime(log_filename, status).strftime("%Y-%m-%d %H:%M:%S")
-                else:
-                        modtime = 'Not Syncing'
-                output+='<tr><td class="filename"><a href="/'+file+'">'+file+'</a></td><td class="filetime">'+str(modtime)+'</td><td class="help"><a href="help/'+file+'">Help</a></td></tr>\n'
+# A unreliable workaround for nested repos. See comments in main program.
+def CTimeWA (dirpath):
+    ctime = 0
+    for subd in os.listdir(dirpath):
+        subdirpath = os.path.join(dirpath, subd)
+        if not os.path.isdir(subdirpath):
+            continue
 
-output+='</table>'
-m=open(basedir+'middle.html','r')
-output+=m.read()
-m.close()
+        _ctime = os.stat(subdirpath).st_ctime
+        if _ctime > ctime:
+            ctime = _ctime
 
-#info=open(basedir+'isoinfo.json','r')
-#output+=info.read()
-#info.close()
-output += genisolist.getImageList()
+    return ctime
 
-f=open(basedir+'footer.html','r')
-output+=f.read()
-f.close()
-w=open(serverdir+'index.html','w')
-w.write(output)
-w.close()
+
+def testHelpLink (name):
+    URLBASE = "https://lug.ustc.edu.cn/wiki/mirrors/help/"
+    url = urlparse.urljoin(URLBASE, name)
+
+    try:
+        html = urllib2.urlopen(url, timeout = 4)
+    except (urllib2.URLError, urllib2.HTTPError):
+        return False
+
+    for line in html:
+        if '<meta name="date" content=' in line:
+            html.close()
+            return False if "1970-01-01" in line else True
+
+    return True
+
+
+if __name__ == '__main__':
+    if len(sys.argv) > 1:
+        OUTFILE = sys.argv[1]
+        print "Output HTML to '%s'" % OUTFILE
+
+    output = StrIO()
+
+    addStatic(os.path.join(BASEDIR, 'header.html'), output)
+
+    output.write('<table cellpadding="0" cellspacing="0" class="filelist">')
+    output.write("""
+        <thead>
+          <tr id="firstline">
+            <th id="name">Folder</th>
+            <th>Last Update</th>
+            <th id="help">Help</th>
+          </tr>
+        </thead>"""
+    )
+
+    now = time.time()
+    for d in sorted(os.listdir(HTTPDIR), key = lambda s: s.lower()):
+        fpath = os.path.join(HTTPDIR, d)
+
+        if not os.path.isdir(fpath) or \
+                any(fnmatch.fnmatch(d, p) for p in EXCLUDE):
+            continue
+
+        # Change time is lastsync time if sync destination is exactly the same
+        # top-level dir of http. However, some repos are divided to several
+        # sub-dirs which are actually sync-ed instead of top-level directory.
+        # We need to check these sub-dirs to find correct lastsync time.
+        ctime = os.stat(fpath).st_ctime
+
+        # Since checking all sub-dirs wastes much time, the script just check
+        # repos whose top-level dirs have a old change time.
+        if time.time() - ctime > 3600*24*2:
+            _ctime = CTimeWA(fpath)
+            if _ctime > ctime:
+                ctime = _ctime
+
+        output.write("""
+            <tr>
+              <td class="filename"><a href="/{DIRNAME}">{DIRNAME}</a></td>
+              <td class="filetime">{MODTIME}</td>
+              <td class="help" ><a href="help/{DIRNAME}">{HELP}</a></td>
+            </tr>
+        """.format(
+            DIRNAME = d,
+            MODTIME = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(ctime)),
+            HELP = "Help" if testHelpLink(d) else ""
+        ))
+
+    output.write("</table>")
+
+    addStatic(os.path.join(BASEDIR, 'middle.html'), output)
+    output.write(getImageList())
+    addStatic(os.path.join(BASEDIR, 'footer.html'), output)
+
+    # Actually write file at last, so runtime errors won't cause broken page.
+    fout = open(OUTFILE, 'w')
+    fout.write(output.getvalue())
+    fout.close()
+
+    output.close()
+
