@@ -99,12 +99,16 @@ if __name__ == '__main__':
 
         output.write("""
             <tr>
-              <td class="filename"><a href="/{DIRNAME}">{DIRNAME}</a></td>
+              <td class="filename"><a href="/{DIR}">{DIR}</a></td>
               <td class="filetime">{MODTIME}</td>
-              <td class="help" ><a href="help/{DIRNAME}">{HELP}</a></td>
+              <td class="help" >
+                <a href="https://lug.ustc.edu.cn/wiki/mirrors/help/{DIR}">
+                  {HELP}
+                </a>
+              </td>
             </tr>
         """.format(
-            DIRNAME = d,
+            DIR = d,
             MODTIME = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(ctime)),
             HELP = "Help" if testHelpLink(d) else ""
         ))
