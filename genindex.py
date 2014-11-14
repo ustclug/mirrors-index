@@ -1,4 +1,5 @@
 #!/usr/bin/env python2
+# coding: utf-8
 
 import os
 import sys
@@ -49,9 +50,9 @@ def testHelpLink (name):
         return False
 
     for line in html:
-        if '<meta name="date" content=' in line:
+        if '<h1 class="sectionedit1"' in line:
             html.close()
-            return False if "1970-01-01" in line else True
+            return False if "该主题尚不存在" in line else True
 
     return True
 
