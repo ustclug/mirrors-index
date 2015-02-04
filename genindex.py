@@ -71,7 +71,7 @@ if __name__ == '__main__':
         <thead>
           <tr id="firstline">
             <th id="name">Folder</th>
-            <th>Last Update</th>
+            <th class="update">Last Update</th>
             <th id="help">Help</th>
           </tr>
         </thead>"""

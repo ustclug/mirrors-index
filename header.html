@@ -81,12 +81,6 @@ body{
 	width:75%;
 	margin:25px auto;
 }
-#filelist{
-	float:left;
-	width:60%;
-	border-right: 1px solid #eee;
-	padding-right: 30px;
-}
 #filelist h3{
 	color:#07A878;
 	font-family: "Open Sans","Ubuntu","Hiragino Sans GB", "Wenquanyi Micro Hei", "WenQuanYi Micro Hei Mono", "WenQuanYi Zen Hei", "WenQuanYi Zen Hei", "Apple LiGothic Medium", "STXihei", "ST Heiti", "WenQuanYi Zen Hei Sharp";
@@ -156,10 +150,6 @@ thead{
 }
 tbody tr:hover{
 	background-color:#DDEADD;
-}
-#sidebar{
-	float:right;
-	width:33%;
 }
 #sidebar div{
 	margin-bottom: 25px;
@@ -286,6 +276,35 @@ tbody tr:hover{
 .modalcontent select{
 	width:300px;
 }
+ @media screen and (min-width:700px) {
+   #filelist{
+	 float:left;
+	 width:60%;
+	 border-right: 1px solid #eee;
+	 padding-right: 30px;
+   }
+   #sidebar{
+	 float:right;
+	 width:33%;
+   }
+ }
+ @media screen and (max-width:699px) {
+   #filelist{
+	 float: left;
+	 width: 100%;
+     margin-bottom: 30px;
+   }
+   #sidebar {
+     float: left;
+     max-width: 400px;
+     width: 100%;
+   }
+ }
+ @media screen and (max-width:500px) {
+   .update, .filetime {
+     display: none;
+   }
+ }
 
 </style>
 </head>
