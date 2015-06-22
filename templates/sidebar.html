@@ -1,0 +1,44 @@
+<div id="sidebar">
+    <div id="cdimages">
+        <h3>获取发行版映像</h3>
+        <p>这里为您提供各大主流 Linux 发行版的安装镜像 / ISO 文件，请根据您的发行版及其详细版本进行选择：</p>
+        <p></p>
+        <span class="btn" onclick="modal()">获取安装镜像 ></span>
+    </div>
+    <div id="mirrorshelp">
+        <h3>Mirrors 帮助</h3>
+        <p>如果您不了解如何配置 Linux 发行版 / 软件的安装源， 这里为您提供了主流发行版的软件源配置帮助：</p>
+        <span class="btn" onclick="window.open('https://lug.ustc.edu.cn/wiki/mirrors/help')">配置软件源  ></span>
+        <p>您也可以通过左边的文件列表中相应源的 Help 链接寻求帮助。</p>
+        <span></span>
+    </div>
+    <div id="mirrorlinks">
+        <h3>常用链接</h3>
+        <a href="/status" target="_black">系统状态 / Status</a><br/>
+        <a href="https://servers.blog.ustc.edu.cn/" target="_blank">LUG 服务器新闻 / News</a><br/>
+        <a href="http://lug.ustc.edu.cn/" target="_blank">LUG@USTC</a><br/>
+        <a href="mailto:lug@ustc.edu.cn">联系我们 / Contact US</a><br/>
+        <span></span>
+    </div>
+</div>
+<div style="clear: both;" mce_style="clear: both;"></div>
+</div>
+
+<!--
+    Get ISO
+-->
+<div class="modal" id="isomodal">
+    <div class="modalclear" id="isomodalclear" onclick="modal()"></div>
+    <div class="modalcontainer" id="isomodalcontainer" onclick="">
+        <div class="modaltitle" id="isomodaltitle"><span>获取安装镜像</span><span onclick="modal()" style="float:right;cursor:pointer">X</span></div>
+        <div class="modalcontent" id="isomodalcontent">
+            <p>选择安装发行版： <select id="isodistro" onchange="switchdistro()"></select>
+            </p>
+            <p>选择发行版版本： <select id="isoversion">
+                <option value="none">-</option>
+            </select>
+            </p>
+            <span class="btn" onclick="downloadiso();">获取 ISO ></span>
+        </div>
+    </div>
+</div>
