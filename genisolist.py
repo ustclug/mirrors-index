@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3 -O
 
 import os
 import re
@@ -11,7 +11,7 @@ from configparser import ConfigParser
 
 CONFIG_FILE = os.path.join(os.path.dirname(__file__), 'genisolist.ini')
 
-def getPlatformPriority (platform):
+def getPlatformPriority(platform):
     platform = platform.lower()
     if platform in ['amd64', 'x86_64', '64bit']:
         return 100
@@ -69,7 +69,7 @@ def parseSection(items):
         else:
             break
 
-def getDescriptionAndURL (image_info, urlbase):
+def getDescriptionAndURL(image_info, urlbase):
     url = urlparse.urljoin(urlbase, image_info['filepath'])
     desc = "%s (%s%s)" % (
             image_info['version'],
@@ -92,7 +92,7 @@ def getJsonOutput(url_dict, prio = {}):
     return json.dumps(raw)
 
 
-def getImageList ():
+def getImageList():
     ini = ConfigParser()
     if not(ini.read(CONFIG_FILE)):
         raise Exception("%s not found!" % CONFIG_FILE)
