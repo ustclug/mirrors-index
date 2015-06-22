@@ -1,6 +1,6 @@
 # Dependencies
 
-* python
+* Python3
 * nodejs
 * incron
 
