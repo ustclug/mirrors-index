@@ -1,12 +1,13 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
 import os
 import re
 import glob
 import json
-import urlparse
+#import urlparse
+from urllib import parse as urlparse
 from distutils.version import LooseVersion
-from ConfigParser import ConfigParser
+from configparser import ConfigParser
 
 CONFIG_FILE = os.path.join(os.path.dirname(__file__), 'genisolist.ini')
 
@@ -52,6 +53,7 @@ def parseSection(items):
 
             images.append(imageinfo)
 
+    #images.sort(key = lambda k: ( LooseVersion(k['version']),
     images.sort(key = lambda k: ( LooseVersion(k['version']),
                                   getPlatformPriority(k['platform']),
                                   k['type'] ),
@@ -108,14 +110,14 @@ def getImageList ():
     
     url_dict = {}
     for section in ini.sections():
-        if section != "%main%":
-            for image in parseSection(ini.items(section)):
-                if not image['distro'] in url_dict:
-                    url_dict[image['distro']] = []
+        if section == "%main%": continue
+        for image in parseSection(ini.items(section)):
+            if not image['distro'] in url_dict:
+                url_dict[image['distro']] = []
 
-                url_dict[image['distro']].append(
-                        getDescriptionAndURL(image, urlbase)
-                )
+            url_dict[image['distro']].append(
+                    getDescriptionAndURL(image, urlbase)
+            )
 
     os.chdir(oldcwd)
 

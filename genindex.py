@@ -1,13 +1,15 @@
-#!/usr/bin/env python2
-# coding: utf-8
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
 import os
 import sys
 import time
-import urlparse
-import urllib2
+#import urlparse
+from urllib import parse as urlparse
+import urllib
 import fnmatch
-from cStringIO import StringIO as StrIO
+#from cStringIO import StringIO as StrIO
+from io import StringIO as StrIO
 from genisolist import getImageList
 
 BASEDIR = os.path.dirname(__file__)
@@ -45,8 +47,9 @@ def testHelpLink (name):
     url = urlparse.urljoin(URLBASE, name)
 
     try:
-        html = urllib2.urlopen(url, timeout = 4)
-    except (urllib2.URLError, urllib2.HTTPError):
+        #html = urllib2.urlopen(url, timeout = 4)
+        html = urllib.request.urlopen(url, timeout = 4)
+    except (urllib.error.URLError, urllib.error.HTTPError):
         return False
 
     for line in html:
