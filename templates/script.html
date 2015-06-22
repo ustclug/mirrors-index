@@ -1,6 +1,6 @@
 <script type="text/javascript">
 //var isoinfo = "INCLUDE isoinfo.json";
-var isoinfo = {{ isoinfo }}
+var isoinfo = {{ isoinfo|safe }};
 function update_isodistro_options() {
 	var s = document.getElementById("isodistro");
 	s.options.length = 0;
@@ -40,6 +40,6 @@ function downloadiso()
 update_isodistro_options();
 </script>
 <!-- Designed by Miaomiao Li. It's a wonderful life! -->
-<!--
-vim:ai:et:expandtab:sts=4:sw=4
+<!-- 
+vim:ai:et:sta:ts=4:sts=4:sw=4
 -->

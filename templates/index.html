@@ -1,16 +1,41 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset='utf-8'>
+    <meta charset="utf-8">
     <title>USTC Open Source Software Mirror</title>
-    <link href='https://fonts.lug.ustc.edu.cn/css?family=Clicker+Script|Open+Sans:400,300' rel='stylesheet' type='text/css'>
+    <link href="https://fonts.lug.ustc.edu.cn/css?family=Clicker+Script|Open+Sans:400,300" rel="stylesheet" type="text/css">
 </head>
 
 <body>
 {% include 'header.html' %}
+
+<div id="wrapper">
+    <div id="filelist">
+        <h3>文件列表</h3>
+        <table cellpadding="0" cellspacing="0" class="filelist">
+            <thead>
+                <tr id="firstline">
+                    <th id="name">Folder</th>
+                    <th class="update">Last Update</th>
+                    <th id="help">Help</th>
+                </tr>
+            </thead>
+            {% for repo in repolist %}
+            <tr>
+                <td class="filename"><a href="/{{repo['DIR']}}">{{repo['DIR']}}</a></td>
+                <td class="filetime">{{repo['MODTIME']}}</td>
+                <td class="help" >
+                    <a href="https://lug.ustc.edu.cn/wiki/mirrors/help/{{repo['DIR']}}">{{repo['HELP']}}</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+
 {% include 'sidebar.html' %}
 {% include 'footer.html' %}
 {% include 'script.html' %}
-<link href="{{ url_for('static', filename='style.css') }}" rel='stylesheet' type='text/css'>
+<link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet" type="text/css">
 </body>
 </html>
