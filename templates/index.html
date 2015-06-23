@@ -4,11 +4,10 @@
     <meta charset="utf-8">
     <title>USTC Open Source Software Mirror</title>
     <link href="https://fonts.lug.ustc.edu.cn/css?family=Clicker+Script|Open+Sans:400,300" rel="stylesheet" type="text/css">
+    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet" type="text/css">
 </head>
-
 <body>
 {% include 'header.html' %}
-
 <div id="wrapper">
     <div id="filelist">
         <h3>文件列表</h3>
@@ -31,11 +30,23 @@
             {% endfor %}
         </table>
     </div>
-</div>
-
 {% include 'sidebar.html' %}
+</div>
 {% include 'footer.html' %}
+<div class="modal" id="isomodal">
+    <div class="modalclear" id="isomodalclear" onclick="modal()"></div>
+    <div class="modalcontainer" id="isomodalcontainer" onclick="">
+        <div class="modaltitle" id="isomodaltitle"><span>获取安装镜像</span><span onclick="modal()" style="float:right;cursor:pointer">X</span></div>
+        <div class="modalcontent" id="isomodalcontent">
+            <p>选择安装发行版： <select id="isodistro" onchange="switchdistro()"></select></p>
+            <p>选择发行版版本： <select id="isoversion">
+                <option value="none">-</option>
+            </select>
+            </p>
+            <span class="btn" onclick="downloadiso();">获取 ISO ></span>
+        </div>
+    </div>
+</div>
 {% include 'script.html' %}
-<link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet" type="text/css">
 </body>
 </html>
