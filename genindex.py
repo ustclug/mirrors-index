@@ -3,9 +3,8 @@
 
 import os
 import time
-#import urlparse
 from urllib import parse as urlparse
-import urllib
+import requests
 import fnmatch
 
 BASEDIR = os.path.dirname(__file__)
@@ -36,16 +35,12 @@ def testHelpLink (name):
     url = urlparse.urljoin(URLBASE, name)
 
     try:
-        html = urllib.request.urlopen(url, timeout = 4)
-    except (urllib.error.URLError, urllib.error.HTTPError):
+        html = requests.get(url, timeout = 4)
+    #except (urllib.error.URLError, urllib.error.HTTPError):
+    except:
         return False
 
-    for line in html:
-        if '<h1 class="sectionedit1"' in line:
-            html.close()
-            return False if "该主题尚不存在" in line else True
-
-    return True
+    return False if "该主题尚不存在" in html.text else True
 
 def genRepoList():
     now = time.time()
@@ -72,3 +67,7 @@ def genRepoList():
         yield {'DIR':d, 
                 'MODTIME':time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(ctime)), 
                 'HELP':"Help" if testHelpLink(d) else "" }
+
+if __name__ == '__main__':
+    for i in genRepoList():
+        print(i)

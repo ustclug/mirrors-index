@@ -4,7 +4,6 @@ import os
 import re
 import glob
 import json
-#import urlparse
 from urllib import parse as urlparse
 from distutils.version import LooseVersion
 from configparser import ConfigParser
@@ -47,7 +46,7 @@ def parseSection(items):
 
             for prop in ("version", "type", "platform"):
                 s = items.get(prop, "")
-                for i in xrange(0, group_count):
+                for i in range(0, group_count):
                     s = s.replace("$%d" % i, result.group(i))
                 imageinfo[prop] = s
 
