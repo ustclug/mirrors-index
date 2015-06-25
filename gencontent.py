@@ -3,7 +3,7 @@
 
 import os
 import time
-from urllib import parse as urlparse
+from urllib import parse
 import requests
 import fnmatch
 
@@ -13,7 +13,7 @@ HTTPDIR = '/srv/www'
 EXCLUDE = ("tmpfs", ".*")
 
 # A unreliable workaround for nested repos. See comments in main program.
-def CTimeWA (dirpath):
+def CTimeWA(dirpath):
     ctime = 0
     for subd in os.listdir(dirpath):
         subdirpath = os.path.join(dirpath, subd)
@@ -27,13 +27,12 @@ def CTimeWA (dirpath):
     return ctime
 
 
-def testHelpLink (name):
+def testHelpLink(name):
     URLBASE = "https://lug.ustc.edu.cn/wiki/mirrors/help/"
-    url = urlparse.urljoin(URLBASE, name)
+    url = parse.urljoin(URLBASE, name)
 
     try:
         html = requests.get(url, timeout = 4)
-    #except (urllib.error.URLError, urllib.error.HTTPError):
     except:
         return False
 
