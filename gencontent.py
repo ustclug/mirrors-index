@@ -7,7 +7,6 @@ from urllib import parse as urlparse
 import requests
 import fnmatch
 
-BASEDIR = os.path.dirname(__file__)
 HTTPDIR = '/srv/www'
 
 # Directories match these glob will be ignored.

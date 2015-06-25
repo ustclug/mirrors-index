@@ -1,12 +1,14 @@
 #!/usr/bin/python3 -O
 # -*- coding: utf-8 -*-
 
+import os
 from jinja2 import Environment, FileSystemLoader
 import gencontent
 import genisolist
 
 OUTFILE = os.path.join(gencontent.HTTPDIR, 'index.html')
-env = Environment(loader=FileSystemLoader('templates'))
+BASEDIR = os.path.dirname(__file__)
+env = Environment(loader=FileSystemLoader(os.path.join(BASEDIR, 'templates')))
 template = env.get_template('index.html')
 parsed_template = template.render(
         repolist=gencontent.genRepoList(), 
