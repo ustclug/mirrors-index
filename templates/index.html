@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <title>USTC Open Source Software Mirror</title>
     <link href="https://fonts.lug.ustc.edu.cn/css?family=Clicker+Script|Open+Sans:400,300" rel="stylesheet" type="text/css">
-    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet" type="text/css">
+{% include 'style.html' %}
 </head>
 <body>
 {% include 'header.html' %}
@@ -19,7 +19,7 @@
                     <th id="help">Help</th>
                 </tr>
             </thead>
-            {% for repo in repolist %}
+            {% for repo in repolist -%}
             <tr>
                 <td class="filename"><a href="/{{repo['DIR']}}">{{repo['DIR']}}</a></td>
                 <td class="filetime">{{repo['MODTIME']}}</td>
@@ -27,7 +27,7 @@
                     <a href="https://lug.ustc.edu.cn/wiki/mirrors/help/{{repo['DIR']}}">{{repo['HELP']}}</a>
                 </td>
             </tr>
-            {% endfor %}
+            {%- endfor %}
         </table>
     </div>
 {% include 'sidebar.html' %}

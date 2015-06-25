@@ -1,8 +1,9 @@
 # Dependencies
 
 * python3
-* python-requests
-* node.js
+* python3-requests
+* python3-jinja2
+* nodejs
 * incron
 
 # Install
