@@ -1,4 +1,4 @@
 .ropeproject/
-*.pyc
-*.pyo
+__pycache__/
+*~
 *.txt
