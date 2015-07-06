@@ -15,12 +15,12 @@ Generate HTML Fragment about latest server news.
 
 SERVERNEWS_FEED = "https://servers.blog.ustc.edu.cn/category/mirrors/feed/"
 SERVERNEWS_MAX_NUM = 3
-# Use Jinja2 Template? add to template doc
+# Use Jinja2 Template
 SERVERNEWS_TEMPLATE = """\
         <h3>镜像站新闻通知</h3>
 {% for record in newslist %}
         <p><a href="{{ record.link }}">{{ record.title }}</a></p>
-{% endfor %}
+{%- endfor %}
 """
 
 def getServerNews():
