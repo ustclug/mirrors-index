@@ -4,7 +4,7 @@ import os
 import re
 import glob
 import json
-from urllib import parse as urlparse
+from urllib.parse import urljoin
 from distutils.version import LooseVersion
 from configparser import ConfigParser
 
@@ -69,7 +69,7 @@ def parseSection(items):
             break
 
 def getDescriptionAndURL(image_info, urlbase):
-    url = urlparse.urljoin(urlbase, image_info['filepath'])
+    url = urljoin(urlbase, image_info['filepath'])
     desc = "%s (%s%s)" % (
             image_info['version'],
             image_info['platform'],

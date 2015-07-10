@@ -3,7 +3,7 @@
 
 import os
 import time
-from urllib import parse
+from urllib.parse import urljoin
 import requests
 import fnmatch
 
@@ -29,7 +29,7 @@ def CTimeWA(dirpath):
 
 def testHelpLink(name):
     URLBASE = "https://lug.ustc.edu.cn/wiki/mirrors/help/"
-    url = parse.urljoin(URLBASE, name)
+    url = urljoin(URLBASE, name)
 
     try:
         html = requests.get(url, timeout = 4)
@@ -61,8 +61,8 @@ def genRepoList():
                 ctime = _ctime
 
         yield {'DIR':d, 
-                'MODTIME':time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(ctime)), 
-                'HELP':"Help" if testHelpLink(d) else "" }
+               'MODTIME':time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(ctime)),
+               'HELP':"Help" if testHelpLink(d) else "" }
 
 if __name__ == '__main__':
     for i in genRepoList():
