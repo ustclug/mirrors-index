@@ -1,6 +1,6 @@
 <div id="sidebar">
     <div id="servernews">
-    {% if newslist|length > 0 %}
+    {% if newslist and newslist|length > 0 %}
         <h3>镜像站新闻通知</h3>
         {% for record in newslist %}
         <p><a href="{{ record.link }}">{{ record.title }}</a></p>

@@ -55,6 +55,7 @@ def getServerNews():
         page = requests.get(SERVERNEWS_FEED)
         if page.status_code != 200:
             raise BadRequestException
+        return list(parseFeedData(page.text))
     except AlarmTimeoutException:
         syslog.syslog(syslog.LOG_ERR, error_log.format('generating ServerNews timed out'))
     except BadRequestException:
@@ -64,8 +65,6 @@ def getServerNews():
     finally:
         signal.alarm(0)
         signal.signal(signal.SIGALRM, signal.SIG_DFL)
-
-    return list(parseFeedData(page.text))
     
 # DEBUG
 if __name__ == "__main__":
