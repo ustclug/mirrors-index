@@ -19,12 +19,12 @@
                     <th id="help">Help</th>
                 </tr>
             </thead>
-            {% for repo in repolist -%}
+            {% for MODTIME, HELP, DIR in repolist -%}
             <tr>
-                <td class="filename"><a href="/{{repo['DIR']}}">{{repo['DIR']}}</a></td>
-                <td class="filetime">{{repo['MODTIME']}}</td>
+                <td class="filename"><a href="/{{ DIR }}">{{ DIR }}</a></td>
+                <td class="filetime">{{ MODTIME }}</td>
                 <td class="help" >
-                    <a href="https://lug.ustc.edu.cn/wiki/mirrors/help/{{repo['DIR']}}">{{repo['HELP']}}</a>
+                    <a href="https://lug.ustc.edu.cn/wiki/mirrors/help/{{ DIR }}">{{ HELP }}</a>
                 </td>
             </tr>
             {%- endfor %}
