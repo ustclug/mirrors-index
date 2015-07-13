@@ -1,13 +1,13 @@
 <div id="sidebar">
-    {% if newslist %}
     <div id="servernews">
+    {% if newslist|length > 0 %}
         <h3>镜像站新闻通知</h3>
         {% for record in newslist %}
         <p><a href="{{ record.link }}">{{ record.title }}</a></p>
         {%- endfor %}
-    </div>
     {% else %}
     {% endif %}
+    </div>
     <div id="cdimages">
         <h3>获取发行版映像</h3>
         <p>这里为您提供各大主流 Linux 发行版的安装镜像 / ISO 文件，请根据您的发行版及其详细版本进行选择：</p>
