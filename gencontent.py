@@ -60,9 +60,9 @@ def genRepoList():
             if _ctime > ctime:
                 ctime = _ctime
 
-        yield {'DIR':d, 
-               'MODTIME':time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(ctime)),
-               'HELP':"Help" if testHelpLink(d) else "" }
+        yield (time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(ctime)),
+               "Help" if testHelpLink(d) else "",
+               d)
 
 if __name__ == '__main__':
     for i in genRepoList():

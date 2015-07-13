@@ -14,9 +14,9 @@ template = env.get_template('index.html')
 parsed_template = template.render(
         repolist=gencontent.genRepoList(), 
         isoinfo=genisolist.getImageList(),
-        servernews=genservernews.getServerNews())
+        newslist=genservernews.getServerNews())
 
 with open(OUTFILE,'w') as fout:
     fout.write(parsed_template)
-    fout.write('\n')
+    fout.write(os.linesep)
 
