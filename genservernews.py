@@ -65,7 +65,7 @@ def getServerNews():
         signal.alarm(0)
         signal.signal(signal.SIGALRM, signal.SIG_DFL)
 
-    yield from parseFeedData(page.text)
+    return list(parseFeedData(page.text))
     
 # DEBUG
 if __name__ == "__main__":
