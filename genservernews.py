@@ -48,14 +48,14 @@ def getServerNews():
         for item in doc.getElementsByTagName('item')[:SERVERNEWS_MAX_NUM]:
             yield NewsRecord(item)
 
-
+    newslist = []
     signal.signal(signal.SIGALRM, alarm_handler)
     signal.alarm(20)
     try:
         page = requests.get(SERVERNEWS_FEED)
         if page.status_code != 200:
             raise BadRequestException
-        return list(parseFeedData(page.text))
+        newslist = list(parseFeedData(page.text))
     except AlarmTimeoutException:
         syslog.syslog(syslog.LOG_ERR, error_log.format('generating ServerNews timed out'))
     except BadRequestException:
@@ -65,7 +65,8 @@ def getServerNews():
     finally:
         signal.alarm(0)
         signal.signal(signal.SIGALRM, signal.SIG_DFL)
-    
+        return newslist
+
 # DEBUG
 if __name__ == "__main__":
     for i in getServerNews():
