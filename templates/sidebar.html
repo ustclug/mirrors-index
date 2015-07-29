@@ -1,11 +1,12 @@
 <div id="sidebar">
     <div id="servernews">
+    <h3>镜像站新闻通知</h3>
     {% if newslist|length > 0 %}
-        <h3>镜像站新闻通知</h3>
         {% for record in newslist -%}
         <p><a href="{{ record.link }}">{{ record.title }}</a></p>
         {%- endfor %}
     {% else %}
+        <p>服务器出故障了, 正在抢修当中 :(<p>
     {% endif %}
     </div>
     <div id="cdimages">
