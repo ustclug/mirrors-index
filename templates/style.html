@@ -235,7 +235,8 @@ tbody tr:hover{
 {
     position: absolute;
     width: 40%;
-    top:200px;
+    min-width: 345px;
+    top:10%;
     left:30%;
     margin:0 auto;
     background-color: #FCFCFC;
@@ -292,10 +293,31 @@ tbody tr:hover{
         max-width: 400px;
         width: 100%;
     }
+    #isomodalcontainer {
+        left: 0%;
+        width: 100%;
+        text-align: center;
+        min-width: 0;
+    }
 }
+/* when a page is narrower than 500px,
+   regarded as mobile device
+ */
 @media screen and (max-width:500px) {
-    .update, .filetime {
+    .update, .filetime, #infinity {
         display: none;
+    }
+    #footerleft, #header {
+        width: 100%;
+        float: none;
+    }
+    #footerright {
+        float: none;
+        width: 100%;
+        margin-top: 2em;
+    }
+    #welcome {
+        padding-bottom: 0px;
     }
 }
 </style>
