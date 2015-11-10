@@ -4,10 +4,12 @@ import os
 import re
 import glob
 import json
+import logging
 from urllib.parse import urljoin
 from distutils.version import LooseVersion
 from configparser import ConfigParser
 
+logger = logging.getLogger(__name__)
 CONFIG_FILE = os.path.join(os.path.dirname(__file__), 'genisolist.ini')
 
 def getPlatformPriority(platform):
@@ -36,10 +38,18 @@ def parseSection(items):
 
     images = []
     for location in locations:
+        logger.debug("[GLOB] %s", location)
+
         for imagepath in glob.glob(location):
+            logger.debug("[FILE] %s", imagepath)
+
             result = prog.search(imagepath)
+
             if not(result):
+                logger.debug("[MATCH] None")
                 continue
+            else:
+                logger.debug("[MATCH] %r", result.groups())
 
             group_count = len(result.groups()) + 1
             imageinfo = {"filepath": imagepath, "distro": items["distro"]}
@@ -50,6 +60,7 @@ def parseSection(items):
                     s = s.replace("$%d" % i, result.group(i))
                 imageinfo[prop] = s
 
+            logger.debug("[JSON] %r", imageinfo)
             images.append(imageinfo)
 
     #images.sort(key = lambda k: ( LooseVersion(k['version']),
@@ -123,5 +134,7 @@ def getImageList():
     return getJsonOutput(url_dict, prior)
 
 if __name__ == "__main__":
+    import sys
+    logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
     print(getImageList())
 
