@@ -23,19 +23,19 @@ Install zh_CN locales since the `genisolist.ini` file contains Chinese character
     Copyright © 2013-2015 USTC Linux User Group <lug@ustc.edu.cn>
     All rights reserved.
 
-    This file is part of Newindex.
+    This file is part of Mirrors-index.
 
-    Newindex is free software: you can redistribute it and/or modify
+    Mirrors-index is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License version 2 as
     published by the Free Software Foundation.
 
-    Newindex is distributed in the hope that it will be useful,
+    Mirrors-index is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with Newindex.  If not, see <http://www.gnu.org/licenses/>.
+    along with Mirrors-index.  If not, see <http://www.gnu.org/licenses/>.
 
 * * *
 LUG@USTC
