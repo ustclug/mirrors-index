@@ -1,4 +1,4 @@
-#!/usr/bin/python3 -O
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import os
@@ -9,11 +9,14 @@ import fnmatch
 
 HTTPDIR = '/srv/www'
 
-# Directories match these glob will be ignored.
 EXCLUDE = ("tmpfs", ".*")
+"""Directories match these glob will be ignored."""
 
-# A unreliable workaround for nested repos. See comments in main program.
+
 def CTimeWA(dirpath):
+    """A unreliable workaround for nested repos.
+    See comments in main program.
+    """
     ctime = 0
     for subd in os.listdir(dirpath):
         subdirpath = os.path.join(dirpath, subd)
@@ -32,15 +35,15 @@ def testHelpLink(name):
     url = urljoin(URLBASE, name)
 
     try:
-        html = requests.get(url, timeout = 4)
+        html = requests.get(url, timeout=4)
     except:
         return False
 
     return False if "该主题尚不存在" in html.text else True
 
+
 def genRepoList():
-    now = time.time()
-    for d in sorted(os.listdir(HTTPDIR), key = lambda s: s.lower()):
+    for d in sorted(os.listdir(HTTPDIR), key=lambda s: s.lower()):
         fpath = os.path.join(HTTPDIR, d)
 
         if not os.path.isdir(fpath) or \
@@ -55,7 +58,7 @@ def genRepoList():
 
         # Since checking all sub-dirs wastes much time, the script just check
         # repos whose top-level dirs have a old change time.
-        if time.time() - ctime > 3600*24*2:
+        if time.time() - ctime > 3600 * 24 * 2:
             _ctime = CTimeWA(fpath)
             if _ctime > ctime:
                 ctime = _ctime

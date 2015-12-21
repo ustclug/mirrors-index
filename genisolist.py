@@ -1,4 +1,5 @@
-#!/usr/bin/python3 -O
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
 import os
 import re
@@ -12,6 +13,7 @@ from configparser import ConfigParser
 logger = logging.getLogger(__name__)
 CONFIG_FILE = os.path.join(os.path.dirname(__file__), 'genisolist.ini')
 
+
 def getPlatformPriority(platform):
     platform = platform.lower()
     if platform in ['amd64', 'x86_64', '64bit']:
@@ -20,6 +22,7 @@ def getPlatformPriority(platform):
         return 90
     else:
         return 0
+
 
 def parseSection(items):
     items = dict(items)
@@ -34,7 +37,7 @@ def parseSection(items):
             i += 1
 
     pattern = items.get("pattern", "")
-    prog = re.compile(pattern) 
+    prog = re.compile(pattern)
 
     images = []
     for location in locations:
@@ -63,10 +66,10 @@ def parseSection(items):
             logger.debug("[JSON] %r", imageinfo)
             images.append(imageinfo)
 
-    #images.sort(key = lambda k: ( LooseVersion(k['version']),
-    images.sort(key = lambda k: ( LooseVersion(k['version']),
-                                  getPlatformPriority(k['platform']),
-                                  k['type'] ),
+    #images.sort(key=lambda k: ( LooseVersion(k['version']),
+    images.sort(key=lambda k: (LooseVersion(k['version']),
+                               getPlatformPriority(k['platform']),
+                               k['type']),
                 reverse=True)
 
     i = 0
@@ -74,10 +77,11 @@ def parseSection(items):
     listvers = int(items.get('listvers', 0xFF))
     for image in images:
         versions.add(image['version'])
-        if len(versions) <= listvers: 
+        if len(versions) <= listvers:
             yield image
         else:
             break
+
 
 def getDescriptionAndURL(image_info, urlbase):
     url = urljoin(urlbase, image_info['filepath'])
@@ -88,16 +92,16 @@ def getDescriptionAndURL(image_info, urlbase):
     )
     return (desc, url)
 
-def getJsonOutput(url_dict, prio = {}):
+
+def getJsonOutput(url_dict, prio={}):
     raw = []
     for distro in url_dict:
         raw.append({
             "distro": distro,
-            "urls": [{"name": l[0], "url": l[1]} \
-                         for l in url_dict[distro]]
+            "urls": [{"name": l[0], "url": l[1]} for l in url_dict[distro]]
         })
 
-    raw.sort(key = lambda d: prio.get(d["distro"], 0xFFFF))
+    raw.sort(key=lambda d: prio.get(d["distro"], 0xFFFF))
 
     return json.dumps(raw)
 
@@ -117,10 +121,11 @@ def getImageList():
 
     oldcwd = os.getcwd()
     os.chdir(root)
-    
+
     url_dict = {}
     for section in ini.sections():
-        if section == "%main%": continue
+        if section == "%main%":
+            continue
         for image in parseSection(ini.items(section)):
             if not image['distro'] in url_dict:
                 url_dict[image['distro']] = []
