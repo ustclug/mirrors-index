@@ -39,11 +39,11 @@ def testHelpLink(name):
     except:
         return False
 
-    return False if "该主题尚不存在" in html.text else True
+    return "该主题尚不存在" not in html.text
 
 
 def genRepoList():
-    for d in sorted(os.listdir(HTTPDIR), key=lambda s: s.lower()):
+    for d in sorted(os.listdir(HTTPDIR), key=str.lower):
         fpath = os.path.join(HTTPDIR, d)
 
         if not os.path.isdir(fpath) or \
