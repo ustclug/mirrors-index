@@ -312,7 +312,7 @@ tbody tr:hover{
         min-width: 0;
     }
 }
-/* when a page is narrower than 500px,
+/* when a page is narrower than 540px,
    regarded as mobile device
  */
 @media screen and (max-width:540px) {
@@ -334,8 +334,24 @@ tbody tr:hover{
     #welcome {
         padding-bottom: 0px;
     }
+    #search {
+        width: 50%;
+    }
 }
 .hidden {
-  display: none;
+    display: none;
+}
+#filetitle {
+    float: left;
+    line-height: 36px;
+}
+#search {
+    float: right;
+    line-height: 16px;
+    padding: 9px;
+    border: 1px solid #e3e3e3;
+    margin-top: 5px;
+    max-width: 240px;
+    font-size: 15px;
 }
 </style>

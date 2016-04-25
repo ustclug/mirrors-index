@@ -11,7 +11,7 @@
 {% include 'header.html' %}
 <div id="wrapper">
     <div id="filelist">
-        <!--TODO: kind of ugly :(-->
+        <!--FIXME: kind of ugly :(-->
         <div>
             <input id="revproxy" type="checkbox"/>
             <h3>
@@ -31,8 +31,10 @@
                 </tbody>
             </table>
         </div>
-        <h3>文件列表</h3>
-        <input placeholder="Hit 'S' to filter mirrors" id="search" type="search" autocomplete="off">
+        <div>
+            <h3 id="filetitle">文件列表</h3>
+            <input placeholder="Hit 'S' to filter mirrors" id="search" type="search" autocomplete="off"/>
+        </div>
         <table class="filelist">
             <thead>
                 <tr id="firstline">
