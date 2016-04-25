@@ -44,13 +44,13 @@ update_isodistro_options();
 (function() {
 'use strict'
 
-const userInput = document.getElementById('search')
-const repoList = document.querySelectorAll('.filelist > tbody > tr')
+var userInput = document.getElementById('search')
+var repoList = document.querySelectorAll('.filelist > tbody > tr')
 
-userInput.addEventListener('input', (evt) => {
-    const pat = new RegExp(userInput.value, 'i')
-    Array.prototype.slice.call(repoList).forEach((tr) => {
-        const a = tr.querySelector('a')
+userInput.addEventListener('input', function(evt) {
+    var pat = new RegExp(userInput.value, 'i')
+    Array.prototype.slice.call(repoList).forEach(function(tr) {
+        var a = tr.querySelector('a')
         if (!pat.test(a.text)) {
             tr.classList.add('hidden')
         } else {
@@ -59,7 +59,7 @@ userInput.addEventListener('input', (evt) => {
     })
 })
 
-document.body.onkeyup = (evt) => {
+document.body.onkeyup = function(evt) {
     if (evt.keyCode === 83 && document.activeElement.tagName !== 'INPUT') {
         userInput.scrollIntoView()
         userInput.focus()
