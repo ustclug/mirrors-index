@@ -8,10 +8,6 @@
         "href": "https://docker.mirrors.ustc.edu.cn"
     },
     {
-        "name": "pypi",
-        "href": "https://pypi.mirrors.ustc.edu.cn"
-    },
-    {
         "name": "npm",
         "href": "https://npm.mirrors.ustc.edu.cn"
     },
