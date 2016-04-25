@@ -13,7 +13,7 @@ env = Environment(loader=FileSystemLoader(os.path.join(BASEDIR, 'templates')))
 template = env.get_template('index.html')
 parsed_template = template.render(
         repolist=gencontent.genRepoList(),
-        others=gencontent.getOtherRepos(),
+        revproxy=gencontent.getOthers(),
         isoinfo=genisolist.getImageList(),
         newslist=genservernews.getServerNews())
 

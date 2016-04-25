@@ -1,0 +1,46 @@
+[
+    {
+        "src": "downloads.openwrt.org",
+        "dst": "openwrt.mirrors.ustc.edu.cn"
+    },
+    {
+        "src": "registry-1.docker.io",
+        "dst": "docker.mirrors.ustc.edu.cn"
+    },
+    {
+        "src": "registry.npmjs.org",
+        "dst": "npmreg.mirrors.ustc.edu.cn"
+    },
+    {
+        "src": "www.npmjs.com",
+        "dst": "npm.mirrors.ustc.edu.cn"
+    },
+    {
+        "src": "fonts.gstatic.com",
+        "dst": "fonts-gstatic.lug.ustc.edu.cn"
+    },
+    {
+        "src": "fonts.googleapis.com",
+        "dst": "fonts.lug.ustc.edu.cn"
+    },
+    {
+        "src": "ajax.googleapis.com",
+        "dst": "ajax.lug.ustc.edu.cn"
+    },
+    {
+        "src": "storage.googleapis.com",
+        "dst": "storage-googleapis.lug.ustc.edu.cn"
+    },
+    {
+        "src": "themes.googleusercontent.com",
+        "dst": "google-themes.lug.ustc.edu.cn"
+    },
+    {
+        "src": "gerrit.googlesource.com",
+        "dst": "gerrit-googlesource.lug.ustc.edu.cn"
+    },
+    {
+        "src": "secure.gravatar.com",
+        "dst": "gravatar.lug.ustc.edu.cn"
+    }
+]

@@ -68,16 +68,13 @@ def genRepoList():
                "Help" if testHelpLink(d) else "",
                d)
 
-def getOtherRepos():
+def getOthers():
     _d = os.path.dirname(os.path.realpath(__file__))
     info = None
-    with open(os.path.join(_d, 'others.json'), 'r') as fin:
+    with open(os.path.join(_d, 'revproxy.json'), 'r') as fin:
         info = json.load(fin)
     for repo in info:
-        if repo.get('help', None):
-            yield (repo['name'], repo['href'], repo['help'])
-        else:
-            yield (repo['name'], repo['href'], '')
+        yield (repo['src'], repo['dst'])
 
 if __name__ == '__main__':
     for i in genRepoList():
