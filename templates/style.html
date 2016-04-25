@@ -79,7 +79,7 @@ body{
     font-family: "Open Sans","Ubuntu","Hiragino Sans GB", "Wenquanyi Micro Hei", "WenQuanYi Micro Hei Mono", "WenQuanYi Zen Hei", "WenQuanYi Zen Hei", "Apple LiGothic Medium", "STXihei", "ST Heiti", "WenQuanYi Zen Hei Sharp", sans-serif;
     font-weight:100;
     font-size:24px;
-    margin:0px 0 15px 0;
+    margin:5px 0 5px 0;
 }
 #filelist table{
     width:100%;
@@ -122,6 +122,18 @@ thead{
 }
 #filelist a:hover{
     text-decoration: underline;
+}
+#revproxy,
+#revproxy + h3 > label > span + span,
+#revproxy:checked + h3 > label > span,
+#revproxy ~ table {
+    display: none;
+}
+#revproxy:checked + h3 > label > span + span {
+    display: inline-block;
+}
+#revproxy:checked ~ table {
+    display: table;
 }
 #filename{
     text-align:left;
