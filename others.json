@@ -1,0 +1,63 @@
+[
+    {
+        "name": "openwrt",
+        "href": "https://openwrt.mirrors.ustc.edu.cn"
+    },
+    {
+        "name": "docker",
+        "href": "https://docker.mirrors.ustc.edu.cn"
+    },
+    {
+        "name": "pypi",
+        "href": "https://pypi.mirrors.ustc.edu.cn"
+    },
+    {
+        "name": "npm",
+        "href": "https://npm.mirrors.ustc.edu.cn"
+    },
+
+
+
+
+
+    {
+        "name": "fonts.googleapis.com",
+        "href": "https://fonts.lug.ustc.edu.cn",
+        "help": "https://lug.ustc.edu.cn/wiki/mirrors/help/revproxy"
+    },
+    {
+        "name": "ajax.googleapis.com",
+        "href": "https://ajax.lug.ustc.edu.cn",
+        "help": "https://lug.ustc.edu.cn/wiki/mirrors/help/revproxy"
+    },
+    {
+        "name": "fonts.googleapis.com",
+        "href": "https://fonts.lug.ustc.edu.cn",
+        "help": "https://lug.ustc.edu.cn/wiki/mirrors/help/revproxy"
+    },
+    {
+        "name": "themes.googleusercontent.com",
+        "href": "https://google-themes.lug.ustc.edu.cn",
+        "help": "https://lug.ustc.edu.cn/wiki/mirrors/help/revproxy"
+    },
+    {
+        "name": "fonts.gstatic.com",
+        "href": "https://fonts-gstatic.lug.ustc.edu.cn",
+        "help": "https://lug.ustc.edu.cn/wiki/mirrors/help/revproxy"
+    },
+    {
+        "name": "storage.googleapis.com",
+        "href": "https://storage-googleapis.lug.ustc.edu.cn",
+        "help": "https://lug.ustc.edu.cn/wiki/mirrors/help/revproxy"
+    },
+    {
+        "name": "gerrit.googlesource.com",
+        "href": "https://gerrit-googlesource.lug.ustc.edu.cn",
+        "help": "https://lug.ustc.edu.cn/wiki/mirrors/help/revproxy"
+    },
+    {
+        "name": "secure.gravatar.com;",
+        "href": "https://gravatar.lug.ustc.edu.cn",
+        "help": "https://lug.ustc.edu.cn/wiki/mirrors/help/revproxy"
+    }
+]

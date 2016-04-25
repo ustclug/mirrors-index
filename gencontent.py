@@ -3,6 +3,7 @@
 
 import os
 import time
+import json
 from urllib.parse import urljoin
 import requests
 import fnmatch
@@ -66,6 +67,17 @@ def genRepoList():
         yield (time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(ctime)),
                "Help" if testHelpLink(d) else "",
                d)
+
+def getOtherRepos():
+    _d = os.path.dirname(os.path.realpath(__file__))
+    info = None
+    with open(os.path.join(_d, 'others.json'), 'r') as fin:
+        info = json.load(fin)
+    for repo in info:
+        if repo.get('help', None):
+            yield (repo['name'], repo['href'], repo['help'])
+        else:
+            yield (repo['name'], repo['href'], '')
 
 if __name__ == '__main__':
     for i in genRepoList():
