@@ -12,6 +12,7 @@
 <div id="wrapper">
     <div id="filelist">
         <h3>文件列表</h3>
+        <input placeholder="Hit 'S' to search mirror" id="search" type="search" autocomplete="off">
         <table class="filelist">
             <thead>
                 <tr id="firstline">
@@ -20,15 +21,31 @@
                     <th id="help">Help</th>
                 </tr>
             </thead>
+            <tbody>
             {% for MODTIME, HELP, DIR in repolist -%}
             <tr>
                 <td class="filename"><a href="/{{ DIR }}">{{ DIR }}</a></td>
                 <td class="filetime">{{ MODTIME }}</td>
-                <td class="help" >
+                <td class="help">
                     <a href="https://lug.ustc.edu.cn/wiki/mirrors/help/{{ DIR }}">{{ HELP }}</a>
                 </td>
             </tr>
             {%- endfor %}
+
+            {% for NAME, HREF, HELP in others -%}
+            <tr>
+                <td class="filename"><a href="{{ HREF }}">{{ NAME }}</a></td>
+                <td class="filetime"></td>
+                <td class="help">
+                    {% if HELP %}
+                      <a href="{{ HELP }}">Help</a>
+                    {% else %}
+                      <a href="https://lug.ustc.edu.cn/wiki/mirrors/help/{{ name }}">Help</a>
+                    {% endif %}
+                </td>
+            </tr>
+            {%- endfor %}
+            </tbody>
         </table>
     </div>
 {% include 'sidebar.html' %}
