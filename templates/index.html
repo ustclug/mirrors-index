@@ -11,8 +11,28 @@
 {% include 'header.html' %}
 <div id="wrapper">
     <div id="filelist">
+        <!--TODO: kind of ugly :(-->
+        <div>
+            <input id="revproxy" type="checkbox"/>
+            <h3>
+            <label for="revproxy">
+            反向代理列表
+            <span>+</span><span>-</span>
+            </label>
+            </h3>
+            <table>
+                <tbody>
+                    {% for SRC, DST in revproxy -%}
+                    <tr>
+                        <td>{{ SRC }}</td>
+                        <td>{{ DST }}</td>
+                    </tr>
+                    {% endfor -%}
+                </tbody>
+            </table>
+        </div>
         <h3>文件列表</h3>
-        <input placeholder="Hit 'S' to search mirror" id="search" type="search" autocomplete="off">
+        <input placeholder="Hit 'S' to filter mirrors" id="search" type="search" autocomplete="off">
         <table class="filelist">
             <thead>
                 <tr id="firstline">
@@ -28,20 +48,6 @@
                 <td class="filetime">{{ MODTIME }}</td>
                 <td class="help">
                     <a href="https://lug.ustc.edu.cn/wiki/mirrors/help/{{ DIR }}">{{ HELP }}</a>
-                </td>
-            </tr>
-            {%- endfor %}
-
-            {% for NAME, HREF, HELP in others -%}
-            <tr>
-                <td class="filename"><a href="{{ HREF }}">{{ NAME }}</a></td>
-                <td class="filetime"></td>
-                <td class="help">
-                    {% if HELP %}
-                      <a href="{{ HELP }}">Help</a>
-                    {% else %}
-                      <a href="https://lug.ustc.edu.cn/wiki/mirrors/help/{{ NAME }}">Help</a>
-                    {% endif %}
                 </td>
             </tr>
             {%- endfor %}

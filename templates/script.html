@@ -42,32 +42,32 @@ update_isodistro_options();
 
 <script>
 (function() {
-  'use strict'
+'use strict'
 
-  const userInput = document.getElementById('search')
-  const repoList = document.querySelectorAll('.filelist > tbody > tr')
+const userInput = document.getElementById('search')
+const repoList = document.querySelectorAll('.filelist > tbody > tr')
 
-  userInput.addEventListener('input', (evt) => {
+userInput.addEventListener('input', (evt) => {
     const pat = new RegExp(userInput.value, 'i')
     Array.prototype.slice.call(repoList).forEach((tr) => {
-      const a = tr.querySelector('a')
-      if (!pat.test(a.text)) {
-        tr.classList.add('hidden')
-      } else {
-        tr.classList.remove('hidden')
-      }
+        const a = tr.querySelector('a')
+        if (!pat.test(a.text)) {
+            tr.classList.add('hidden')
+        } else {
+            tr.classList.remove('hidden')
+        }
     })
-  })
+})
 
-  document.body.onkeyup = (evt) => {
-    if (evt.keyCode === 83) {
-      userInput.scrollIntoView()
-      userInput.focus()
+document.body.onkeyup = (evt) => {
+    if (evt.keyCode === 83 && document.activeElement.tagName !== 'INPUT') {
+        userInput.scrollIntoView()
+        userInput.focus()
     }
-  }
+}
 })()
 </script>
 <!-- Designed by Miaomiao Li. It's a wonderful life! -->
 <!--
-vim:ai:et:sta:ts=4:sts=4:sw=4
+    vim:ai:et:sta:ts=4:sts=4:sw=4
 -->
