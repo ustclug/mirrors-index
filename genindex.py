@@ -7,7 +7,8 @@ import gencontent
 import genisolist
 import genservernews
 
-OUTFILE = os.path.join(gencontent.HTTPDIR, 'index.html')
+OUTDIR = os.getenv('HTTPDIR') or gencontent.HTTPDIR
+OUTFILE = os.path.join(OUTDIR, 'index.html')
 BASEDIR = os.path.dirname(__file__)
 env = Environment(loader=FileSystemLoader(os.path.join(BASEDIR, 'templates')))
 template = env.get_template('index.html')
