@@ -28,16 +28,8 @@
         "dst": "ajax.lug.ustc.edu.cn"
     },
     {
-        "src": "storage.googleapis.com",
-        "dst": "storage-googleapis.lug.ustc.edu.cn"
-    },
-    {
         "src": "themes.googleusercontent.com",
         "dst": "google-themes.lug.ustc.edu.cn"
-    },
-    {
-        "src": "gerrit.googlesource.com",
-        "dst": "gerrit-googlesource.lug.ustc.edu.cn"
     },
     {
         "src": "secure.gravatar.com",

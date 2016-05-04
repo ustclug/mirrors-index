@@ -10,16 +10,24 @@ import genisolist
 import genservernews
 
 def main():
+    OUTDIR = os.getenv('HTTPDIR') or gencontent.HTTPDIR
     parser = argparse.ArgumentParser(
             description="USTC Mirrors Index Page Generator",
             epilog="Brought to you by LUG@USTC.")
     parser.add_argument(
+            '-d', '--outdir',
+            type=str,
+            default=OUTDIR,
+            help='specify output directory',
+            )
+    parser.add_argument(
             '-o', '--output',
             type=str,
-            default=os.path.join(gencontent.HTTPDIR, 'index.html'),
-            help='specify output html file',
+            default=os.path.join(OUTDIR, 'index.html'),
+            help='specify full output file path, and will overwrite outdir option',
             )
     args = parser.parse_args()
+    OUTDIR = args.outdir or OUTDIR
     OUTFILE = args.output
     BASEDIR = os.path.dirname(__file__)
     env = Environment(loader=FileSystemLoader(os.path.join(BASEDIR, 'templates')))

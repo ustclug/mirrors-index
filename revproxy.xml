@@ -28,17 +28,9 @@
         <src>ajax.googleapis.com</src>
         <dst>ajax.lug.ustc.edu.cn</dst>
     </revproxy>
-    <revproxy proxyname="storage-googleapis">
-        <src>storage.googleapis.com</src>
-        <dst>storage-googleapis.lug.ustc.edu.cn</dst>
-    </revproxy>
     <revproxy proxyname="google-themes">
         <src>themes.googleusercontent.com</src>
         <dst>google-themes.lug.ustc.edu.cn</dst>
-    </revproxy>
-    <revproxy proxyname="gerrit-googlesource">
-        <src>gerrit.googlesource.com</src>
-        <dst>gerrit-googlesource.lug.ustc.edu.cn</dst>
     </revproxy>
     <revproxy proxyname="gravatar">
         <src>secure.gravatar.com</src>
