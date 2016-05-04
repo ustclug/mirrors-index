@@ -52,7 +52,7 @@ def main():
             repolist=gencontent.genRepoList(),
             revproxy=gencontent.getOthers(),
             isoinfo=genisolist.getImageList(),
-            newslist=genservernews.getServerNews())
+            newslist=genservernews.getServerNews(logger))
 
     logger.info('begin file writing...')
     with open(OUTFILE, 'w') as fout:
