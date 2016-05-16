@@ -1,0 +1,8 @@
+[Unit]
+Description=Mirrors index page update trigger
+
+[Path]
+PathModified=/srv/www/
+
+[Install]
+WantedBy=multi-user.target
