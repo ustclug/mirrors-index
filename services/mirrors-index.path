@@ -2,7 +2,6 @@
 Description=Mirrors index page update trigger
 
 [Path]
-PathModified=/srv/www/
 PathModified=/mnt/array0/pool/
 PathModified=/mnt/array1/pool/
 PathModified=/mnt/array1/exports/
