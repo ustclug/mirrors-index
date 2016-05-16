@@ -12,7 +12,7 @@
 <div id="wrapper">
     <div id="filelist">
         <!--FIXME: kind of ugly :(-->
-        <div>
+        <div style="overflow:hidden">
             <input id="revproxy" type="checkbox"/>
             <h3>
             <label for="revproxy">
@@ -20,16 +20,18 @@
             <span>+</span><span>-</span>
             </label>
             </h3>
-            <table>
-                <tbody>
-                    {% for SRC, DST in revproxy -%}
-                    <tr>
-                        <td>{{ SRC }}</td>
-                        <td>{{ DST }}</td>
-                    </tr>
-                    {% endfor -%}
-                </tbody>
-            </table>
+            <div style="overflow-x:auto">
+                <table>
+                    <tbody>
+                        {% for SRC, DST in revproxy -%}
+                        <tr>
+                            <td>{{ SRC }}</td>
+                            <td>{{ DST }}</td>
+                        </tr>
+                        {% endfor -%}
+                    </tbody>
+                </table>
+            </div>
         </div>
         <div>
             <h3 id="filetitle">文件列表</h3>
