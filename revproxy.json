@@ -1,38 +1,46 @@
 [
     {
-        "src": "downloads.openwrt.org",
-        "dst": "openwrt.mirrors.ustc.edu.cn"
-    },
-    {
         "src": "registry-1.docker.io",
         "dst": "docker.mirrors.ustc.edu.cn"
     },
     {
+        "src": "archive.cloudera.com/cdh5/",
+        "dst": "cloudera.proxy.ustclug.org/cdh5/"
+    },
+    {
+        "src": "downloads.lede-project.org",
+        "dst": "lede.proxy.ustclug.org"
+    },
+    {
+        "src": "downloads.openwrt.org",
+        "dst": "openwrt.proxy.ustclug.org"
+    },
+    {
         "src": "registry.npmjs.org",
-        "dst": "npmreg.mirrors.ustc.edu.cn"
+        "dst": "npmreg.proxy.ustclug.org"
     },
     {
         "src": "www.npmjs.com",
-        "dst": "npm.mirrors.ustc.edu.cn"
+        "dst": "npm.proxy.ustclug.org"
     },
     {
         "src": "fonts.gstatic.com",
-        "dst": "fonts-gstatic.lug.ustc.edu.cn"
+        "dst": "fonts-gstatic.proxy.ustclug.org"
     },
     {
         "src": "fonts.googleapis.com",
-        "dst": "fonts.lug.ustc.edu.cn"
+        "dst": "fonts.proxy.ustclug.org"
     },
     {
         "src": "ajax.googleapis.com",
-        "dst": "ajax.lug.ustc.edu.cn"
+        "dst": "ajax.proxy.ustclug.org"
     },
     {
         "src": "themes.googleusercontent.com",
-        "dst": "google-themes.lug.ustc.edu.cn"
+        "dst": "google-themes.proxy.ustclug.org"
     },
     {
         "src": "secure.gravatar.com",
-        "dst": "gravatar.lug.ustc.edu.cn"
+        "dst": "gravatar.proxy.ustclug.org"
     }
 ]
