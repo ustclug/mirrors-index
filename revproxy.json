@@ -4,6 +4,10 @@
         "dst": "docker.mirrors.ustc.edu.cn"
     },
     {
+        "src": "launchpad.net",
+        "dst": "launchpad.proxy.ustclug.org"
+    },
+    {
         "src": "archive.cloudera.com/cdh5/",
         "dst": "cloudera.proxy.ustclug.org/cdh5/"
     },
