@@ -4,6 +4,10 @@
         "dst": "docker.mirrors.ustc.edu.cn"
     },
     {
+        "src": "packages.elastic.co",
+        "dst": "elastic.proxy.ustclug.org"
+    },
+    {
         "src": "launchpad.net",
         "dst": "launchpad.proxy.ustclug.org"
     },
