@@ -8,7 +8,7 @@
         "dst": "elastic.proxy.ustclug.org"
     },
     {
-        "src": "launchpad.net",
+        "src": "ppa.launchpad.net",
         "dst": "launchpad.proxy.ustclug.org"
     },
     {
