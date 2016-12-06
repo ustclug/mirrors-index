@@ -56,6 +56,8 @@ def genRepoList():
                 any(fnmatch.fnmatch(d, p) for p in EXCLUDE):
             continue
 
+
+        logger.debug('genRepoList: trying {}...'.format(str(d)))
         # Change time is lastsync time if sync destination is exactly the same
         # top-level dir of http. However, some repos are divided to several
         # sub-dirs which are actually sync-ed instead of top-level directory.
@@ -69,7 +71,6 @@ def genRepoList():
             if _ctime > ctime:
                 ctime = _ctime
 
-        logger.debug('genRepoList: yielding {}...'.format(str(d)))
         yield (time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(ctime)),
                "Help" if testHelpLink(d) else "",
                d)
