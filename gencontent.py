@@ -8,6 +8,10 @@ from urllib.parse import urljoin
 import requests
 import fnmatch
 
+import common
+
+from common import logger
+
 HTTPDIR = '/srv/www'
 
 EXCLUDE = ("tmpfs", ".*")
@@ -44,6 +48,7 @@ def testHelpLink(name):
 
 
 def genRepoList():
+    logger.info('beginning to generate repo list...')
     for d in sorted(os.listdir(HTTPDIR), key=str.lower):
         fpath = os.path.join(HTTPDIR, d)
 
@@ -64,16 +69,19 @@ def genRepoList():
             if _ctime > ctime:
                 ctime = _ctime
 
+        logger.debug('genRepoList: yielding {}...'.format(str(d)))
         yield (time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(ctime)),
                "Help" if testHelpLink(d) else "",
                d)
 
 def getOthers():
+    logger.info('calling genOthers()...')
     _d = os.path.dirname(os.path.realpath(__file__))
     info = None
     with open(os.path.join(_d, 'revproxy.json'), 'r') as fin:
         info = json.load(fin)
     for repo in info:
+        logger.debug('genOthers: yielding {}...'.format(str(repo['dst'])))
         yield (repo['src'], repo['dst'])
 
 if __name__ == '__main__':

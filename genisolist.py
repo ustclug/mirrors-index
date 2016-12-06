@@ -10,7 +10,9 @@ from urllib.parse import urljoin
 from distutils.version import LooseVersion
 from configparser import ConfigParser
 
-logger = logging.getLogger(__name__)
+import common
+from common import logger
+
 CONFIG_FILE = os.path.join(os.path.dirname(__file__), 'genisolist.ini')
 
 

@@ -5,13 +5,15 @@ import os
 import logging
 import argparse
 from jinja2 import Environment, FileSystemLoader
+
 import gencontent
 import genisolist
 import genservernews
+import common
+
+from common import logger
 
 def main():
-    logger = logging.getLogger('mirrors-genindex')
-    ch = logging.StreamHandler()
     OUTDIR = os.getenv('HTTPDIR') or gencontent.HTTPDIR
     parser = argparse.ArgumentParser(
             description="USTC Mirrors Index Page Generator",
@@ -34,11 +36,8 @@ def main():
             action='store_true',
             )
     args = parser.parse_args()
-    LOGLEVEL = logging.DEBUG if args.verbose else logging.INFO
+    LOGLEVEL = logging.DEBUG if args.verbose else logging.DEBUG#INFO
     logger.setLevel(LOGLEVEL)
-    ch.setLevel(LOGLEVEL)
-    ch.setFormatter(logging.Formatter('[%(asctime)s] [%(levelname)s] %(message)s'))
-    logger.addHandler(ch)
     logger.debug('received command arguments: "{}"'.format(str(args)))
     OUTDIR = args.outdir or OUTDIR
     OUTFILE = args.output
@@ -47,7 +46,7 @@ def main():
     logger.info('BASEDIR is "%(BASEDIR)s"' % locals())
     env = Environment(loader=FileSystemLoader(os.path.join(BASEDIR, 'templates')))
     template = env.get_template('index.html')
-    logger.debug('begin parsing template...')
+    logger.info('begin parsing template...')
     parsed_template = template.render(
             repolist=gencontent.genRepoList(),
             revproxy=gencontent.getOthers(),
