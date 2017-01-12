@@ -32,15 +32,26 @@ def CTimeWA(dirpath):
 
 
 def testHelpLink(name):
-    URLBASE = "https://lug.ustc.edu.cn/wiki/mirrors/help/"
-    url = urljoin(URLBASE, name)
+    URLBASE_SPHI = "http://mirrors.ustc.edu.cn/help/"
+    sphinx_exist = True
+    url = urljoin(URLBASE_SPHI, name + ".html")
+    try:
+        html = requests.get(url, timeout=1)
+    except:
+        sphinx_exist = False
+    if sphinx_exist == True and "404 Not Found" not in html.text:
+        return url
+
+    URLBASE_DOKU = "https://lug.ustc.edu.cn/wiki/mirrors/help/"
+    url = urljoin(URLBASE_DOKU, name)
 
     try:
         html = requests.get(url, timeout=4)
     except:
-        return False
+        return ''
 
-    return "该主题尚不存在" not in html.text
+    return "" if "该主题尚不存在" in html.text else url
+
 
 
 def genRepoList():
@@ -64,8 +75,12 @@ def genRepoList():
             if _ctime > ctime:
                 ctime = _ctime
 
+        help_href = testHelpLink(d)
+        help_text = 'Help' if help_href.strip() else ""
+        
         yield (time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(ctime)),
-               "Help" if testHelpLink(d) else "",
+               help_href,
+               help_text,
                d)
 
 def getOthers():

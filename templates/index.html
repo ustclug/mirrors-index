@@ -46,12 +46,12 @@
                 </tr>
             </thead>
             <tbody>
-            {% for MODTIME, HELP, DIR in repolist -%}
+            {% for MODTIME, HREF, HELP, DIR in repolist -%}
             <tr>
                 <td class="filename"><a href="{{ DIR }}/">{{ DIR }}</a></td>
                 <td class="filetime">{{ MODTIME }}</td>
                 <td class="help">
-                    <a href="https://lug.ustc.edu.cn/wiki/mirrors/help/{{ DIR }}">{{ HELP }}</a>
+                    <a href="{{ HREF }}">{{ HELP }}</a>
                 </td>
             </tr>
             {%- endfor %}
