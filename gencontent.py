@@ -8,7 +8,7 @@ from urllib.parse import urljoin
 import requests
 import fnmatch
 
-HTTPDIR = '/srv/www'
+HTTPDIR = '/srv/repo'
 
 EXCLUDE = ("tmpfs", ".*")
 """Directories match these glob will be ignored."""
