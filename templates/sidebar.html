@@ -1,6 +1,6 @@
 <div id="sidebar">
     <div id="servernews">
-    <h3>镜像站新闻通知</h3>
+    <a href="https://servers.ustclug.org/category/mirrors/"><h3>镜像站新闻通知</h3></a>
     {% if newslist|length > 0 %}
         {% for record in newslist -%}
         <p><a href="{{ record.link }}">{{ record.title }}</a></p>
