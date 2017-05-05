@@ -16,10 +16,6 @@
         "dst": "cloudera.proxy.ustclug.org/cdh5/"
     },
     {
-        "src": "downloads.lede-project.org",
-        "dst": "lede.proxy.ustclug.org"
-    },
-    {
         "src": "downloads.openwrt.org",
         "dst": "openwrt.proxy.ustclug.org"
     },
