@@ -42,5 +42,5 @@
     {
         "src": "themes.googleusercontent.com",
         "dst": "google-themes.proxy.ustclug.org"
-    },
+    }
 ]
