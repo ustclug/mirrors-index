@@ -32,8 +32,4 @@
         <src>themes.googleusercontent.com</src>
         <dst>google-themes.lug.ustc.edu.cn</dst>
     </revproxy>
-    <revproxy proxyname="gravatar">
-        <src>secure.gravatar.com</src>
-        <dst>gravatar.lug.ustc.edu.cn</dst>
-    </revproxy>
 </revproxylist>

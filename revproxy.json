@@ -43,8 +43,4 @@
         "src": "themes.googleusercontent.com",
         "dst": "google-themes.proxy.ustclug.org"
     },
-    {
-        "src": "secure.gravatar.com",
-        "dst": "gravatar.proxy.ustclug.org"
-    }
 ]
