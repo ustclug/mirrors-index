@@ -13,7 +13,7 @@ import logging
 Generate HTML Fragment about latest server news.
 """
 
-SERVERNEWS_FEED = "https://servers.blog.ustc.edu.cn/category/mirrors/feed/"
+SERVERNEWS_FEED = "https://servers.ustclug.org/category/mirrors/feed/"
 SERVERNEWS_MAX_NUM = 3
 
 
