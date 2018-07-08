@@ -42,5 +42,21 @@
     {
         "src": "themes.googleusercontent.com",
         "dst": "google-themes.proxy.ustclug.org"
+    },
+    {
+        "src": "dl.bintray.com",
+        "dst": "bintray.proxy.ustclug.org"
+    },
+    {
+        "src": "repo.typesafe.com",
+        "dst": "typesafe.proxy.ustclug.org"
+    },
+    {
+        "src": "repo1.maven.org",
+        "dst": "maven.proxy.ustclug.org"
+    },
+    {
+        "src": "repo.scala-sbt.org",
+        "dst": "scala-sbt.proxy.ustclug.org"
     }
 ]
