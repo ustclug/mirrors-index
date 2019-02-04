@@ -3,11 +3,12 @@
 
 import os
 import time
+import json
 from urllib.parse import urljoin
 import requests
 import fnmatch
 
-HTTPDIR = '/srv/www'
+HTTPDIR = '/srv/rsync-attrs'
 
 EXCLUDE = ("tmpfs", ".*")
 """Directories match these glob will be ignored."""
@@ -31,19 +32,30 @@ def CTimeWA(dirpath):
 
 
 def testHelpLink(name):
-    URLBASE = "https://lug.ustc.edu.cn/wiki/mirrors/help/"
-    url = urljoin(URLBASE, name)
+    URLBASE_SPHI = "http://mirrors.ustc.edu.cn/help/"
+    sphinx_exist = True
+    url = urljoin(URLBASE_SPHI, name + ".html")
+    try:
+        html = requests.get(url, timeout=1)
+    except:
+        sphinx_exist = False
+    if sphinx_exist == True and "404 Not Found" not in html.text:
+        return url
+
+    URLBASE_DOKU = "https://lug.ustc.edu.cn/wiki/mirrors/help/"
+    url = urljoin(URLBASE_DOKU, name)
 
     try:
         html = requests.get(url, timeout=4)
     except:
-        return False
+        return ''
 
-    return False if "该主题尚不存在" in html.text else True
+    return "" if "该主题尚不存在" in html.text else url
+
 
 
 def genRepoList():
-    for d in sorted(os.listdir(HTTPDIR), key=lambda s: s.lower()):
+    for d in sorted(os.listdir(HTTPDIR), key=str.lower):
         fpath = os.path.join(HTTPDIR, d)
 
         if not os.path.isdir(fpath) or \
@@ -63,9 +75,21 @@ def genRepoList():
             if _ctime > ctime:
                 ctime = _ctime
 
+        help_href = testHelpLink(d)
+        help_text = 'Help' if help_href.strip() else ""
+        
         yield (time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(ctime)),
-               "Help" if testHelpLink(d) else "",
+               help_href,
+               help_text,
                d)
+
+def getOthers():
+    _d = os.path.dirname(os.path.realpath(__file__))
+    info = None
+    with open(os.path.join(_d, 'revproxy.json'), 'r') as fin:
+        info = json.load(fin)
+    for repo in info:
+        yield (repo['src'], repo['dst'])
 
 if __name__ == '__main__':
     for i in genRepoList():

@@ -1,17 +1,43 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-Hans-CN">
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <title>USTC Open Source Software Mirror</title>
-    <link href="https://fonts.lug.ustc.edu.cn/css?family=Clicker+Script|Open+Sans:400,300" rel="stylesheet" type="text/css">
+    <link href="https://fonts.proxy.ustclug.org/css?family=Clicker+Script%7COpen+Sans:400,300" rel="stylesheet" type="text/css">
 {% include 'style.html' %}
 </head>
 <body>
 {% include 'header.html' %}
 <div id="wrapper">
     <div id="filelist">
-        <h3>文件列表</h3>
-        <table cellpadding="0" cellspacing="0" class="filelist">
+        <!--FIXME: kind of ugly :(-->
+        <div style="overflow:hidden">
+            <input id="revproxy" type="checkbox"/>
+            <h3>
+            <label for="revproxy">
+            反向代理列表
+            <span>+</span><span>-</span>
+            </label>
+            </h3>
+            <div style="overflow-x:auto">
+                <table>
+                    <tbody>
+                        {% for SRC, DST in revproxy -%}
+                        <tr>
+                            <td>{{ SRC }}</td>
+                            <td>{{ DST }}</td>
+                        </tr>
+                        {% endfor -%}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div>
+            <h3 id="filetitle">文件列表</h3>
+            <input placeholder="按 S 过滤" id="search" type="search" autocomplete="off"/>
+        </div>
+        <table class="filelist">
             <thead>
                 <tr id="firstline">
                     <th id="name">Folder</th>
@@ -19,15 +45,17 @@
                     <th id="help">Help</th>
                 </tr>
             </thead>
-            {% for MODTIME, HELP, DIR in repolist -%}
+            <tbody>
+            {% for MODTIME, HREF, HELP, DIR in repolist -%}
             <tr>
-                <td class="filename"><a href="/{{ DIR }}">{{ DIR }}</a></td>
+                <td class="filename"><a href="{{ DIR }}/">{{ DIR }}</a></td>
                 <td class="filetime">{{ MODTIME }}</td>
-                <td class="help" >
-                    <a href="https://lug.ustc.edu.cn/wiki/mirrors/help/{{ DIR }}">{{ HELP }}</a>
+                <td class="help">
+                    <a href="{{ HREF }}">{{ HELP }}</a>
                 </td>
             </tr>
             {%- endfor %}
+            </tbody>
         </table>
     </div>
 {% include 'sidebar.html' %}

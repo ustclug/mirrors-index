@@ -1,0 +1,11 @@
+[Unit]
+Description=Update Mirrors index page
+After=network.target
+
+[Service]
+Type=oneshot
+User=mirror
+ExecStart=/usr/bin/python3 /home/mirror/scripts/newindex/genindex.py
+
+[Install]
+WantedBy=multi-user.target

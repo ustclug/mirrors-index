@@ -1,0 +1,66 @@
+[
+    {
+        "src": "registry-1.docker.io",
+        "dst": "docker.mirrors.ustc.edu.cn"
+    },
+    {
+        "src": "packages.elastic.co",
+        "dst": "elastic.proxy.ustclug.org"
+    },
+    {
+        "src": "ppa.launchpad.net",
+        "dst": "launchpad.proxy.ustclug.org"
+    },
+    {
+        "src": "archive.cloudera.com/cdh5/",
+        "dst": "cloudera.proxy.ustclug.org/cdh5/"
+    },
+    {
+        "src": "downloads.openwrt.org",
+        "dst": "openwrt.proxy.ustclug.org"
+    },
+    {
+        "src": "registry.npmjs.org",
+        "dst": "npmreg.proxy.ustclug.org"
+    },
+    {
+        "src": "www.npmjs.com",
+        "dst": "npm.proxy.ustclug.org"
+    },
+    {
+        "src": "fonts.gstatic.com",
+        "dst": "fonts-gstatic.proxy.ustclug.org"
+    },
+    {
+        "src": "fonts.googleapis.com",
+        "dst": "fonts.proxy.ustclug.org"
+    },
+    {
+        "src": "ajax.googleapis.com",
+        "dst": "ajax.proxy.ustclug.org"
+    },
+    {
+        "src": "themes.googleusercontent.com",
+        "dst": "google-themes.proxy.ustclug.org"
+    },
+    {
+        "src": "dl.bintray.com",
+        "dst": "bintray.proxy.ustclug.org"
+    },
+    {
+        "src": "repo.typesafe.com",
+        "dst": "typesafe.proxy.ustclug.org"
+    },
+    {
+        "src": "repo1.maven.org",
+        "dst": "maven.proxy.ustclug.org"
+    },
+    {
+        "src": "repo.scala-sbt.org",
+        "dst": "scala-sbt.proxy.ustclug.org"
+    },
+    {
+        "src": "kubernetes-charts.storage.googleapis.com",
+        "dst": "kubernetes-charts.proxy.ustclug.org"
+    }
+]

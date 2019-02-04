@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<revproxylist>
+    <revproxy proxyname="openwrt">
+        <src>downloads.openwrt.org</src>
+        <dst>openwrt.mirrors.ustc.edu.cn</dst>
+    </revproxy>
+    <revproxy proxyname="docker-registry">
+        <src>registry-1.docker.io</src>
+        <dst>docker.mirrors.ustc.edu.cn</dst>
+    </revproxy>
+    <revproxy proxyname="npm-registry">
+        <src>registry.npmjs.org</src>
+        <dst>npmreg.mirrors.ustc.edu.cn</dst>
+    </revproxy>
+    <revproxy proxyname="npm">
+        <src>www.npmjs.com</src>
+        <dst>npm.mirrors.ustc.edu.cn</dst>
+    </revproxy>
+    <revproxy proxyname="fonts-gstatic">
+        <src>fonts.gstatic.com</src>
+        <dst>fonts-gstatic.lug.ustc.edu.cn</dst>
+    </revproxy>
+    <revproxy proxyname="fonts-googleapis">
+        <src>fonts.googleapis.com</src>
+        <dst>fonts.lug.ustc.edu.cn</dst>
+    </revproxy>
+    <revproxy proxyname="ajax-googleapis">
+        <src>ajax.googleapis.com</src>
+        <dst>ajax.lug.ustc.edu.cn</dst>
+    </revproxy>
+    <revproxy proxyname="google-themes">
+        <src>themes.googleusercontent.com</src>
+        <dst>google-themes.lug.ustc.edu.cn</dst>
+    </revproxy>
+</revproxylist>

@@ -76,10 +76,10 @@ body{
 }
 #filelist h3{
     color:#ef4836;
-    font-family: "Open Sans","Ubuntu","Hiragino Sans GB", "Wenquanyi Micro Hei", "WenQuanYi Micro Hei Mono", "WenQuanYi Zen Hei", "WenQuanYi Zen Hei", "Apple LiGothic Medium", "STXihei", "ST Heiti", "WenQuanYi Zen Hei Sharp";
+    font-family: "Open Sans","Ubuntu","Hiragino Sans GB", "Wenquanyi Micro Hei", "WenQuanYi Micro Hei Mono", "WenQuanYi Zen Hei", "WenQuanYi Zen Hei", "Apple LiGothic Medium", "STXihei", "ST Heiti", "WenQuanYi Zen Hei Sharp", sans-serif;
     font-weight:100;
     font-size:24px;
-    margin:0px 0 15px 0;
+    margin:5px 0 5px 0;
 }
 #filelist table{
     width:100%;
@@ -123,6 +123,18 @@ thead{
 #filelist a:hover{
     text-decoration: underline;
 }
+#revproxy,
+#revproxy + h3 > label > span + span,
+#revproxy:checked + h3 > label > span,
+#revproxy ~ div {
+    display: none;
+}
+#revproxy:checked + h3 > label > span + span {
+    display: inline-block;
+}
+#revproxy:checked ~ div {
+    display: block;
+}
 #filename{
     text-align:left;
     width:15%;
@@ -149,14 +161,14 @@ tbody tr:hover{
 }
 #sidebar h3{
     color:#ef4836;
-    font-family: "Hiragino Sans GB", "Wenquanyi Micro Hei", "WenQuanYi Micro Hei Mono", "WenQuanYi Zen Hei", "WenQuanYi Zen Hei", "Apple LiGothic Medium", "STXihei", "ST Heiti", "WenQuanYi Zen Hei Sharp";
+    font-family: "Hiragino Sans GB", "Wenquanyi Micro Hei", "WenQuanYi Micro Hei Mono", "WenQuanYi Zen Hei", "WenQuanYi Zen Hei", "Apple LiGothic Medium", "STXihei", "ST Heiti", "WenQuanYi Zen Hei Sharp", sans-serif;
     font-weight:300;
     font-size:24px;
     margin:0px 0 15px 0;
 }
 #sidebar p,a{
     line-height: 1.5em;
-    font-family: "Open Sans","Ubuntu","Hiragino Sans GB", "Wenquanyi Micro Hei", "WenQuanYi Micro Hei Mono", "WenQuanYi Zen Hei", "WenQuanYi Zen Hei", "Apple LiGothic Medium", "STXihei", "ST Heiti", "WenQuanYi Zen Hei Sharp";
+    font-family: "Open Sans","Ubuntu","Hiragino Sans GB", "Wenquanyi Micro Hei", "WenQuanYi Micro Hei Mono", "WenQuanYi Zen Hei", "WenQuanYi Zen Hei", "Apple LiGothic Medium", "STXihei", "ST Heiti", "WenQuanYi Zen Hei Sharp", sans-serif;
 }
 #sidebar a{
     color:#030303;
@@ -171,7 +183,7 @@ tbody tr:hover{
     margin:12px auto 12px auto;
     padding:3px 20px;
     line-height: 1.5em;
-    font-family: "Open Sans","Ubuntu","Hiragino Sans GB", "Wenquanyi Micro Hei", "WenQuanYi Micro Hei Mono", "WenQuanYi Zen Hei", "WenQuanYi Zen Hei", "Apple LiGothic Medium", "STXihei", "ST Heiti", "WenQuanYi Zen Hei Sharp";
+    font-family: "Open Sans","Ubuntu","Hiragino Sans GB", "Wenquanyi Micro Hei", "WenQuanYi Micro Hei Mono", "WenQuanYi Zen Hei", "WenQuanYi Zen Hei", "Apple LiGothic Medium", "STXihei", "ST Heiti", "WenQuanYi Zen Hei Sharp", sans-serif;
     font-size: 20px;
     color:#f3f3f3;
     text-align: center;
@@ -196,7 +208,7 @@ tbody tr:hover{
     margin:0 auto;
 }
 #footerleft{
-    font-family: "Open Sans","Ubuntu","Hiragino Sans GB", "Wenquanyi Micro Hei", "WenQuanYi Micro Hei Mono", "WenQuanYi Zen Hei", "WenQuanYi Zen Hei", "Apple LiGothic Medium", "STXihei", "ST Heiti", "WenQuanYi Zen Hei Sharp";
+    font-family: "Open Sans","Ubuntu","Hiragino Sans GB", "Wenquanyi Micro Hei", "WenQuanYi Micro Hei Mono", "WenQuanYi Zen Hei", "WenQuanYi Zen Hei", "Apple LiGothic Medium", "STXihei", "ST Heiti", "WenQuanYi Zen Hei Sharp", sans-serif;
     width:60%;
     float:left;
     font-size: 14px;
@@ -235,7 +247,8 @@ tbody tr:hover{
 {
     position: absolute;
     width: 40%;
-    top:200px;
+    min-width: 345px;
+    top:10%;
     left:30%;
     margin:0 auto;
     background-color: #FCFCFC;
@@ -257,7 +270,7 @@ tbody tr:hover{
     color:#FCFCFC;
 }
 .modalcontent{
-    font-family: "Open Sans","Ubuntu","Hiragino Sans GB", "Wenquanyi Micro Hei", "WenQuanYi Micro Hei Mono", "WenQuanYi Zen Hei", "WenQuanYi Zen Hei", "Apple LiGothic Medium", "STXihei", "ST Heiti", "WenQuanYi Zen Hei Sharp";
+    font-family: "Open Sans","Ubuntu","Hiragino Sans GB", "Wenquanyi Micro Hei", "WenQuanYi Micro Hei Mono", "WenQuanYi Zen Hei", "WenQuanYi Zen Hei", "Apple LiGothic Medium", "STXihei", "ST Heiti", "WenQuanYi Zen Hei Sharp", sans-serif;
     font-size:22px;
     padding:8px 20px;
     background-color: #FFFFFF;
@@ -269,7 +282,7 @@ tbody tr:hover{
 .modalcontent select{
     width:300px;
 }
-@media screen and (min-width:750px) {
+@media screen and (min-width:881px) {
     #filelist{
         float:left;
         width:60%;
@@ -281,7 +294,7 @@ tbody tr:hover{
         width:33%;
     }
 }
-@media screen and (max-width:749px) {
+@media screen and (max-width:880px) {
     #filelist{
         float: left;
         width: 100%;
@@ -292,10 +305,53 @@ tbody tr:hover{
         max-width: 400px;
         width: 100%;
     }
+    #isomodalcontainer {
+        left: 0%;
+        width: 100%;
+        text-align: center;
+        min-width: 0;
+    }
 }
-@media screen and (max-width:500px) {
-    .update, .filetime {
+/* when a page is narrower than 540px,
+   regarded as mobile device
+ */
+@media screen and (max-width:540px) {
+    .update, .filetime, #infinity {
         display: none;
     }
+    #intro h2 {
+        font-weight: 500;
+    }
+    #footerleft, #header {
+        width: 100%;
+        float: none;
+    }
+    #footerright {
+        float: none;
+        width: 100%;
+        margin-top: 2em;
+    }
+    #welcome {
+        padding-bottom: 0px;
+    }
+    #search {
+        width: 50%;
+    }
+}
+.hidden {
+    display: none;
+}
+#filetitle {
+    float: left;
+    line-height: 36px;
+}
+#search {
+    float: right;
+    line-height: 18px;
+    padding: 8px;
+    border: 1px solid #e3e3e3;
+    margin-top: 5px;
+    max-width: 240px;
+    font-size: 16px;
 }
 </style>
