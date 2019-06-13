@@ -24,7 +24,7 @@ def getServerNews(glob_logger: logging.Logger = None) -> list:
     Timeout is set to 20 seconds.
     """
 
-    logger = glob_logger if glob_logger else logger.getLogger()
+    logger = glob_logger if glob_logger else logging.getLogger()
 
     class AlarmTimeoutException(Exception):
         pass
