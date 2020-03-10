@@ -9,6 +9,16 @@
 
 ## Current Method
 
+Add the following line to your crontab (`crontab -e`)
+
+```
+10  *   * * *   /usr/bin/python3 /home/mirror/scripts/mirrors-index/genindex.py -o /srv/www-misc/index.html 2> /dev/null
+```
+
+It will update every hour at minute 10.
+
+## Alternative Method
+
 Copy all the systemd service files (`mirrors-index.service`, `mirrors-index.timer`,
 `mirrors-index.path`) from `services/` dir into `/etc/systemd/system/`.
 Then enable them and start the timer and the path file.
