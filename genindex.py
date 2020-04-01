@@ -4,7 +4,6 @@
 import os
 import logging
 import argparse
-from datetime import datetime
 from jinja2 import Environment, FileSystemLoader
 import gencontent
 import genisolist
@@ -50,7 +49,6 @@ def main():
     template = env.get_template('index.html')
     logger.debug('begin parsing template...')
     parsed_template = template.render(
-            date=datetime.now(),
             repolist=gencontent.genRepoList(),
             revproxy=gencontent.getOthers(),
             isoinfo=genisolist.getImageList(),

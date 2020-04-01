@@ -67,21 +67,6 @@ document.body.onkeyup = function(evt) {
 }
 })()
 </script>
-
-{# April fools #}
-{% if date.month == 4 and date.day == 1 %}
-<script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
-<script type="text/javascript">
-$("body").css('height',$(document).height());
-$("#body-wrap").css('position',"fixed");
-$("#body-wrap").css('bottom',0);
-$("#body-wrap").css('left',0);
-$("#body-wrap").css('width',"100%");
-$(window).on('scroll',function(){
-  $("#body-wrap").css('bottom',$(window).scrollTop()*-1);
-});
-</script>
-{% endif %}
 <!-- Designed by Miaomiao Li. It's a wonderful life! -->
 <!--
     vim:ai:et:sta:ts=4:sts=4:sw=4
