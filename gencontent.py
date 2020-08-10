@@ -50,7 +50,7 @@ def testHelpLink(name):
     except:
         return ''
 
-    return "" if "该主题尚不存在" in html.text else url
+    return "" if 404 == html.status_code else url
 
 
 
@@ -77,7 +77,7 @@ def genRepoList():
 
         help_href = testHelpLink(d)
         help_text = 'Help' if help_href.strip() else ""
-        
+
         yield (time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(ctime)),
                help_href,
                help_text,
