@@ -1,7 +1,7 @@
 [
     {
         "src": "registry-1.docker.io",
-        "dst": "docker.mirrors.ustc.edu.cn"
+        "dst": "docker.mirrors.ustc.edu.cn (ustcnet only)"
     },
     {
         "src": "packages.elastic.co",
@@ -10,10 +10,6 @@
     {
         "src": "ppa.launchpad.net",
         "dst": "launchpad.proxy.ustclug.org"
-    },
-    {
-        "src": "archive.cloudera.com/cdh5/",
-        "dst": "cloudera.proxy.ustclug.org/cdh5/"
     },
     {
         "src": "downloads.openwrt.org",
@@ -26,14 +22,6 @@
     {
         "src": "www.npmjs.com",
         "dst": "npm.proxy.ustclug.org"
-    },
-    {
-        "src": "fonts.gstatic.com",
-        "dst": "fonts-gstatic.proxy.ustclug.org"
-    },
-    {
-        "src": "fonts.googleapis.com",
-        "dst": "fonts.proxy.ustclug.org"
     },
     {
         "src": "ajax.googleapis.com",
