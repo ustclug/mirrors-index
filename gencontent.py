@@ -5,6 +5,7 @@ import os
 import time
 import json
 from urllib.parse import urljoin
+from urllib.parse import urlparse
 import requests
 import fnmatch
 
@@ -40,7 +41,7 @@ def testHelpLink(name):
     except:
         sphinx_exist = False
     if sphinx_exist == True and "404 Not Found" not in html.text:
-        return url
+        return urlparse(url).path
 
     URLBASE_DOKU = "https://lug.ustc.edu.cn/wiki/mirrors/help/"
     url = urljoin(URLBASE_DOKU, name)
