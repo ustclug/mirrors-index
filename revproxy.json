@@ -32,10 +32,6 @@
         "dst": "google-themes.proxy.ustclug.org"
     },
     {
-        "src": "dl.bintray.com",
-        "dst": "bintray.proxy.ustclug.org"
-    },
-    {
         "src": "repo.typesafe.com",
         "dst": "typesafe.proxy.ustclug.org"
     },
