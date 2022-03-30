@@ -13,7 +13,16 @@ function update_isodistro_options() {
 function modal()
 {
 	var bx = document.getElementById("isomodal");
-	bx.style.visibility = (bx.style.visibility == "visible") ? "hidden" : "visible";
+	bx.style.display = (bx.style.display == "block") ? "none" : "block";
+	bx.style.overflow = (bx.style.overflow == "auto") ? "hidden" : "auto";
+	if (bx.style.display == "block") {
+		document.getElementById("isomodalclear").classList.remove("hidden");
+		bx.classList.add("in");
+	}
+	else {
+		document.getElementById("isomodalclear").classList.add("hidden");
+		bx.classList.remove("in");
+	}
 }
 
 function switchdistro()
@@ -67,7 +76,6 @@ document.body.onkeyup = function(evt) {
 }
 })()
 </script>
-<!-- Designed by Miaomiao Li. It's a wonderful life! -->
 <!--
     vim:ai:et:sta:ts=4:sts=4:sw=4
 -->

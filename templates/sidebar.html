@@ -1,49 +1,63 @@
-<div id="sidebar">
-    <div id="servernews">
-    <a href="https://servers.ustclug.org/category/mirrors/"><h3>镜像站新闻通知</h3></a>
-    {% if newslist|length > 0 %}
+<div id="news">
+    <h4><svg class="icon">
+        <use xlink:href='#fas.fa-bullhorn'></use>
+    </svg> 新闻公告 </h4>
+    <ul>
+        {% if newslist|length > 0 %}
         {% for record in newslist -%}
-        <p><a href="{{ record.link }}">{{ record.title }}</a></p>
-        {%- endfor %}
-    {% else %}
-        <p>新闻服务器出故障了, 正在抢修当中 :(<p>
-    {% endif %}
-    </div>
-    <div id="cdimages">
-        <h3>获取发行版映像</h3>
-        <p>这里为您提供各大主流 Linux 发行版的安装镜像 / ISO 文件，请根据您的发行版及其详细版本进行选择：</p>
-        <p></p>
-        <span class="btn" onclick="modal()">获取安装镜像 &gt;</span>
-    </div>
-    <div id="domains">
-        <h3>域名选择</h3>
-        <a href="//mirrors.ustc.edu.cn/">mirrors.ustc.edu.cn</a> 自动解析<br/>
-        <a href="//ipv4.mirrors.ustc.edu.cn/">ipv4.mirrors.ustc.edu.cn</a> IPv4 线路<br/>
-        <a href="//ipv6.mirrors.ustc.edu.cn/">ipv6.mirrors.ustc.edu.cn</a> IPv6 线路<br/>
-        <a href="//cernet.mirrors.ustc.edu.cn/">cernet.mirrors.ustc.edu.cn</a>  教育网线路<br/>
-        <a href="//chinanet.mirrors.ustc.edu.cn/">chinanet.mirrors.ustc.edu.cn</a> 电信线路<br/>
-        <a href="//unicom.mirrors.ustc.edu.cn/">unicom.mirrors.ustc.edu.cn</a> 联通线路<br/>
-        <a href="//cmcc.mirrors.ustc.edu.cn/">cmcc.mirrors.ustc.edu.cn</a>  移动线路<br/>
-        <a href="/help/rsync-guide.html">rsync.mirrors.ustc.edu.cn</a> Rsync 线路<br/>
-        <span></span>
-    </div>
-    <div id="mirrorshelp">
-        <h3>Mirrors 帮助</h3>
-        <p>如果您不了解如何配置 Linux 发行版 / 软件的安装源， 这里为您提供了主流发行版的软件源配置帮助：</p>
-        <span class="btn" onclick="window.open('/help')">配置软件源  &gt;</span>
-        <p>您也可以通过左边的文件列表中相应源的 Help 链接寻求帮助。</p>
-        <span></span>
-    </div>
-    <div id="mirrorlinks">
-        <h3>常用链接</h3>
-        <a href="/status" target="_blank">系统状态 / Status</a><br/>
-        <a href="https://servers.ustclug.org/" target="_blank">LUG 服务器新闻 / News</a><br/>
-        <a href="http://lug.ustc.edu.cn/" target="_blank">LUG@USTC</a><br/>
-        <a href="https://github.com/ustclug/mirrorrequest/" target="_blank">新增镜像 / New Mirror</a><br/>
-	<a href="https://github.com/ustclug/discussions/">
-		问题跟踪 / Issue Tracker</a><br/>
-	<a href="mailto:lug@ustc.edu.cn">联系我们 / Contact US</a><br/>
-        <span></span>
-    </div>
+        <li><a href="{{ record.link }}">{{ record.title }}</a>
+            {%- endfor %}
+            {% else %}
+        <li>新闻服务器出故障了, 正在抢修当中 :(</li>
+        {% endif %}
+    </ul>
+    <div class="text-right"><a href="https://servers.ustclug.org/category/mirrors/"> more <svg class="icon">
+        <use xlink:href='#fas.fa-angle-double-right'></use>
+    </svg> </a></div>
 </div>
-<div style="clear: both;"></div>
+<div id="domains">
+    <h4> <svg class="icon">
+        <use xlink:href='#fas.fa-link'></use>
+    </svg> 域名选择 </h4>
+    <ul>
+    <li><a href="//mirrors.ustc.edu.cn/">mirrors.ustc.edu.cn</a> 自动解析</li>
+    <li><a href="//ipv4.mirrors.ustc.edu.cn/">ipv4.mirrors.ustc.edu.cn</a> IPv4 线路</li>
+    <li><a href="//ipv6.mirrors.ustc.edu.cn/">ipv6.mirrors.ustc.edu.cn</a> IPv6 线路</li>
+    <li><a href="//cernet.mirrors.ustc.edu.cn/">cernet.mirrors.ustc.edu.cn</a> 教育网线路</li>
+    <li><a href="//chinanet.mirrors.ustc.edu.cn/">chinanet.mirrors.ustc.edu.cn</a> 电信线路</li>
+    <li><a href="//unicom.mirrors.ustc.edu.cn/">unicom.mirrors.ustc.edu.cn</a> 联通线路</li>
+    <li><a href="//cmcc.mirrors.ustc.edu.cn/">cmcc.mirrors.ustc.edu.cn</a> 移动线路</li>
+    <li><a href="/help/rsync-guide.html">rsync.mirrors.ustc.edu.cn</a> Rsync 线路</li>
+    </ul>
+</div>
+<div id="download-link">
+    <h4><svg class="icon">
+        <use xlink:href='#far.fa-file-archive'></use>
+    </svg> 下载链接 </h4>
+    <p>常用发行版 iso 直接下载</p>
+    <p></p>
+    <button class="btn btn-info" onclick="modal()">获取下载链接</button>
+</div>
+<div id="mirrorshelp">
+    <h4> <svg class="icon">
+        <use xlink:href='#fas.fa-question-circle'></use>
+    </svg> Mirrors 帮助 </h4>
+    <p>如果您不了解如何配置 Linux 发行版 / 软件的安装源， 这里为您提供了主流发行版的软件源配置帮助：</p>
+    <button class="btn btn-info" onclick="window.open('/help')">配置软件源 &gt;</button>
+    <p>您也可以通过左边的文件列表中相应源的 Help 链接寻求帮助。</p>
+    <span></span>
+</div>
+<div id="mirrorlinks">
+    <h4> <svg class="icon">
+        <use xlink:href='#fas.fa-external-link-alt'></use>
+    </svg> 相关链接 </h4>
+    <ul>
+    <li><a href="/status" target="_blank">系统状态 / Status</a></li>
+    <li><a href="https://servers.ustclug.org/" target="_blank">LUG 服务器新闻 / News</a></li>
+    <li><a href="http://lug.ustc.edu.cn/" target="_blank">LUG@USTC</a></li>
+    <li><a href="https://github.com/ustclug/mirrorrequest/" target="_blank">新增镜像 / New Mirror</a></li>
+    <li><a href="https://github.com/ustclug/discussions/">
+        问题跟踪 / Issue Tracker</a></li>
+    <li><a href="mailto:lug@ustc.edu.cn">联系我们 / Contact US</a></li>
+    </ul>
+</div>

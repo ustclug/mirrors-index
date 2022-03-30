@@ -1,81 +1,125 @@
 <!DOCTYPE html>
 <html lang="zh-Hans-CN">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <title>USTC Open Source Software Mirror</title>
+    <link rel="stylesheet" href="/static/css/tuna/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/tuna/style.css">
     <link href="/static/css/fonts.css" rel="stylesheet" type="text/css">
     <link rel="shortcut icon" type="image/png" href="/static/img/favicon.png">
-{% include 'style.html' %}
+    {% include 'style.html' %}
 </head>
+
 <body>
-{% include 'header.html' %}
-<div id="wrapper"> 
-	<div id="filelist">
-        <!--FIXME: kind of ugly :(-->
-        <div style="overflow:hidden">
-            <input id="revproxy" type="checkbox"/>
-            <h3>
-            <label for="revproxy">
-            反向代理列表
-            <span>+</span><span>-</span>
-            </label>
-            </h3>
-            <div style="overflow-x:auto">
-                <table>
-                    <tbody>
-                        {% for SRC, DST in revproxy -%}
-                        <tr>
-                            <td>{{ SRC }}</td>
-                            <td>{{ DST }}</td>
-                        </tr>
-                        {% endfor -%}
-                    </tbody>
-                </table>
+    {% include 'header.html' %}
+    <div id="mirrors">
+        <div class="spacing hidden-xs"></div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8 table-responsive" id="mirror-list">
+                    <!--FIXME: kind of ugly :(-->
+                    <!--<div class="row">
+                        <div style="overflow:hidden">
+                            <input id="revproxy" type="checkbox" />
+                            <h3>
+                                <label for="revproxy">
+                                    反向代理列表
+                                    <span>+</span><span>-</span>
+                                </label>
+                            </h3>
+                            <div style="overflow-x:auto">
+                                <table>
+                                    <tbody>
+                                        {% for SRC, DST in revproxy -%}
+                                        <tr>
+                                            <td>{{ SRC }}</td>
+                                            <td>{{ DST }}</td>
+                                        </tr>
+                                        {% endfor -%}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>-->
+                    <div class="row">
+                        <h3 id="mirror-title"><svg class="icon">
+                            <use xlink:href='#fas.fa-cube'></use>
+                        </svg> 镜像列表 </h3>
+                        <input placeholder="搜索" id="search" type="search" autocomplete="off" />
+                    </div>
+                    <table class="table filelist">
+                        <thead>
+                            <tr class="row" id="firstline">
+                                <th id="name" class="col-sm-8">Name</th>
+                                <th class="update col-sm-4">Last Update</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for MODTIME, HREF, HELP, DIR in repolist -%}
+                            <tr>
+                                <td class="col-md-8">
+                                    <a href="{{ DIR }}/">{{ DIR }}</a>
+                                    {% if HREF %}
+                                    <a href="{{ HREF }}"><i aria-hidden="true"
+                                        class="question-circle" title="Help"><svg class="icon">
+                                            <use xlink:href='#fas.fa-question-circle'></use>
+                                        </svg></i></a>
+                                    {% endif %}
+                                </td>
+                                <td class="col-md-4">{{ MODTIME }}</td>
+                            </tr>
+                            {%- endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-md-4">
+                    <div class="spacing hidden-xs"></div>
+                    <div id="wizard"> </div>
+                    {% include 'sidebar.html' %}
+                </div>
             </div>
         </div>
-        <div>
-            <h3 id="filetitle">文件列表</h3>
-            <input placeholder="按 S 过滤" id="search" type="search" autocomplete="off"/>
-        </div>
-        <table class="filelist">
-            <thead>
-                <tr id="firstline">
-                    <th id="name">Folder</th>
-                    <th class="update">Last Update</th>
-                    <th id="help">Help</th>
-                </tr>
-            </thead>
-            <tbody>
-            {% for MODTIME, HREF, HELP, DIR in repolist -%}
-            <tr>
-                <td class="filename"><a href="{{ DIR }}/">{{ DIR }}</a></td>
-                <td class="filetime">{{ MODTIME }}</td>
-                <td class="help">
-                    <a href="{{ HREF }}">{{ HELP }}</a>
-                </td>
-            </tr>
-            {%- endfor %}
-            </tbody>
-        </table>
     </div>
-{% include 'sidebar.html' %}
-</div>
-{% include 'footer.html' %}
-<div class="modal" id="isomodal">
-    <div class="modalclear" id="isomodalclear" onclick="modal()"></div>
-    <div class="modalcontainer" id="isomodalcontainer" onclick="">
-        <div class="modaltitle" id="isomodaltitle"><span>获取安装镜像</span><span onclick="modal()" style="float:right;cursor:pointer">X</span></div>
-        <div class="modalcontent" id="isomodalcontent">
-            <p>选择安装发行版： <select id="isodistro" onchange="switchdistro()"></select></p>
-            <p>选择发行版版本： <select id="isoversion">
-                <option value="none">-</option>
-            </select>
-            </p>
-            <span class="btn" onclick="downloadiso();">获取 ISO &gt;</span>
+    {% include 'footer.html' %}
+    <div class="modal fade" id="isomodal" tabindex="-1" role="dialog" aria-labelledby="isoModalLabel" aria-hidden="true">
+        <!-- <div class="modalclear" id="isomodalclear" onclick="modal()"></div>
+        <div class="modalcontainer" id="isomodalcontainer" onclick="">
+            <div class="modaltitle" id="isomodaltitle"><span>获取安装镜像</span><span onclick="modal()"
+                    style="float:right;cursor:pointer">X</span></div>
+            <div class="modalcontent" id="isomodalcontent">
+                <p>选择安装发行版： <select id="isodistro" onchange="switchdistro()"></select></p>
+                <p>选择发行版版本： <select id="isoversion">
+                        <option value="none">-</option>
+                    </select>
+                </p>
+                <span class="btn" onclick="downloadiso();">获取 ISO &gt;</span>
+            </div>
+        </div> -->
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header"> <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true" onclick="modal()">&times;</span> </button>
+                    <h4 class="modal-title" id="isoModalLabel">获取安装镜像</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p>选择安装发行版： <select id="isodistro" onchange="switchdistro()"></select></p>
+                            <p>选择发行版版本： <select id="isoversion">
+                                    <option value="none">-</option>
+                                </select>
+                            </p>
+                            <button class="btn btn-info" onclick="downloadiso();">获取 ISO &gt;</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-</div>
-{% include 'script.html' %}
+    <div class="modal-backdrop fade in hidden" id="isomodalclear"></div>
+    {% include 'script.html' %}
 </body>
+
 </html>
