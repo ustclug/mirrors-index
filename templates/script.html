@@ -1,43 +1,68 @@
 <script type="text/javascript">
 //var isoinfo = "INCLUDE isoinfo.json";
 var isoinfo = {{ isoinfo|safe }};
-function update_isodistro_options() {
-	var s = document.getElementById("isodistro");
+var appinfo = {{ appinfo|safe }};
+function update_distro_options(element_name, infovar, type) {
+	var s = document.getElementById(element_name);
 	s.options.length = 0;
-	for (var i=0; i<isoinfo.length; i++) {
-		s.options[s.options.length] = new Option(isoinfo[i].distro, i);
+	for (var i=0; i<infovar.length; i++) {
+		s.options[s.options.length] = new Option(infovar[i].distro, i);
 	}
-	switchdistro();
+	switchdistro(type);
 }
 
-function modal()
+function modal(type)
 {
-	var bx = document.getElementById("isomodal");
+	if (type === "app") {
+		var bx = document.getElementById("appmodal");
+	} else {
+		var bx = document.getElementById("isomodal");
+	}
 	bx.style.visibility = (bx.style.visibility == "visible") ? "hidden" : "visible";
 }
 
-function switchdistro()
+function switchdistro(type)
 {
-	var distro = document.getElementById("isodistro");
+	if (type === "app") {
+		var distro = document.getElementById("appdistro");
+		var s = document.getElementById("appversion");
+		var info = appinfo;
+	} else {
+		var distro = document.getElementById("isodistro");
+		var s = document.getElementById("isoversion");
+		var info = isoinfo;
+	}
 	var idx = distro.selectedIndex;
-	var s = document.getElementById('isoversion');
 	s.options.length = 0;
-	for (var i=0; i<isoinfo[idx].urls.length; i++) {
-		s.options[s.options.length] = new Option(isoinfo[idx].urls[i].name, i)
+	if (info.length === 0) {
+		return;
+	}
+	for (var i=0; i<info[idx].urls.length; i++) {
+		s.options[s.options.length] = new Option(info[idx].urls[i].name, i)
 	}
 }
-function downloadiso()
+function downloadiso(type)
 {
-	var distro=document.getElementById("isodistro");
-	var version=document.getElementById("isoversion");
-	var i=distro.selectedIndex;
-	var j=version.selectedIndex;
-	var link = isoinfo[i].urls[j].url;
+	if (type === "app") {
+		var distro = document.getElementById("appdistro");
+		var version = document.getElementById("appversion");
+	} else {
+		var distro = document.getElementById("isodistro");
+		var version = document.getElementById("isoversion");
+	}
+	var i = distro.selectedIndex;
+	var j = version.selectedIndex;
+	if (type === "app") {
+		var link = appinfo[i].urls[j].url;
+	} else {
+		var link = isoinfo[i].urls[j].url;
+	}
 	window.open(link);
-    modal();
+    modal(type);
 }
 
-update_isodistro_options();
+update_distro_options("isodistro", isoinfo, "iso");
+update_distro_options("appdistro", appinfo, "app");
 </script>
 
 <script>

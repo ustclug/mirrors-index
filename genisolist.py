@@ -24,8 +24,11 @@ def getPlatformPriority(platform):
         return 0
 
 
-def parseSection(items):
+def parseSection(items, category="os"):
     items = dict(items)
+    items_category = items.get("category", "os")
+    if items_category != category:
+        return
 
     if 'location' in items:
         locations = [items['location']]
@@ -55,7 +58,7 @@ def parseSection(items):
                 logger.debug("[MATCH] %r", result.groups())
 
             group_count = len(result.groups()) + 1
-            imageinfo = {"filepath": imagepath, "distro": items["distro"]}
+            imageinfo = {"filepath": imagepath, "distro": items["distro"], "category": items_category}
 
             for prop in ("version", "type", "platform"):
                 s = items.get(prop, "")
@@ -93,7 +96,9 @@ def getDescriptionAndURL(image_info, urlbase):
     return (desc, url)
 
 
-def getJsonOutput(url_dict, prio={}):
+def getJsonOutput(url_dict, prio=None):
+    if prio is None:
+        prio = {}
     raw = []
     for distro in url_dict:
         raw.append({
@@ -106,11 +111,21 @@ def getJsonOutput(url_dict, prio={}):
     return json.dumps(raw)
 
 
-def getImageList():
+def getImageList() -> str:
+    if os.environ.get("DEBUG_WITH_ISOLIST"):
+        with open("examples/isolist.json") as f:
+            return f.read()
+    return getList("os")
+
+
+def getAppList() -> str:
+    return getList("app")
+
+
+def getList(category : str = "os") -> str:
     ini = ConfigParser()
     if not(ini.read(CONFIG_FILE)):
         raise Exception("%s not found!" % CONFIG_FILE)
-
     root = ini.get("%main%", 'root')
     urlbase = ini.get("%main%", 'urlbase')
 
@@ -126,12 +141,12 @@ def getImageList():
     for section in ini.sections():
         if section == "%main%":
             continue
-        for image in parseSection(ini.items(section)):
+        for image in parseSection(ini.items(section), category=category):
             if not image['distro'] in url_dict:
                 url_dict[image['distro']] = []
 
             url_dict[image['distro']].append(
-                    getDescriptionAndURL(image, urlbase)
+                getDescriptionAndURL(image, urlbase)
             )
 
     os.chdir(oldcwd)

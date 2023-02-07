@@ -63,6 +63,8 @@ Then `apt update && apt install -y python3 python3-requests python3-jinja2` to i
 
 `python3 genindex.py` to generate the index page. Note that this repo currently does not contain webfont-related files yet.
 
+If you need to debug genisolist, `DEBUG_WITH_ISOLIST=1 python3 genindex.py` can generate a full list without the necessity to create stub files one by one.
+
 ## Copyright
 
     Copyright © 2013-2023 USTC Linux User Group <lug@ustc.edu.cn>

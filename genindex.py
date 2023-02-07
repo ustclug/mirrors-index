@@ -53,6 +53,7 @@ def main():
         repolist=gencontent.genRepoList(),
         revproxy=gencontent.getOthers(),
         isoinfo=genisolist.getImageList(),
+        appinfo=genisolist.getAppList(),
         newslist=genservernews.getServerNews(logger),
         now=time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()),
     )
