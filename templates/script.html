@@ -9,6 +9,7 @@ function update_distro_options(element_name, infovar, type) {
 		s.options[s.options.length] = new Option(infovar[i].distro, i);
 	}
 	switchdistro(type);
+	switchversion(type);
 }
 
 function modal(type)
@@ -41,6 +42,28 @@ function switchdistro(type)
 		s.options[s.options.length] = new Option(info[idx].urls[i].name, i)
 	}
 }
+
+function switchversion(type)
+{
+	// show warning about exotic architectures
+	if (type === "app") {
+		var s = document.getElementById("appversion");
+	} else {
+		var s = document.getElementById("isoversion");
+	}
+	var warning_element = document.getElementById("download_warning");
+	var text = s.options[s.selectedIndex].text;
+	var exotic_archs = ["aarch64", "ppc64le", "arm64"]
+	for (var i=0; i<exotic_archs.length; i++) {
+		if (text.indexOf(exotic_archs[i]) !== -1) {
+			warning_element.style.display = "block";
+			warning_element.textContent = "提示：如果你不知道 " + exotic_archs[i] + " 是什么，你所选择的镜像或文件可能将无法在你的设备上正常运行，请考虑选择其他文件。";
+			return;
+		}
+	}
+	warning_element.style.display = "none";
+}
+
 function downloadiso(type)
 {
 	if (type === "app") {
