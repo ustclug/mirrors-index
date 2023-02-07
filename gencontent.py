@@ -8,11 +8,19 @@ from urllib.parse import urljoin
 from urllib.parse import urlparse
 import requests
 import fnmatch
+import json
+import utils
+import logging
 
-HTTPDIR = '/srv/rsync-attrs'
+with open(os.path.join(os.path.dirname(__file__), 'gencontent.json')) as f:
+    USER_CONFIG: dict = json.load(f)
 
-EXCLUDE = ("tmpfs", ".*")
+HTTPDIR = USER_CONFIG.get("httpdir", '/srv/rsync-attrs')
+
+EXCLUDE = ["tmpfs", ".*"] + USER_CONFIG.get("extra-exclude", [])
 """Directories match these glob will be ignored."""
+
+logger = logging.getLogger(__name__)
 
 
 def CTimeWA(dirpath):
@@ -56,6 +64,18 @@ def testHelpLink(name):
 
 
 def genRepoList():
+    # get remote-yuki repo list from gencontent.json
+    remote_repos = {}
+    for yuki_endpoint in USER_CONFIG.get("remote-yuki", []):
+        resp = utils.get_resp_with_timeout(yuki_endpoint)
+        if resp is None:
+            continue
+        try:
+            resp = resp.json()
+            for repo in resp:
+                remote_repos[repo["name"]] = repo["lastSuccess"]
+        except Exception as e:
+            logger.warning("Failed to parse remote-yuki response: {}".format(e))
     for d in sorted(os.listdir(HTTPDIR), key=str.lower):
         fpath = os.path.join(HTTPDIR, d)
 
@@ -67,14 +87,17 @@ def genRepoList():
         # top-level dir of http. However, some repos are divided to several
         # sub-dirs which are actually sync-ed instead of top-level directory.
         # We need to check these sub-dirs to find correct lastsync time.
-        ctime = os.stat(fpath).st_ctime
+        if d in remote_repos:
+            ctime = remote_repos[d]
+        else:
+            ctime = os.stat(fpath).st_ctime
 
-        # Since checking all sub-dirs wastes much time, the script just check
-        # repos whose top-level dirs have a old change time.
-        if time.time() - ctime > 3600 * 24 * 2:
-            _ctime = CTimeWA(fpath)
-            if _ctime > ctime:
-                ctime = _ctime
+            # Since checking all sub-dirs wastes much time, the script just check
+            # repos whose top-level dirs have a old change time.
+            if time.time() - ctime > 3600 * 24 * 2:
+                _ctime = CTimeWA(fpath)
+                if _ctime > ctime:
+                    ctime = _ctime
 
         help_href = testHelpLink(d)
         help_text = 'Help' if help_href.strip() else ""
