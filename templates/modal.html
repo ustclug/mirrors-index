@@ -8,7 +8,7 @@
                 <option value="none">-</option>
             </select>
             </p>
-            <p style="display: none" id="download_warning"></p>
+            <p style="display: none" id="{{type}}download_warning" class="download_warning"></p>
             <span class="btn" onclick="downloadiso('{{type}}');">获取{% if type == "app" %}文件{% else %} ISO{% endif %} &gt;</span>
         </div>
     </div>

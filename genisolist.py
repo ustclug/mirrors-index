@@ -9,6 +9,7 @@ import logging
 from urllib.parse import urljoin
 from distutils.version import LooseVersion
 from configparser import ConfigParser
+from argparse import ArgumentParser
 
 logger = logging.getLogger(__name__)
 CONFIG_FILE = os.path.join(os.path.dirname(__file__), 'genisolist.ini')
@@ -63,7 +64,10 @@ def parseSection(items, category="os"):
             for prop in ("version", "type", "platform"):
                 s = items.get(prop, "")
                 for i in range(0, group_count):
-                    s = s.replace("$%d" % i, result.group(i))
+                    if result.group(i):
+                        s = s.replace("$%d" % i, result.group(i))
+                    else:
+                        assert s.find("$%d" % i) == -1
                 imageinfo[prop] = s
 
             logger.debug("[JSON] %r", imageinfo)
@@ -119,6 +123,9 @@ def getImageList() -> str:
 
 
 def getAppList() -> str:
+    if os.environ.get("DEBUG_WITH_ISOLIST"):
+        with open("examples/applist.json") as f:
+            return f.read()
     return getList("app")
 
 
@@ -156,5 +163,14 @@ def getList(category : str = "os") -> str:
 if __name__ == "__main__":
     import sys
     logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
-    print(getImageList())
 
+    parser = ArgumentParser("genisolist")
+    parser.add_argument("--images", action="store_true")
+    parser.add_argument("--apps", action="store_true")
+    args = parser.parse_args()
+    if args.images:
+        print(getImageList())
+    if args.apps:
+        print(getAppList())
+    if not (args.images or args.apps):
+        parser.print_help()
