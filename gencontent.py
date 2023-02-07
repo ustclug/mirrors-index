@@ -17,8 +17,9 @@ with open(os.path.join(os.path.dirname(__file__), 'gencontent.json')) as f:
 
 HTTPDIR = USER_CONFIG.get("httpdir", '/srv/rsync-attrs')
 
-EXCLUDE = ["tmpfs", ".*"] + USER_CONFIG.get("extra-exclude", [])
+EXCLUDE = ["tmpfs", ".*"]
 """Directories match these glob will be ignored."""
+UPDATE_DATE_EXCLUDE = USER_CONFIG["extra-exclude"]
 
 logger = logging.getLogger(__name__)
 
@@ -89,6 +90,8 @@ def genRepoList():
         # We need to check these sub-dirs to find correct lastsync time.
         if d in remote_repos:
             ctime = remote_repos[d]
+        elif d in UPDATE_DATE_EXCLUDE:
+            ctime = 0
         else:
             ctime = os.stat(fpath).st_ctime
 
@@ -99,13 +102,11 @@ def genRepoList():
                 if _ctime > ctime:
                     ctime = _ctime
 
+        ctime_str = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(ctime)) if ctime != 0 else ""
         help_href = testHelpLink(d)
         help_text = 'Help' if help_href.strip() else ""
 
-        yield (time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(ctime)),
-               help_href,
-               help_text,
-               d)
+        yield (ctime_str, help_href, help_text, d)
 
 def getOthers():
     _d = os.path.dirname(os.path.realpath(__file__))
