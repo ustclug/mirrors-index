@@ -6,7 +6,7 @@ import xml.dom
 import xml.dom.minidom
 import requests
 import signal
-import syslog
+import utils
 import logging
 
 """
@@ -26,15 +26,6 @@ def getServerNews(glob_logger: logging.Logger = None) -> list:
 
     logger = glob_logger if glob_logger else logging.getLogger()
 
-    class AlarmTimeoutException(Exception):
-        pass
-
-    class BadRequestException(Exception):
-        pass
-
-    def alarm_handler(signum, frame):
-        raise AlarmTimeoutException
-
     def parseFeedData(text):
         """
         Will return proper HTML String by input.
@@ -53,23 +44,16 @@ def getServerNews(glob_logger: logging.Logger = None) -> list:
 
     logger.info('begin generation of ServerNews...')
     newslist = []
-    signal.signal(signal.SIGALRM, alarm_handler)
-    signal.alarm(20)
     try:
-        page = requests.get(SERVERNEWS_FEED)
-        if page.status_code != 200:
-            raise BadRequestException
-        newslist = list(parseFeedData(page.text))
-    except AlarmTimeoutException:
-        logger.error('generation of ServerNews timed out')
-    except BadRequestException:
-        logger.error('failed to retrieve data from servers.blog')
+        resp = utils.get_resp_with_timeout(SERVERNEWS_FEED, logger=logger)
+        if resp is None:
+            # failed
+            return newslist
+        newslist = list(parseFeedData(resp.text))
+        logger.info('newslist generation successful, size is {}.'.format(len(newslist)))
     except Exception as e:
         logger.error('unknown exception caught: "{}".'.format(str(e)))
     finally:
-        signal.alarm(0)
-        signal.signal(signal.SIGALRM, signal.SIG_DFL)
-        logger.info('newslist generation successful, size is {}.'.format(len(newslist)))
         return newslist
 
 if __name__ == "__main__":
