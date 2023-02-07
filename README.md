@@ -65,7 +65,7 @@ Then `apt update && apt install -y python3 python3-requests python3-jinja2` to i
 
 ## Copyright
 
-    Copyright © 2013-2016 USTC Linux User Group <lug@ustc.edu.cn>
+    Copyright © 2013-2023 USTC Linux User Group <lug@ustc.edu.cn>
     All rights reserved.
 
     This file is part of Mirrors-index.
