@@ -17,9 +17,10 @@ with open(os.path.join(os.path.dirname(__file__), 'gencontent.json')) as f:
 
 HTTPDIR = USER_CONFIG.get("httpdir", '/srv/rsync-attrs')
 
-EXCLUDE = ["tmpfs", ".*"]
+EXCLUDE = ("tmpfs", ".*")
 """Directories match these glob will be ignored."""
 UPDATE_DATE_EXCLUDE = USER_CONFIG["extra-exclude"]
+"""Directories match these names will not have update date calculated."""
 
 logger = logging.getLogger(__name__)
 
