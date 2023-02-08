@@ -8,6 +8,7 @@ from jinja2 import Environment, FileSystemLoader
 import gencontent
 import genisolist
 import genservernews
+import time
 
 def main():
     logger = logging.getLogger('mirrors-genindex')
@@ -49,10 +50,13 @@ def main():
     template = env.get_template('index.html')
     logger.debug('begin parsing template...')
     parsed_template = template.render(
-            repolist=gencontent.genRepoList(),
-            revproxy=gencontent.getOthers(),
-            isoinfo=genisolist.getImageList(),
-            newslist=genservernews.getServerNews(logger))
+        repolist=gencontent.genRepoList(),
+        revproxy=gencontent.getOthers(),
+        isoinfo=genisolist.getImageList(),
+        appinfo=genisolist.getAppList(),
+        newslist=genservernews.getServerNews(logger),
+        now=time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()),
+    )
 
     logger.info('begin file writing...')
     with open(OUTFILE, 'w') as fout:

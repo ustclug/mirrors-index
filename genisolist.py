@@ -9,6 +9,7 @@ import logging
 from urllib.parse import urljoin
 from distutils.version import LooseVersion
 from configparser import ConfigParser
+from argparse import ArgumentParser
 
 logger = logging.getLogger(__name__)
 CONFIG_FILE = os.path.join(os.path.dirname(__file__), 'genisolist.ini')
@@ -24,8 +25,11 @@ def getPlatformPriority(platform):
         return 0
 
 
-def parseSection(items):
+def parseSection(items, category="os"):
     items = dict(items)
+    items_category = items.get("category", "os")
+    if items_category != category:
+        return
 
     if 'location' in items:
         locations = [items['location']]
@@ -55,12 +59,15 @@ def parseSection(items):
                 logger.debug("[MATCH] %r", result.groups())
 
             group_count = len(result.groups()) + 1
-            imageinfo = {"filepath": imagepath, "distro": items["distro"]}
+            imageinfo = {"filepath": imagepath, "distro": items["distro"], "category": items_category}
 
             for prop in ("version", "type", "platform"):
                 s = items.get(prop, "")
                 for i in range(0, group_count):
-                    s = s.replace("$%d" % i, result.group(i))
+                    if result.group(i):
+                        s = s.replace("$%d" % i, result.group(i))
+                    else:
+                        assert s.find("$%d" % i) == -1
                 imageinfo[prop] = s
 
             logger.debug("[JSON] %r", imageinfo)
@@ -93,7 +100,9 @@ def getDescriptionAndURL(image_info, urlbase):
     return (desc, url)
 
 
-def getJsonOutput(url_dict, prio={}):
+def getJsonOutput(url_dict, prio=None):
+    if prio is None:
+        prio = {}
     raw = []
     for distro in url_dict:
         raw.append({
@@ -106,11 +115,24 @@ def getJsonOutput(url_dict, prio={}):
     return json.dumps(raw)
 
 
-def getImageList():
+def getImageList() -> str:
+    if os.environ.get("DEBUG_WITH_ISOLIST"):
+        with open("examples/isolist.json") as f:
+            return f.read()
+    return getList("os")
+
+
+def getAppList() -> str:
+    if os.environ.get("DEBUG_WITH_ISOLIST"):
+        with open("examples/applist.json") as f:
+            return f.read()
+    return getList("app")
+
+
+def getList(category : str = "os") -> str:
     ini = ConfigParser()
     if not(ini.read(CONFIG_FILE)):
         raise Exception("%s not found!" % CONFIG_FILE)
-
     root = ini.get("%main%", 'root')
     urlbase = ini.get("%main%", 'urlbase')
 
@@ -126,12 +148,12 @@ def getImageList():
     for section in ini.sections():
         if section == "%main%":
             continue
-        for image in parseSection(ini.items(section)):
+        for image in parseSection(ini.items(section), category=category):
             if not image['distro'] in url_dict:
                 url_dict[image['distro']] = []
 
             url_dict[image['distro']].append(
-                    getDescriptionAndURL(image, urlbase)
+                getDescriptionAndURL(image, urlbase)
             )
 
     os.chdir(oldcwd)
@@ -141,5 +163,14 @@ def getImageList():
 if __name__ == "__main__":
     import sys
     logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
-    print(getImageList())
 
+    parser = ArgumentParser("genisolist")
+    parser.add_argument("--images", action="store_true")
+    parser.add_argument("--apps", action="store_true")
+    args = parser.parse_args()
+    if args.images:
+        print(getImageList())
+    if args.apps:
+        print(getAppList())
+    if not (args.images or args.apps):
+        parser.print_help()

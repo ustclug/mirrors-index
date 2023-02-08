@@ -1,13 +1,19 @@
-# Dependencies
+# mirrors-index
+
+## Dependencies
 
 * python3
 * python3-requests
 * python3-jinja2
-* systemd
+* systemd (optional)
 
-# Install
+## Install
 
-## Current Method
+Assuming that your metadata is stored in `/srv/rsync-attrs`. Otherwise, you should modify the `HTTPDIR` variable in gencontent.py (by gencontent.json), and root attribute in genisolist.ini.
+
+Metadata now is generated from rsync-huai hook after every sync by yuki.
+
+### Current Method
 
 Add the following line to your crontab (`crontab -e`)
 
@@ -17,13 +23,13 @@ Add the following line to your crontab (`crontab -e`)
 
 It will update every hour at minute 10.
 
-## Alternative Method
+### Alternative Method
 
 Copy all the systemd service files (`mirrors-index.service`, `mirrors-index.timer`,
 `mirrors-index.path`) from `services/` dir into `/etc/systemd/system/`.
 Then enable them and start the timer and the path file.
 
-## Previous Method
+### Previous Method
 
 The following method is obsolete, because /srv/www only contains symlinks.
 
@@ -34,13 +40,34 @@ Add a following line to incrontab:
 The crontab file was also used to trigger the update based on time before.
 Use `crontab -l -u mirror` to check the line that has been commented out for now.
 
-## Locales
+### Locales
 
 Install zh_CN locales since the `genisolist.ini` file contains Chinese characters.
 
-# Copyright
+## Development
 
-    Copyright © 2013-2016 USTC Linux User Group <lug@ustc.edu.cn>
+Here we introduce how to develop this project on your personal computer (without polluting host's filesystem environment).
+
+Create a Debian container:
+
+```shell
+# fish shell
+docker run --rm -it -p 8000:8000 -e TZ=Asia/Shanghai -v $(pwd):/workspace ustclug/debian:11
+# bash shell
+docker run --rm -it -p 8000:8000 -e TZ=Asia/Shanghai -v $PWD:/workspace ustclug/debian:11
+```
+
+Then `apt update && apt install -y python3 python3-requests python3-jinja2` to install dependencies.
+
+`mkdir /srv/rsync-attrs` to create a fake directory for metadata, and `python3 -m http.server --directory /srv/rsync-attrs` at `/workspace` to start a HTTP server at port 8000 for host browser access.
+
+`python3 genindex.py` to generate the index page. Note that this repo currently does not contain webfont-related files yet.
+
+If you need to debug genisolist, `DEBUG_WITH_ISOLIST=1 python3 genindex.py` can generate a full list without the necessity to create stub files one by one.
+
+## Copyright
+
+    Copyright © 2013-2023 USTC Linux User Group <lug@ustc.edu.cn>
     All rights reserved.
 
     This file is part of Mirrors-index.
