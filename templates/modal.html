@@ -1,0 +1,15 @@
+<div class="modal" id="{{type}}modal">
+    <div class="modalclear" id="{{type}}modalclear" onclick="modal('{{type}}')"></div>
+    <div class="modalcontainer" id="{{type}}modalcontainer" onclick="">
+        <div class="modaltitle" id="{{type}}modaltitle"><span>{% if type == "app" %}获取开源软件{% else %}获取安装镜像{% endif %}</span><span onclick="modal('{{type}}')" style="float:right;cursor:pointer">X</span></div>
+        <div class="modalcontent" id="{{type}}modalcontent">
+            <p>选择{% if type == "app" %}软件名{% else %}安装发行版{% endif %}： <select id="{{type}}distro" onchange="switchdistro('{{type}}')"></select></p>
+            <p>选择{% if type == "app" %}软件{% else %}发行版{% endif %}版本： <select id="{{type}}version" onchange="switchversion('{{type}}')">
+                <option value="none">-</option>
+            </select>
+            </p>
+            <p style="display: none" id="{{type}}download_warning" class="download_warning"></p>
+            <span class="btn" onclick="downloadiso('{{type}}');">获取{% if type == "app" %}文件{% else %} ISO{% endif %} &gt;</span>
+        </div>
+    </div>
+</div>
