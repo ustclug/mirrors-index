@@ -9,7 +9,6 @@ function update_distro_options(element_name, infovar, type) {
 		s.options[s.options.length] = new Option(infovar[i].distro, i);
 	}
 	switchdistro(type);
-	switchversion(type);
 }
 
 function modal(type)
@@ -41,6 +40,7 @@ function switchdistro(type)
 	for (var i=0; i<info[idx].urls.length; i++) {
 		s.options[s.options.length] = new Option(info[idx].urls[i].name, i)
 	}
+	switchversion(type);
 }
 
 function switchversion(type)
