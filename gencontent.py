@@ -71,7 +71,7 @@ def CTimeWA(dirpath):
 
 def getMirrorzURL(name):
     params = {"mirror": MIRROR_NAME}
-    if cname[name]:
+    if cname.get(name):
         name = cname[name]
     return urljoin(HELPBASE_MIRRORZ, name + "?" + urlencode(params))
 
