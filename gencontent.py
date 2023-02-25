@@ -4,7 +4,7 @@
 import os
 import time
 import json
-from urllib.parse import urljoin
+from urllib.parse import urlencode, urljoin
 from urllib.parse import urlparse
 import requests
 import fnmatch
@@ -16,11 +16,16 @@ with open(os.path.join(os.path.dirname(__file__), 'gencontent.json')) as f:
     USER_CONFIG: dict = json.load(f)
 
 HTTPDIR = USER_CONFIG.get("httpdir", '/srv/rsync-attrs')
+HELPBASE_SPHI = USER_CONFIG.get("help-sphinx", "http://mirrors.ustc.edu.cn/help/")
+HELPBASE_MIRRORZ = USER_CONFIG.get("help-mirrorz", "https://help.mirrors.cernet.edu.cn/")
+MIRROR_NAME = USER_CONFIG.get("mirror-name", "USTC")
 
 EXCLUDE = ("tmpfs", ".*")
 """Directories match these glob will be ignored."""
 UPDATE_DATE_EXCLUDE = USER_CONFIG["extra-exclude"]
 """Directories match these names will not have update date calculated."""
+MIRRORZ_HELP = USER_CONFIG.get("mirrorz-help", [])
+"""Set which repos should use mirrorz-help, if '*' in list then all help links will use mirrorz-help."""
 
 logger = logging.getLogger(__name__)
 
@@ -42,10 +47,24 @@ def CTimeWA(dirpath):
     return ctime
 
 
+def getMirrorzURL(name):
+    params = {"mirror": MIRROR_NAME}
+    return urljoin(HELPBASE_MIRRORZ, name + "?" + urlencode(params))
+
+
 def testHelpLink(name):
-    URLBASE_SPHI = "http://mirrors.ustc.edu.cn/help/"
+    """
+    For non-ustc mirrors, we can use mirrorz-help to generate help links.
+    Currently we don't check the existence of help pages.
+    """
+    if "*" in MIRRORZ_HELP:
+        return getMirrorzURL(name)
+
+    """
+    Check if the help page exists on sphinx.
+    """
     sphinx_exist = True
-    url = urljoin(URLBASE_SPHI, name + ".html")
+    url = urljoin(HELPBASE_SPHI, name + ".html")
     try:
         html = requests.get(url, timeout=1)
     except:
@@ -53,15 +72,13 @@ def testHelpLink(name):
     if sphinx_exist == True and "404 Not Found" not in html.text:
         return urlparse(url).path
 
-    URLBASE_DOKU = "https://lug.ustc.edu.cn/wiki/mirrors/help/"
-    url = urljoin(URLBASE_DOKU, name)
+    """
+    If user specified the help page exists on mirrorz-help, we use it.
+    """
+    if name in MIRRORZ_HELP:
+        return getMirrorzURL(name)
 
-    try:
-        html = requests.get(url, timeout=4)
-    except:
-        return ''
-
-    return "" if 404 == html.status_code else url
+    return ""
 
 
 
