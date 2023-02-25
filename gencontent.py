@@ -16,6 +16,9 @@ with open(os.path.join(os.path.dirname(__file__), 'gencontent.json')) as f:
     USER_CONFIG: dict = json.load(f)
 
 HTTPDIR = USER_CONFIG.get("httpdir", '/srv/rsync-attrs')
+"""Where repo files (or rsync-huai metadata files) are stored."""
+OUTDIR = USER_CONFIG.get("outdir", HTTPDIR)
+"""Where generated files will be stored."""
 HELPBASE_SPHI = USER_CONFIG.get("help-sphinx", "http://mirrors.ustc.edu.cn/help/")
 HELPBASE_MIRRORZ = USER_CONFIG.get("help-mirrorz", "https://help.mirrors.cernet.edu.cn/")
 MIRROR_NAME = USER_CONFIG.get("mirror-name", "USTC")

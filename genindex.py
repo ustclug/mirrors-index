@@ -13,7 +13,7 @@ import time
 def main():
     logger = logging.getLogger('mirrors-genindex')
     ch = logging.StreamHandler()
-    OUTDIR = os.getenv('HTTPDIR') or gencontent.HTTPDIR
+    OUTDIR = os.getenv('OUTDIR') or gencontent.OUTDIR or os.getenv('HTTPDIR') or gencontent.HTTPDIR
     parser = argparse.ArgumentParser(
             description="USTC Mirrors Index Page Generator",
             epilog="Brought to you by LUG@USTC.")
