@@ -30,6 +30,25 @@ MIRRORZ_HELP = USER_CONFIG.get("mirrorz-help", [])
 logger = logging.getLogger(__name__)
 
 
+if MIRRORZ_HELP:
+    cname_path = os.path.join(os.path.dirname(__file__), 'cname.json')
+    # download cname
+    try:
+        req = requests.get("https://mirrorz.org/static/json/cname.json", timeout=10)
+        req.raise_for_status()
+        cname = req.json()
+        with open(cname_path, "w") as f:
+            json.dump(cname, f)
+    except:
+        # website req timeout, use local cname
+        try:
+            with open(cname_path) as f:
+                cname = json.load(f)
+        except:
+            logger.warn("Failed to load mirrorz cname.json")
+            cname = {}
+
+
 def CTimeWA(dirpath):
     """A unreliable workaround for nested repos.
     See comments in main program.
@@ -49,6 +68,8 @@ def CTimeWA(dirpath):
 
 def getMirrorzURL(name):
     params = {"mirror": MIRROR_NAME}
+    if cname[name]:
+        name = cname[name]
     return urljoin(HELPBASE_MIRRORZ, name + "?" + urlencode(params))
 
 
