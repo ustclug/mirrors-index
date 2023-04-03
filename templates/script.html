@@ -1,4 +1,11 @@
 <script type="text/javascript">
+    // click to show rainbow colors
+    var welcome = document.getElementById("welcome");
+    welcome.addEventListener("click", function() {
+        welcome.className = "animate-rainbow";
+    }, false);
+</script>
+<script type="text/javascript">
 //var isoinfo = "INCLUDE isoinfo.json";
 var isoinfo = {{ isoinfo|safe }};
 var appinfo = {{ appinfo|safe }};

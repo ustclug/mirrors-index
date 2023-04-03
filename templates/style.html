@@ -37,15 +37,23 @@ body{
     /*width: 100%;*/
     padding: 40px 15px 40px 0px;
     background: #40bd97; /* Old browsers */
-    background: linear-gradient(124deg,
-        #ff2400, #e81d1d, #e8b71d, #e3e81d, #1de840, #1ddde8, #2b1de8, #dd00f3, #dd00f3
-    );
-    background-size: 1800% 1800%;
-    animation: rainbow 15s ease-in-out infinite;
+    background: -moz-linear-gradient(top, #40bd97 0%, #07a878 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#40bd97), color-stop(100%,#07a878)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, #40bd97 0%,#07a878 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, #40bd97 0%,#07a878 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, #40bd97 0%,#07a878 100%); /* IE10+ */
+}
+.animate-rainbow {
+    background-image: linear-gradient(124deg,
+        #1de840, #40bd97, #40bd97, #40bd97, #1ddde8, #2b1de8, #dd00f3, #dd00f3, #ff2400, #e81d1d, #e8b71d, #e3e81d
+    ) !important;
+    background-size: 1800% 1800% !important;
+    animation: rainbow 30s ease-in-out infinite;
 }
 @keyframes rainbow {
     0%{background-position:0% 82%;}
-    50%{background-position:100% 19%;}
+    50%{background-position:100% 18%;}
+    100%{background-position:0% 82%;}
 }
 #intro{
     margin:0 auto;
