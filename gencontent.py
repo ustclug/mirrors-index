@@ -12,15 +12,19 @@ import json
 import utils
 import logging
 
-with open(os.path.join(os.path.dirname(__file__), 'gencontent.json')) as f:
+from utils import CONFIG_FOLDER, get_mirrorz_cname
+
+with open(os.path.join(CONFIG_FOLDER, "gencontent.json")) as f:
     USER_CONFIG: dict = json.load(f)
 
-HTTPDIR = USER_CONFIG.get("httpdir", '/srv/rsync-attrs')
+HTTPDIR = USER_CONFIG.get("httpdir", "/srv/rsync-attrs")
 """Where repo files (or rsync-huai metadata files) are stored."""
 OUTDIR = USER_CONFIG.get("outdir", HTTPDIR)
 """Where generated files will be stored."""
 HELPBASE_SPHI = USER_CONFIG.get("help-sphinx", "http://mirrors.ustc.edu.cn/help/")
-HELPBASE_MIRRORZ = USER_CONFIG.get("help-mirrorz", "https://help.mirrors.cernet.edu.cn/")
+HELPBASE_MIRRORZ = USER_CONFIG.get(
+    "help-mirrorz", "https://help.mirrors.cernet.edu.cn/"
+)
 MIRROR_NAME = USER_CONFIG.get("mirror-name", "USTC")
 
 EXCLUDE = ("tmpfs", ".*")
@@ -34,22 +38,12 @@ logger = logging.getLogger(__name__)
 
 
 if MIRRORZ_HELP:
-    cname_path = os.path.join(os.path.dirname(__file__), 'cname.json')
-    # download cname
-    try:
-        req = requests.get("https://mirrorz.org/static/json/cname.json", timeout=10)
-        req.raise_for_status()
-        cname = req.json()
-        with open(cname_path, "w") as f:
-            json.dump(cname, f)
-    except:
-        # website req timeout, use local cname
-        try:
-            with open(cname_path) as f:
-                cname = json.load(f)
-        except:
-            logger.warn("Failed to load mirrorz cname.json")
-            cname = {}
+    cname = get_mirrorz_cname()
+
+if os.environ.get("DEBUG_WITH_REPOLIST"):
+    with open("examples/repolist.txt") as f:
+        for l in f:
+            os.makedirs(os.path.join(HTTPDIR, l.strip()), exist_ok=True)
 
 
 def CTimeWA(dirpath):
@@ -105,33 +99,34 @@ def testHelpLink(name):
     return ""
 
 
-
 def genRepoList():
-    # get remote-yuki repo list from gencontent.json
-    remote_repos = {}
-    for yuki_endpoint in USER_CONFIG.get("remote-yuki", []):
-        resp = utils.get_resp_with_timeout(yuki_endpoint)
+    # get yuki repo list from gencontent.json
+    homepage_repos = {}
+    for yuki_endpoint in USER_CONFIG.get("yuki", []):
+        if not yuki_endpoint["homepage"]:
+            continue
+        url = yuki_endpoint["url"]
+        resp = utils.get_resp_with_timeout(url)
         if resp is None:
             continue
         try:
             resp = resp.json()
             for repo in resp:
-                remote_repos[repo["name"]] = repo["lastSuccess"]
+                homepage_repos[repo["name"]] = repo["lastSuccess"]
         except Exception as e:
             logger.warning("Failed to parse remote-yuki response: {}".format(e))
     for d in sorted(os.listdir(HTTPDIR), key=str.lower):
         fpath = os.path.join(HTTPDIR, d)
 
-        if not os.path.isdir(fpath) or \
-                any(fnmatch.fnmatch(d, p) for p in EXCLUDE):
+        if not os.path.isdir(fpath) or any(fnmatch.fnmatch(d, p) for p in EXCLUDE):
             continue
 
         # Change time is lastsync time if sync destination is exactly the same
         # top-level dir of http. However, some repos are divided to several
         # sub-dirs which are actually sync-ed instead of top-level directory.
         # We need to check these sub-dirs to find correct lastsync time.
-        if d in remote_repos:
-            ctime = remote_repos[d]
+        if d in homepage_repos:
+            ctime = homepage_repos[d]
         elif d in UPDATE_DATE_EXCLUDE:
             ctime = 0
         else:
@@ -144,20 +139,25 @@ def genRepoList():
                 if _ctime > ctime:
                     ctime = _ctime
 
-        ctime_str = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(ctime)) if ctime != 0 else ""
+        ctime_str = (
+            time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(ctime))
+            if ctime != 0
+            else ""
+        )
         help_href = testHelpLink(d)
-        help_text = 'Help' if help_href.strip() else ""
+        help_text = "Help" if help_href.strip() else ""
 
         yield (ctime_str, help_href, help_text, d)
 
+
 def getOthers():
-    _d = os.path.dirname(os.path.realpath(__file__))
     info = None
-    with open(os.path.join(_d, 'revproxy.json'), 'r') as fin:
+    with open(os.path.join(CONFIG_FOLDER, "revproxy.json"), "r") as fin:
         info = json.load(fin)
     for repo in info:
-        yield (repo['src'], repo['dst'])
+        yield (repo["src"], repo["dst"])
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     for i in genRepoList():
         print(i)

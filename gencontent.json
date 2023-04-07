@@ -1,8 +1,0 @@
-{
-    "remote-yuki": [
-        "https://admin.mirrors.ustc.edu.cn/mirrors3"
-    ],
-    "extra-exclude": [
-        "rust-static"
-    ]
-}

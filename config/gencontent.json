@@ -1,0 +1,28 @@
+{
+    "yuki": [
+        {
+            "url": "https://admin.mirrors.ustc.edu.cn/mirrors3",
+            "name": "mirrors3",
+            "priority": 2,
+            "homepage": true,
+            "mirrorz": true
+        },
+        {
+            "url": "https://admin.mirrors.ustc.edu.cn/rsync",
+            "name": "mirrors2",
+            "priority": 1,
+            "homepage": false,
+            "mirrorz": false
+        },
+        {
+            "url": "https://admin.mirrors.ustc.edu.cn/api/v1/metas",
+            "name": "mirrors4",
+            "priority": 3,
+            "homepage": false,
+            "mirrorz": true
+        }
+    ],
+    "extra-exclude": [
+        "rust-static"
+    ]
+}
