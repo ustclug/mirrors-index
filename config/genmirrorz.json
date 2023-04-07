@@ -7,21 +7,31 @@
             "public": true,
             "resolve": "mirrors.ustc.edu.cn",
             "filter": [ "V4", "V6", "SSL", "NOSSL" ],
-            "range": []
+            "range": [
+                "COUNTRY:CN",
+                "REGION:AH"
+            ]
         },
         {
             "label": "ustc6",
             "public": true,
             "resolve": "ipv6.mirrors.ustc.edu.cn",
             "filter": [ "V6", "SSL", "NOSSL" ],
-            "range": []
+            "range": [
+                "COUNTRY:CN",
+                "REGION:AH",
+                "ISP:CERNET"
+            ]
         },
         {
             "label": "ustc4",
             "public": true,
             "resolve": "ipv4.mirrors.ustc.edu.cn",
             "filter": [ "V4", "SSL", "NOSSL" ],
-            "range": []
+            "range": [
+                "COUNTRY:CN",
+                "REGION:AH"
+            ]
         },
         {
             "label": "ustcchinanet",
@@ -29,8 +39,9 @@
             "resolve": "chinanet.mirrors.ustc.edu.cn",
             "filter": [ "V4", "SSL", "NOSSL" ],
             "range": [
-                "AS4134",
-                "AS4809"
+                "COUNTRY:CN",
+                "REGION:AH",
+                "ISP:CHINANET"
             ]
         },
         {
@@ -39,8 +50,9 @@
             "resolve": "cernet.mirrors.ustc.edu.cn",
             "filter": [ "V4", "V6", "SSL", "NOSSL" ],
             "range": [
-                "AS4538",
-                "AS24362"
+                "COUNTRY:CN",
+                "REGION:AH",
+                "ISP:CERNET"
             ]
         },
         {
@@ -49,7 +61,9 @@
             "resolve": "unicom.mirrors.ustc.edu.cn",
             "filter": [ "V4", "SSL", "NOSSL" ],
             "range": [
-                "AS4837"
+                "COUNTRY:CN",
+                "REGION:AH",
+                "ISP:UNICOM"
             ]
         },
         {
@@ -58,7 +72,9 @@
             "resolve": "cmcc.mirrors.ustc.edu.cn",
             "filter": [ "V4", "SSL", "NOSSL" ],
             "range": [
-                "AS9808"
+                "COUNTRY:CN",
+                "REGION:AH",
+                "ISP:CMCC"
             ]
         }],
         "site": {
