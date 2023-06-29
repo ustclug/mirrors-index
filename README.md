@@ -2,8 +2,6 @@
 
 Help documentation source code: https://github.com/ustclug/mirrorhelp/
 
-Mirrorz generation script: https://github.com/mirrorz-org/mirrorz-scripts/tree/master/yuki-mirrorindex
-
 ## Dependencies
 
 * python3
