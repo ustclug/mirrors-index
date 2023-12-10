@@ -13,7 +13,7 @@ import logging
 Generate HTML Fragment about latest server news.
 """
 
-SERVERNEWS_FEED = "https://servers.ustclug.org/category/mirrors/feed/"
+SERVERNEWS_FEED = "https://servers.ustclug.org/feed.xml"
 SERVERNEWS_MAX_NUM = 3
 
 
@@ -33,13 +33,18 @@ def getServerNews(glob_logger: logging.Logger = None) -> list:
         class NewsRecord():
             def __init__(self, item):
                 """Only The most useful data are picked for now."""
-                self.title = item.getElementsByTagName('title')[0].firstChild.nodeValue
-                self.link = item.getElementsByTagName('link')[0].firstChild.nodeValue
+                self.title = item.getElementsByTagName('title')[0].TEXT_NODE
+                self.link = item.getElementsByTagName('link')[0].getAttribute('href')
 
         # impl = xml.dom.getDOMImplementation() # Not needed in parsing
         doc = xml.dom.minidom.parseString(text)
-
-        for item in doc.getElementsByTagName('item')[:SERVERNEWS_MAX_NUM]:
+        current_num = 0
+        for item in doc.getElementsByTagName('entry'):
+            if (current_num >= SERVERNEWS_MAX_NUM):
+                break
+            if item.getElementsByTagName("category")[0].getAttribute("term") != "mirrors":
+                continue
+            current_num += 1
             yield NewsRecord(item)
 
     logger.info('begin generation of ServerNews...')
