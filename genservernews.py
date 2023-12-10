@@ -33,7 +33,7 @@ def getServerNews(glob_logger: logging.Logger = None) -> list:
         class NewsRecord():
             def __init__(self, item):
                 """Only The most useful data are picked for now."""
-                self.title = item.getElementsByTagName('title')[0].TEXT_NODE
+                self.title = item.getElementsByTagName('title')[0].firstChild.nodeValue
                 self.link = item.getElementsByTagName('link')[0].getAttribute('href')
 
         # impl = xml.dom.getDOMImplementation() # Not needed in parsing
