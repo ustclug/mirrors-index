@@ -7,7 +7,7 @@ import glob
 import json
 import logging
 from urllib.parse import urljoin
-from distutils.version import LooseVersion
+from version import LooseVersion
 from configparser import ConfigParser
 from argparse import ArgumentParser
 
