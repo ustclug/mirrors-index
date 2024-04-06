@@ -38,7 +38,7 @@ def get_resp_with_timeout(
     except AlarmTimeoutException:
         logger.error(f"requesting {url} timed out")
     except BadRequestException:
-        logger.error("failed to retrieve data from {url}")
+        logger.error(f"failed to retrieve data from {url}")
     except Exception as e:
         logger.error('unknown exception caught: "{}".'.format(str(e)))
     finally:
