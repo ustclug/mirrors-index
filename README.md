@@ -54,9 +54,9 @@ Create a Debian container:
 
 ```shell
 # fish shell
-docker run --rm -it -p 8000:8000 -e TZ=Asia/Shanghai -v $(pwd):/workspace ustclug/debian:11
+docker run --rm -it -p 8000:8000 -e TZ=Asia/Shanghai -v $(pwd):/workspace ustclug/debian:12
 # bash shell
-docker run --rm -it -p 8000:8000 -e TZ=Asia/Shanghai -v $PWD:/workspace ustclug/debian:11
+docker run --rm -it -p 8000:8000 -e TZ=Asia/Shanghai -v $PWD:/workspace ustclug/debian:12
 ```
 
 Then `apt update && apt install -y python3 python3-requests python3-jinja2` to install dependencies.
