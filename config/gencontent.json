@@ -23,6 +23,6 @@
         }
     ],
     "extra-exclude": [
-        "rust-static"
+        "rust-static", "nix-channels-index"
     ]
 }
