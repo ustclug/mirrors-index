@@ -202,7 +202,7 @@ def parse_file(file_item: dict, urlbase: str) -> dict:
     return {"name": desc, "url": url}
 
 
-def parse_ini(category: str) -> list:
+def gen_from_ini(category: str) -> list:
     """
     Read ini file, parse and return a list. Each item of the list is a dictionary with following schema:
 
@@ -245,11 +245,11 @@ def parse_ini(category: str) -> list:
 
 
 def get_os_list() -> str:
-    return json.dumps(parse_ini(category="os"))
+    return json.dumps(gen_from_ini(category="os"))
 
 
 def get_app_list() -> str:
-    return json.dumps(parse_ini(category="app"))
+    return json.dumps(gen_from_ini(category="app"))
 
 
 if __name__ == "__main__":
