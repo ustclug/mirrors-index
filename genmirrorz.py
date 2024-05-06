@@ -154,8 +154,8 @@ if __name__ == "__main__":
     import genisolist
     import gencontent
 
-    isolist = genisolist.getImageList()
-    applist = genisolist.getAppList()
+    isolist = genisolist.get_os_list()
+    applist = genisolist.get_app_list()
     repolist = gencontent.genRepoList()
 
     print(getMirrorzJson(repolist, isolist, applist))

@@ -73,8 +73,8 @@ def main():
 
     repolist = list(gencontent.genRepoList())
     revproxy = gencontent.getOthers()
-    isoinfo = genisolist.getImageList()
-    appinfo = genisolist.getAppList()
+    isoinfo = genisolist.get_os_list()
+    appinfo = genisolist.get_app_list()
     newslist = genservernews.getServerNews(logger)
 
     parsed_template = template.render(
