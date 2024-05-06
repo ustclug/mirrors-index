@@ -71,7 +71,7 @@ Also `DEBUG_WITH_REPOLIST=1 python3 genindex.py` can help create folders within 
 
 ## Copyright
 
-    Copyright © 2013-2023 USTC Linux User Group <lug@ustc.edu.cn>
+    Copyright © 2013-2024 USTC Linux User Group <lug@ustc.edu.cn>
     All rights reserved.
 
     This file is part of Mirrors-index.
