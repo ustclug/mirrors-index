@@ -105,7 +105,7 @@ def parse_section(section: dict, root: Path) -> list:
     A "file item" should at least have following schema:
 
     {
-        "path": Path,
+        "path": str (relative path to root),
         "version": str,
         "platform": str,
         "type": str,
@@ -116,9 +116,13 @@ def parse_section(section: dict, root: Path) -> list:
         locations = [section["location"]]
     else:
         locations = []
-        for key, value in section.items():
-            if key.startswith("location_"):
-                locations.append(value)
+        i = 0
+        while True:
+            location = section.get(f"location_{i}", None)
+            if location is None:
+                break
+            locations.append(location)
+            i += 1
     assert locations, "No location found in section"
 
     pattern = section.get("pattern", "")
@@ -126,14 +130,15 @@ def parse_section(section: dict, root: Path) -> list:
     pattern = re.compile(pattern)
 
     listvers = int(section.get("listvers", 0xFF))
-    nosort = section.get("nosort", False)
+    nosort = bool(section.get("nosort", False))
 
     files = defaultdict(list)
     for location in locations:
         logger.debug("Location: %s", location)
         file_list = root.glob(location)
         for file_path in file_list:
-            logger.debug("File: %s", file_path)
+            relative_path = file_path.relative_to(root)
+            logger.debug("File: %s", relative_path)
             result = pattern.search(file_path.name)
 
             if not result:
@@ -142,7 +147,7 @@ def parse_section(section: dict, root: Path) -> list:
             logger.debug("Matched: %r", result.groups())
 
             file_item = {
-                "path": file_path,
+                "path": str(relative_path),
                 "distro": section["distro"],
                 "version": render(section["version"], result),
                 "type": render(section.get("type", ""), result),
@@ -189,7 +194,7 @@ def parse_file(file_item: dict, urlbase: str) -> dict:
     }
     """
 
-    url = urljoin(urlbase, file_item["path"].name)
+    url = urljoin(urlbase, file_item["path"])
     if file_item["platform"]:
         desc = "%s (%s%s)" % (
             file_item["version"],
@@ -240,6 +245,7 @@ def gen_from_ini(category: str) -> list:
     
     # Convert results to output
     results = [{"distro": k, "category": category, "urls": v} for k, v in results.items()]
+    results.sort(key=lambda x: dN.get(x["distro"], 0xFFFF))
 
     return results
 
