@@ -1,0 +1,3 @@
+[submodule "z-genisolist"]
+	path = z-genisolist
+	url = https://github.com/mirrorz-org/genisolist.git

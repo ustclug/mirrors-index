@@ -16,7 +16,7 @@ from gencontent import USER_CONFIG as gencontent_config
 cname = get_mirrorz_cname()
 logger = logging.getLogger(__name__)
 
-with open(os.path.join(CONFIG_FOLDER, "genmirrorz.json")) as f:
+with open(CONFIG_FOLDER / "genmirrorz.json") as f:
     options = json.load(f)
     base = options["base"]
     skiplist = options.get("skip", [])
@@ -130,32 +130,23 @@ def disk_info(site: dict) -> None:
     site["disk"] = lug_repo.replace(" ", "/")
 
 
-def getMirrorzJson(repolist, isolist, applist):
-    if type(isolist) is str:
-        isolist = json.loads(isolist)
-    if type(applist) is str:
-        applist = json.loads(applist)
-    for i in applist:
-        i["category"] = "app"
-
+def getMirrorzJson(repolist, isolist):
     disk_info(base["site"])
     iso(isolist)
-    iso(applist)
     mirrors = parse_repo_with_meta(repolist, metas)
 
     mirrorz = base
-    mirrorz["info"] = isolist + applist
+    mirrorz["info"] = isolist
     mirrorz["mirrors"] = mirrors
 
     return json.dumps(mirrorz)
 
 
 if __name__ == "__main__":
-    import genisolist
+    from utils import get_isolist
     import gencontent
 
-    isolist = genisolist.get_os_list()
-    applist = genisolist.get_app_list()
+    isolist = get_isolist()
     repolist = gencontent.genRepoList()
 
-    print(getMirrorzJson(repolist, isolist, applist))
+    print(getMirrorzJson(repolist, isolist))

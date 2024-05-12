@@ -1,7 +1,18 @@
 <script type="text/javascript">
-//var isoinfo = "INCLUDE isoinfo.json";
-var isoinfo = {{ isoinfo|safe }};
-var appinfo = {{ appinfo|safe }};
+var info = {{ isoinfo|safe }};
+
+var isoinfo = [];
+var appinfo = [];
+
+for (var i=0; i<info.length; i++) {
+    if (info[i].category === "os") {
+        isoinfo.push(info[i]);
+    } else if (info[i].category === "app") {
+        appinfo.push(info[i]);
+    } else {
+        console.warn("Unknown category: " + info[i].category);
+    }
+}
 function update_distro_options(element_name, infovar, type) {
     var s = document.getElementById(element_name);
     s.options.length = 0;

@@ -11,6 +11,12 @@ Help documentation source code: https://github.com/ustclug/mirrorhelp/
 
 ## Install
 
+genisolist is a submodule of mirrorz-genisolist, so please checkout the submodule first:
+
+```shell
+git submodule update --init --recursive
+```
+
 Assuming that your metadata is stored in `/srv/rsync-attrs`. Otherwise, you should modify the `HTTPDIR` variable in gencontent.py (by gencontent.json), and root attribute in genisolist.ini.
 
 Metadata now is generated from rsync-huai hook after every sync by yuki.
@@ -59,13 +65,13 @@ docker run --rm -it -p 8000:8000 -e TZ=Asia/Shanghai -v $(pwd):/workspace ustclu
 docker run --rm -it -p 8000:8000 -e TZ=Asia/Shanghai -v $PWD:/workspace ustclug/debian:12
 ```
 
-Then `apt update && apt install -y python3 python3-requests python3-jinja2` to install dependencies.
+Then `apt update && apt install -y python3 python3-requests python3-jinja2 rsync` to install dependencies.
 
 `mkdir /srv/rsync-attrs` to create a fake directory for metadata, and `python3 -m http.server --directory /srv/rsync-attrs &` at `/workspace` to start a HTTP server at port 8000 for host browser access.
 
 `python3 genindex.py` to generate the index page. Note that this repo currently does not contain webfont-related files yet.
 
-If you need to debug genisolist, `DEBUG_WITH_ISOLIST=1 python3 genindex.py` can generate a full list without the necessity to create stub files one by one.
+If you need to debug genisolist, use z-genisolist/utils/rsync-stub-generator.py to generate stub files for testing.
 
 Also `DEBUG_WITH_REPOLIST=1 python3 genindex.py` can help create folders within `HTTPDIR`/`OUTDIR` without the necessity to create stub files one by one.
 

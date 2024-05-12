@@ -14,7 +14,7 @@ import logging
 
 from utils import CONFIG_FOLDER, get_mirrorz_cname
 
-with open(os.path.join(CONFIG_FOLDER, "gencontent.json")) as f:
+with open(CONFIG_FOLDER / "gencontent.json") as f:
     USER_CONFIG: dict = json.load(f)
 
 HTTPDIR = USER_CONFIG.get("httpdir", "/srv/rsync-attrs")
@@ -152,7 +152,7 @@ def genRepoList():
 
 def getOthers():
     info = None
-    with open(os.path.join(CONFIG_FOLDER, "revproxy.json"), "r") as fin:
+    with open(CONFIG_FOLDER / "revproxy.json", "r") as fin:
         info = json.load(fin)
     for repo in info:
         yield (repo["src"], repo["dst"])

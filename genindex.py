@@ -6,10 +6,9 @@ import logging
 import argparse
 from jinja2 import Environment, FileSystemLoader
 import time
-import json
 
 import gencontent
-import genisolist
+from utils import get_isolist
 import genservernews
 
 
@@ -73,15 +72,13 @@ def main():
 
     repolist = list(gencontent.genRepoList())
     revproxy = gencontent.getOthers()
-    isoinfo = genisolist.get_os_list()
-    appinfo = genisolist.get_app_list()
+    isoinfo = get_isolist()
     newslist = genservernews.getServerNews(logger)
 
     parsed_template = template.render(
         repolist=repolist,
         revproxy=revproxy,
         isoinfo=isoinfo,
-        appinfo=appinfo,
         newslist=newslist,
         now=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()),
     )
@@ -98,7 +95,7 @@ def main():
 
         logger.info("begin mirrorz.json file writing...")
         with open(args.mirrorz, "w") as fout:
-            fout.write(genmirrorz.getMirrorzJson(repolist, isoinfo, appinfo))
+            fout.write(genmirrorz.getMirrorzJson(repolist, isoinfo))
             fout.write(os.linesep)
         logger.info("mirrorz.json file completed!")
 

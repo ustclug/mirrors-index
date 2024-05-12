@@ -1,13 +1,15 @@
 import signal
 from typing import Optional
+from genisolist import process_ini, gen_from_sections
 import requests
 import logging
 import os
 import json
 import functools
+from pathlib import Path
 
 logger = logging.getLogger(__name__)
-CONFIG_FOLDER = os.path.join(os.path.dirname(__file__), "config")
+CONFIG_FOLDER = Path(os.path.dirname(__file__)) / "config"
 
 
 class AlarmTimeoutException(Exception):
@@ -50,7 +52,7 @@ def get_resp_with_timeout(
 # Currently within one run, we expect to download cname.json only once.
 @functools.cache
 def get_mirrorz_cname():
-    cname_path = os.path.join(CONFIG_FOLDER, "cname.json")
+    cname_path = CONFIG_FOLDER / "cname.json"
     # download cname
     try:
         req = requests.get("https://mirrorz.org/static/json/cname.json", timeout=10)
@@ -68,3 +70,10 @@ def get_mirrorz_cname():
             logger.warn("Failed to load mirrorz cname.json")
             cname = {}
     return cname
+
+
+# Used by multiple generators, to directly use reference impl without modification
+def get_isolist():
+    genisolist_inifile = CONFIG_FOLDER / "genisolist.ini"
+    sections = process_ini(genisolist_inifile)
+    return gen_from_sections(sections)
