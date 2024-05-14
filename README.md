@@ -71,7 +71,11 @@ Then `apt update && apt install -y python3 python3-requests python3-jinja2 rsync
 
 `python3 genindex.py` to generate the index page. Note that this repo currently does not contain webfont-related files yet.
 
-If you need to debug genisolist, use z-genisolist/utils/rsync-stub-generator.py to generate stub files for testing.
+If you need to debug genisolist, use `z-genisolist/utils/rsync-stub-generator.py` to generate stub files for testing. Example:
+
+```shell
+z-genisolist/utils/rsync-stub-generator.py rsync://rsync.mirrors.ustc.edu.cn/archlinux --dist /srv/rsync-attrs/archlinux
+```
 
 Also `DEBUG_WITH_REPOLIST=1 python3 genindex.py` can help create folders within `HTTPDIR`/`OUTDIR` without the necessity to create stub files one by one.
 
