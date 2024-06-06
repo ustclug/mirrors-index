@@ -1,17 +1,5 @@
 [
     {
-        "src": "registry-1.docker.io",
-        "dst": "docker.mirrors.ustc.edu.cn (ustcnet only)"
-    },
-    {
-        "src": "gcr.io",
-        "dst": "gcr.mirrors.ustc.edu.cn (ustcnet only)"
-    },
-    {
-        "src": "quay.io",
-        "dst": "quay.mirrors.ustc.edu.cn (ustcnet only)"
-    },
-    {
         "src": "packages.elastic.co",
         "dst": "elastic.proxy.ustclug.org"
     },
