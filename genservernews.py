@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import datetime
+import logging
 import xml
 import xml.dom
 import xml.dom.minidom
-import requests
-import signal
+
 import utils
-import logging
 
 """
 Generate HTML Fragment about latest server news.
@@ -19,12 +19,12 @@ SERVERNEWS_MAX_NUM = 3
 
 def getServerNews(glob_logger: logging.Logger = None) -> list:
     """
-    return list of NewRecord object.
+    return list of NewsRecord object.
 
     Timeout is set to 20 seconds.
     """
 
-    logger = glob_logger if glob_logger else logging.getLogger()
+    logger = glob_logger or logging.getLogger()
 
     def parseFeedData(text):
         """
@@ -35,6 +35,13 @@ def getServerNews(glob_logger: logging.Logger = None) -> list:
                 """Only The most useful data are picked for now."""
                 self.title = item.getElementsByTagName('title')[0].firstChild.nodeValue
                 self.link = item.getElementsByTagName('link')[0].getAttribute('href')
+                self.date = datetime.datetime.fromisoformat(
+                    item.getElementsByTagName('published')[0].firstChild.nodeValue
+                )
+                self.date_str = self.date.strftime("%Y-%m-%d")
+
+                if self.date_str not in self.title:
+                    self.title += f" ({self.date_str})"
 
         # impl = xml.dom.getDOMImplementation() # Not needed in parsing
         doc = xml.dom.minidom.parseString(text)
@@ -61,8 +68,9 @@ def getServerNews(glob_logger: logging.Logger = None) -> list:
     finally:
         return newslist
 
+
 if __name__ == "__main__":
     for i in getServerNews():
         print(i.title, i.link)
 
-#  vim: set ts=8 sw=4 tw=0 et :
+# vim:set ts=8 sw=4 tw=0 et:
