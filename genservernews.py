@@ -3,6 +3,7 @@
 
 import datetime
 import logging
+import re
 import xml
 import xml.dom
 import xml.dom.minidom
@@ -40,7 +41,8 @@ def getServerNews(glob_logger: logging.Logger = None) -> list:
                 )
                 self.date_str = self.date.strftime("%Y-%m-%d")
 
-                if self.date_str not in self.title:
+                # if title does not already ends with a date marker
+                if not re.search(r" \(\d{4}-\d{2}-\d{2}\)$", self.title):
                     self.title += f" ({self.date_str})"
 
         # impl = xml.dom.getDOMImplementation() # Not needed in parsing
