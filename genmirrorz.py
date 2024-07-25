@@ -124,10 +124,13 @@ def parse_repo_with_meta(repolist: list, meta: dict) -> dict:
 
 def disk_info(site: dict) -> None:
     # TODO(portability): This now only works on mirrors4
-    lug_repo = subprocess.check_output(
-        "df -h | grep lug-repo | awk {'print $3, $2'}", shell=True
+    repo_zfs = subprocess.check_output(
+        "zfs get -Hp -o value used,available pool0/repo", shell=True
     ).decode("utf-8")
-    site["disk"] = lug_repo.replace(" ", "/")
+    used, available = repo_zfs.split()
+    used = int(used)
+    available = int(available)
+    site["disk"] = f"{size(used)} / {size(used + available)}"
 
 
 def getMirrorzJson(repolist, isolist):
