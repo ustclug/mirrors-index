@@ -161,15 +161,15 @@
     </div>
     {% endif %}
     <script>
-        var fileSizeToReadable = function (bytes) {
+        function fileSizeToReadable(bytes) {
             var exp = Math.log(bytes) / Math.log(1024) | 0;
             var result = (bytes / Math.pow(1024, exp)).toFixed(2);
                 if (result >= 0)
                     return result + ' ' + (exp == 0 ? 'bytes' : 'KMGTPEZY'[exp - 1] + 'B');
                 else
                     return "Unknown"
-        };
-        var genError = function(code) {
+        }
+        function genError(code) {
             var errorInfos = {
                 5 : "Server reached max connections",
                 10: "Error in socket I/O",
@@ -188,14 +188,14 @@
                 var errorInfo = code + '<span class="comment">' + errorInfos[code] + '</span>';
                 return '❌ (' + errorInfo + ')';
             }
-        };
-        var genSyncing = function(isSyncing) {
+        }
+        function genSyncing(isSyncing) {
             if (isSyncing === true) {
                 return '🔄';
             } else {
                 return '⏸️ ';
             }
-        };
+        }
         var xmlhttp = new XMLHttpRequest();
         var res = "{{ endpoint }}"
         var tbody = document.getElementById('status').getElementsByTagName('tbody')[0]
