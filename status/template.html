@@ -210,7 +210,7 @@
                             '<td class="withComment">' + genError(e.exitCode) + '</td>' +
                             '<td>' + (new Date(e.updatedAt*1000)).toLocaleString() + '</td>' +
                             '<td>' + e.upstream + '</td>' +
-                            '<td>' + fileSizeToReadable(e.size) + '</td>' +
+                            `<td class="withComment" data-sort=${String(e.size).padStart(100, '0')}>` + fileSizeToReadable(e.size) + '<span class="comment">' + e.size.toLocaleString() + ' bytes</span>' + '</td>' +
                             '<td>' + genSyncing(e.syncing) + '</td>';
                         if (e.exitCode != 0) {
                             row.className += 'failedSync';
