@@ -16,10 +16,6 @@
         "dst": "npmreg.proxy.ustclug.org"
     },
     {
-        "src": "www.npmjs.com",
-        "dst": "npm.proxy.ustclug.org"
-    },
-    {
         "src": "ajax.googleapis.com",
         "dst": "ajax.proxy.ustclug.org"
     },
