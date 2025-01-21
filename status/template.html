@@ -184,6 +184,8 @@
             };
             if (code == 0) {
                 return '✅';
+            } else if (code == 25) {
+                return '🧹';
             } else {
                 var errorInfo = code + '<span class="comment">' + errorInfos[code] + '</span>';
                 return '❌ (' + errorInfo + ')';
