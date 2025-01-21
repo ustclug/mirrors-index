@@ -184,11 +184,13 @@
             };
             if (code == 0) {
                 return '✅';
-            } else if (code == 25) {
-                return '🧹 (25)';
             } else {
+                var emoji = '❌';
+                if (code == 25) {
+                    emoji = '🧹';
+                }
                 var errorInfo = code + '<span class="comment">' + errorInfos[code] + '</span>';
-                return '❌ (' + errorInfo + ')';
+                return emoji + ' (' + errorInfo + ')';
             }
         }
         function genSyncing(isSyncing) {
@@ -214,7 +216,7 @@
                             '<td>' + e.upstream + '</td>' +
                             `<td class="withComment" data-sort=${String(e.size).padStart(100, '0')}>` + fileSizeToReadable(e.size) + '<span class="comment">' + e.size.toLocaleString() + ' bytes</span>' + '</td>' +
                             '<td>' + genSyncing(e.syncing) + '</td>';
-                        if (e.exitCode != 0) {
+                        if (e.exitCode != 0 && e.exitCode != 25) {
                             row.className += 'failedSync';
                         }
                         row.innerHTML = s;
