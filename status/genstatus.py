@@ -9,18 +9,12 @@ CONFIG = {
         "title": "Sync Status",
         "endpoint": "https://admin.mirrors.ustc.edu.cn/api/v1/metas"
     },
-    "rsync.html": {
+    "mirrors2.html": {
         "main_page": False,
         "grafana": False,
         "title": "Mirrors2 Sync Status",
         "endpoint": "https://admin.mirrors.ustc.edu.cn/rsync"
     },
-    "mirrors3.html": {
-        "main_page": False,
-        "grafana": False,
-        "title": "Mirrors3 Sync Status",
-        "endpoint": "https://admin.mirrors.ustc.edu.cn/mirrors3"
-    }
 }
 
 def main():
