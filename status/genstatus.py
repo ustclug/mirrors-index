@@ -13,7 +13,7 @@ CONFIG = {
         "main_page": False,
         "grafana": False,
         "title": "Mirrors2 Sync Status",
-        "endpoint": "https://admin.mirrors.ustc.edu.cn/rsync"
+        "endpoint": "https://admin.mirrors.ustc.edu.cn/mirrors2"
     },
 }
 
