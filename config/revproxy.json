@@ -8,14 +8,6 @@
         "dst": "launchpad.proxy.ustclug.org"
     },
     {
-        "src": "downloads.openwrt.org",
-        "dst": "openwrt.proxy.ustclug.org"
-    },
-    {
-        "src": "registry.npmjs.org",
-        "dst": "npmreg.proxy.ustclug.org"
-    },
-    {
         "src": "ajax.googleapis.com",
         "dst": "ajax.proxy.ustclug.org"
     },
