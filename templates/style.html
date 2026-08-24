@@ -81,6 +81,59 @@ body{
     font-size:24px;
     margin:5px 0 5px 0;
 }
+#announcement{
+    display:block;
+    margin-bottom:15px;
+    padding-top:.75rem;
+    padding-bottom:.75rem;
+    overflow:hidden;
+    border:3px outset #c0c0c0;
+    background-color:#008080;
+    background-image:repeating-linear-gradient(0deg,rgba(255,255,255,.07) 0,rgba(255,255,255,.07) 2px,transparent 2px,transparent 6px);
+    box-shadow:3px 3px #000;
+    font-family:"Courier New",monospace;
+    font-size:1.25rem;
+    line-height:1.55;
+    letter-spacing:.15em;
+}
+#announcement a{
+    color:#ffff00;
+    font-weight:700;
+    text-decoration:none;
+    text-shadow:2px 2px 0 #004040;
+    white-space:nowrap;
+}
+#announcement a:before{
+    display:inline-block;
+    margin-inline:.5rem;
+    color:#ff00ff;
+    content:"«";
+    animation:retro-blink .8s steps(2,start) infinite;
+}
+#announcement a:after{
+    display:inline-block;
+    margin-inline:.5rem;
+    color:#ff00ff;
+    content:"»";
+    animation:retro-blink .8s steps(2,start) infinite;
+}
+#announcement a:hover{
+    color:#ffff00;
+    text-decoration:underline;
+}
+#announcement a span{
+    position:relative;
+    top:.12em;
+}
+#announcement img{
+    height:1.5em;
+    margin-left:.35rem;
+    vertical-align:middle;
+}
+@keyframes retro-blink{50%{opacity:0}}
+@media(prefers-reduced-motion:reduce){
+    #announcement a:before,#announcement a:after{animation:none}
+}
 #filelist table{
     width:100%;
     empty-cells:hide;
