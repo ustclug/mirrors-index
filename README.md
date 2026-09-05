@@ -73,20 +73,35 @@ Install zh_CN locales since the `genisolist.ini` file contains Chinese character
 
 Here we introduce how to develop this project on your personal computer (without polluting host's filesystem environment).
 
-Create a Debian container:
+Build the development image:
 
 ```shell
-# fish shell
-docker run --rm -it -p 8000:8000 -e TZ=Asia/Shanghai -v $(pwd):/workspace ustclug/debian:12
-# bash shell
-docker run --rm -it -p 8000:8000 -e TZ=Asia/Shanghai -v $PWD:/workspace ustclug/debian:12
+docker build -t mirrors-index-dev .
 ```
 
-Then install the Python dependencies above, Node.js, esbuild, TypeScript, pnpm,
-and Chromium. pnpm is only needed to install the Playwright development
-dependency: run `pnpm install --frozen-lockfile --ignore-scripts` once.
+The Debian 13-based image contains Node.js 22, the Python dependencies, pinned
+frontend tools, Chromium, and the Playwright development dependency. It runs as
+the non-root `node` user (UID 1000). Start a shell using the source tree included
+in the image:
 
-`mkdir /srv/repo` to create a fake directory for metadata, and `python3 -m http.server --directory /srv/repo &` at `/workspace` to start a HTTP server at port 8000 for host browser access.
+```shell
+docker run --rm -it -p 8000:8000 mirrors-index-dev
+```
+
+For live editing, bind mount the checkout and keep `node_modules` in a named
+volume. Run `pnpm install` once after creating or replacing that volume:
+
+```shell
+docker run --rm -it -p 8000:8000 \
+    -v "$PWD:/workspace" \
+    -v mirrors-index-node-modules:/workspace/node_modules \
+    mirrors-index-dev
+pnpm install --frozen-lockfile --ignore-scripts
+```
+
+The image provides a writable `/srv/repo` directory for fake metadata. Run
+`python3 -m http.server --directory /srv/repo 8000` to serve it on the exposed
+port when needed.
 
 Use these entry points during development:
 
