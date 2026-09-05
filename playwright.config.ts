@@ -6,7 +6,8 @@ export default defineConfig({
     baseURL: "http://127.0.0.1:8765",
     browserName: "chromium",
     launchOptions: {
-      executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH ?? "/usr/bin/chromium",
+      executablePath:
+        process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH ?? "/usr/bin/chromium",
     },
   },
   webServer: {

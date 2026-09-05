@@ -1,8 +1,13 @@
 import { expect, test } from "@playwright/test";
 
-test("homepage enhances fallback and keeps its interactions", async ({ page }) => {
+test("homepage enhances fallback and keeps its interactions", async ({
+  page,
+}) => {
   await page.goto("/");
-  await expect(page.locator("#filelist .filename a")).toHaveText(["alpha", "beta"]);
+  await expect(page.locator("#filelist .filename a")).toHaveText([
+    "alpha",
+    "beta",
+  ]);
   await page.locator("#search").fill("ALP");
   await expect(page.locator("#filelist .filename a")).toHaveText(["alpha"]);
   await page.locator("#search").fill("[");
@@ -18,7 +23,10 @@ test("homepage enhances fallback and keeps its interactions", async ({ page }) =
 
 test("invalid bootstrap keeps fallback content", async ({ page }) => {
   await page.goto("/invalid.html");
-  await expect(page.locator("#root a")).toHaveAttribute("href", "/index-nojs.html");
+  await expect(page.locator("#root a")).toHaveAttribute(
+    "href",
+    "/index-nojs.html",
+  );
   await expect(page.locator("#filelist")).toHaveCount(0);
 });
 
@@ -26,30 +34,64 @@ test.describe("without JavaScript", () => {
   test.use({ javaScriptEnabled: false });
   test("homepage links to the basic repository list", async ({ page }) => {
     await page.goto("/");
-    await expect(page.locator("#root")).toContainText("此浏览器未启用或不支持 JavaScript");
+    await expect(page.locator("#root")).toContainText(
+      "此浏览器未启用或不支持 JavaScript",
+    );
     await page.locator("#root a").click();
     await expect(page).toHaveURL(/\/index-nojs\.html$/);
     await expect(page.locator("li a")).toHaveText(["alpha", "beta"]);
   });
 });
 
-test("status renders, sorts, and treats remote markup as text", async ({ page }) => {
+test("status renders, sorts, and treats remote markup as text", async ({
+  page,
+}) => {
   await page.route("https://monitor.ustclug.org/**", (route) => route.abort());
-  await page.route("**/status/json", (route) => route.fulfill({ json: [
-    { name: "zeta", upstream: "<img src=x onerror=alert(1)>", syncing: false, size: 1024, exitCode: 10, lastSuccess: 1, updatedAt: 1, prevRun: 2, nextRun: 3 },
-    { name: "alpha", upstream: "safe", syncing: true, size: 2048, exitCode: 0, lastSuccess: 2, updatedAt: 2, prevRun: 3, nextRun: 4 },
-  ] }));
+  await page.route("**/status/json", (route) =>
+    route.fulfill({
+      json: [
+        {
+          name: "zeta",
+          upstream: "<img src=x onerror=alert(1)>",
+          syncing: false,
+          size: 1024,
+          exitCode: 10,
+          lastSuccess: 1,
+          updatedAt: 1,
+          prevRun: 2,
+          nextRun: 3,
+        },
+        {
+          name: "alpha",
+          upstream: "safe",
+          syncing: true,
+          size: 2048,
+          exitCode: 0,
+          lastSuccess: 2,
+          updatedAt: 2,
+          prevRun: 3,
+          nextRun: 4,
+        },
+      ],
+    }),
+  );
   await page.goto("/status/");
   await expect(page.locator("#status tbody tr")).toHaveCount(2);
   await expect(page.locator("#status tbody img")).toHaveCount(0);
-  await expect(page.locator("#status tbody tr").first()).toHaveClass(/failedSync/);
+  await expect(page.locator("#status tbody tr").first()).toHaveClass(
+    /failedSync/,
+  );
   await page.getByRole("columnheader", { name: "Archive name" }).click();
-  await expect(page.locator("#status tbody tr").first().locator("td").first()).toHaveText("alpha");
+  await expect(
+    page.locator("#status tbody tr").first().locator("td").first(),
+  ).toHaveText("alpha");
 });
 
 test("status reports an invalid response", async ({ page }) => {
   await page.route("https://monitor.ustclug.org/**", (route) => route.abort());
-  await page.route("**/status/json", (route) => route.fulfill({ json: [{ name: "incomplete" }] }));
+  await page.route("**/status/json", (route) =>
+    route.fulfill({ json: [{ name: "incomplete" }] }),
+  );
   await page.goto("/status/");
   await expect(page.getByText("Load sync status failed")).toBeVisible();
 });
