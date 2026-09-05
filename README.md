@@ -100,6 +100,12 @@ pnpm install --frozen-lockfile --ignore-scripts
 ```
 
 The image provides a writable `/srv/repo` directory for fake metadata. Run
+`make example` to populate it with a small representative repository tree. The
+generator is idempotent and refuses to touch a non-empty directory it did not
+create. A different destination can be passed directly, for example
+`python3 tools/create_example_tree.py /tmp/example-repo`.
+
+Run
 `python3 -m http.server --directory /srv/repo 8000` to serve it on the exposed
 port when needed.
 

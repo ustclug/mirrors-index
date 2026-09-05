@@ -2,10 +2,10 @@ OUTDIR := dist
 STATIC_OUT := $(OUTDIR)/static
 ESBUILD_FLAGS := --bundle --format=esm --target=es2020 --jsx=automatic --jsx-import-source=preact --minify
 ESBUILD := env NODE_PATH=$(CURDIR)/vendor esbuild
-PYTHON_FILES := gencontent.py genindex.py genmirrorz.py genservernews.py utils.py tests/render_fixture.py tests/test_genindex.py tools/build_manifest.py tools/check_bundle_size.py
+PYTHON_FILES := gencontent.py genindex.py genmirrorz.py genservernews.py utils.py tests/render_fixture.py tests/test_example_tree.py tests/test_genindex.py tools/build_manifest.py tools/check_bundle_size.py tools/create_example_tree.py
 FRONTEND_FILES := playwright.config.ts frontend/*.ts frontend/*.tsx tests/e2e/*.ts static/css/style.css
 
-.PHONY: build dev typecheck format lint test install clean
+.PHONY: build dev example typecheck format lint test install clean
 
 build: clean typecheck
 	mkdir -p $(STATIC_OUT)/js $(STATIC_OUT)/css $(OUTDIR)/status
@@ -23,6 +23,9 @@ dev: clean typecheck
 	$(ESBUILD) frontend/index.tsx frontend/status.tsx --bundle --outdir=$(STATIC_OUT)/js --format=esm --target=es2020 --jsx=automatic --jsx-import-source=preact --sourcemap --metafile=$(OUTDIR)/esbuild-meta.json
 	python3 tools/build_manifest.py
 	$(ESBUILD) frontend/index.tsx frontend/status.tsx --bundle --outdir=$(STATIC_OUT)/js --format=esm --target=es2020 --jsx=automatic --jsx-import-source=preact --sourcemap --watch
+
+example:
+	python3 tools/create_example_tree.py
 
 typecheck:
 	tsc -p tsconfig.json --noEmit
