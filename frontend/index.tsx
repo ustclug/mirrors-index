@@ -29,7 +29,7 @@ function App({ data }: { data: IndexBootstrapV1 }) {
               <img src="/static/img/new4.gif" alt="New!" />
             </a>
           </marquee>
-          <div style="overflow:hidden">
+          <div style="overflow:hidden;display:none">
             <input id="revproxy" type="checkbox" />
             <h3>
               <label for="revproxy">
