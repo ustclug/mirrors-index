@@ -12,6 +12,9 @@
 </head>
 <body>
 <main id="root">
+    <noscript>
+        <p>此页面需要 JavaScript 才能显示完整内容，请访问<a href="/index-nojs.html">基础版镜像列表</a>。</p>
+    </noscript>
     <p id="fallback">你使用的浏览器无法加载完整页面，请访问<a href="/index-nojs.html">基础版镜像列表</a>。</p>
 </main>
 <script type="module" src="{{ index_script }}" onerror="document.documentElement.classList.remove('index-loading')"></script>
