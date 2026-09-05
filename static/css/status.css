@@ -145,36 +145,46 @@ table tbody tr:hover {
   background-color: var(--status-ongoing);
 }
 
-th[role="columnheader"]:not(.no-sort) {
+.sort-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 3px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
   cursor: pointer;
 }
 
-th[role="columnheader"]:not(.no-sort)::after {
-  content: "";
-  float: right;
-  margin-top: 7px;
-  margin-left: 8px;
-  border-width: 0 4px 4px;
-  border-style: solid;
-  border-color: var(--sort-indicator) transparent;
-  visibility: hidden;
+.sort-button:hover,
+.sort-button:focus-visible {
+  color: var(--accent-strong);
+}
+
+.sort-button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.sort-indicator {
+  width: 10px;
+  color: var(--sort-indicator);
+  font-size: 9px;
+  line-height: 1;
   opacity: 0;
+  text-align: center;
   user-select: none;
 }
 
-th[aria-sort="ascending"]:not(.no-sort)::after {
-  border-bottom: none;
-  border-width: 4px 4px 0;
+.sort-button:hover .sort-indicator,
+.sort-button:focus-visible .sort-indicator {
+  opacity: 0.4;
 }
 
-th[aria-sort]:not(.no-sort)::after {
-  visibility: visible;
-  opacity: 0.55;
-}
-
-th[role="columnheader"]:not(.no-sort):hover::after {
-  visibility: visible;
-  opacity: 1;
+th[aria-sort] .sort-indicator {
+  opacity: 0.7;
 }
 
 .withComment {

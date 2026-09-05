@@ -117,7 +117,6 @@ function StatusTable({ rows }: { rows: SyncStatus[] }) {
           <tr>
             {headings.map(([label, key]) => (
               <th
-                role="columnheader"
                 aria-sort={
                   sort?.key === key
                     ? sort.ascending
@@ -125,14 +124,22 @@ function StatusTable({ rows }: { rows: SyncStatus[] }) {
                       : "descending"
                     : undefined
                 }
-                onClick={() =>
-                  setSort((old) => ({
-                    key,
-                    ascending: old?.key === key ? !old.ascending : true,
-                  }))
-                }
               >
-                {label}
+                <button
+                  class="sort-button"
+                  type="button"
+                  onClick={() =>
+                    setSort((old) => ({
+                      key,
+                      ascending: old?.key === key ? !old.ascending : true,
+                    }))
+                  }
+                >
+                  <span>{label}</span>
+                  <span class="sort-indicator" aria-hidden="true">
+                    {sort?.key === key ? (sort.ascending ? "▲" : "▼") : "↕"}
+                  </span>
+                </button>
               </th>
             ))}
           </tr>

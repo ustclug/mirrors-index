@@ -270,10 +270,18 @@ test("status renders, sorts, and treats remote markup as text", async ({
     ),
   ).toBeLessThan(1);
   expect(commentBox!.y + commentBox!.height).toBeLessThan(detailBox!.y);
-  await page.getByRole("columnheader", { name: "Archive name" }).click();
+  const archiveHeader = page.getByRole("columnheader", {
+    name: "Archive name",
+  });
+  const archiveSort = page.getByRole("button", { name: "Archive name" });
+  await archiveSort.focus();
+  await page.keyboard.press("Enter");
+  await expect(archiveHeader).toHaveAttribute("aria-sort", "ascending");
   await expect(
     page.locator("#status tbody tr").first().locator("td").first(),
   ).toHaveText("alpha");
+  await archiveSort.click();
+  await expect(archiveHeader).toHaveAttribute("aria-sort", "descending");
   await page.emulateMedia({ colorScheme: "light" });
   await expect(page.locator("body")).toHaveCSS(
     "background-color",
