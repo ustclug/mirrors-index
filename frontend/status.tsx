@@ -57,7 +57,7 @@ function fileSize(bytes: number) {
 function ErrorStatus({ code }: { code: number }) {
   if (code === 0) return <span>✅</span>;
   return (
-    <span>
+    <span class="status-detail">
       {code === 25 ? "🧹" : "❌"} ({code}
       {errors[code] && <span class="comment">{errors[code]}</span>})
     </span>
@@ -111,53 +111,57 @@ function StatusTable({ rows }: { rows: SyncStatus[] }) {
     ["Syncing", "syncing"],
   ];
   return (
-    <table id="status">
-      <thead>
-        <tr>
-          {headings.map(([label, key]) => (
-            <th
-              role="columnheader"
-              aria-sort={
-                sort?.key === key
-                  ? sort.ascending
-                    ? "ascending"
-                    : "descending"
-                  : undefined
-              }
-              onClick={() =>
-                setSort((old) => ({
-                  key,
-                  ascending: old?.key === key ? !old.ascending : true,
-                }))
-              }
-            >
-              {label}
-            </th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {sorted.map((item) => (
-          <tr
-            class={`${item.exitCode !== 0 && item.exitCode !== 25 ? "failedSync" : ""} ${item.syncing ? "ongoingSync" : ""}`.trim()}
-          >
-            <td>{item.name}</td>
-            <td>{dateTime(item.lastSuccess)}</td>
-            <td class="withComment">
-              <ErrorStatus code={item.exitCode} />
-            </td>
-            <td>{dateTime(item.prevRun)}</td>
-            <td>{dateTime(item.nextRun)}</td>
-            <td>{item.upstream}</td>
-            <td class="withComment">
-              {fileSize(item.size)}
-              <span class="comment">{item.size} bytes</span>
-            </td>
-            <td>{item.syncing ? "🔄" : "⏸️ "}</td>
+    <div class="status-table-scroll">
+      <table id="status">
+        <thead>
+          <tr>
+            {headings.map(([label, key]) => (
+              <th
+                role="columnheader"
+                aria-sort={
+                  sort?.key === key
+                    ? sort.ascending
+                      ? "ascending"
+                      : "descending"
+                    : undefined
+                }
+                onClick={() =>
+                  setSort((old) => ({
+                    key,
+                    ascending: old?.key === key ? !old.ascending : true,
+                  }))
+                }
+              >
+                {label}
+              </th>
+            ))}
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {sorted.map((item) => (
+            <tr
+              class={`${item.exitCode !== 0 && item.exitCode !== 25 ? "failedSync" : ""} ${item.syncing ? "ongoingSync" : ""}`.trim()}
+            >
+              <td>{item.name}</td>
+              <td>{dateTime(item.lastSuccess)}</td>
+              <td class="withComment">
+                <ErrorStatus code={item.exitCode} />
+              </td>
+              <td>{dateTime(item.prevRun)}</td>
+              <td>{dateTime(item.nextRun)}</td>
+              <td>{item.upstream}</td>
+              <td class="withComment">
+                <span class="status-detail">
+                  {fileSize(item.size)}
+                  <span class="comment">{item.size} bytes</span>
+                </span>
+              </td>
+              <td>{item.syncing ? "🔄" : "⏸️ "}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 }
 
@@ -185,9 +189,9 @@ function App() {
   return (
     <>
       <div id="nav">
-        <a href="#sync">👉 Sync Status</a>
-        <a href="#server">👉 Server Status</a>
-        <a href="https://mirrors.ustc.edu.cn/">👉 Mirrors Index</a>
+        <a href="#sync">Sync Status</a>
+        <a href="#server">Server Status</a>
+        <a href="https://mirrors.ustc.edu.cn/">Mirrors Index</a>
       </div>
       <div id="sync">
         <h2>Sync Status</h2>
@@ -201,18 +205,17 @@ function App() {
       </div>
       <div id="server">
         <h2>Server Status</h2>
-        {panels.map((id, index) => (
-          <>
-            {index > 0 && index % 2 === 0 && <br />}
+        <div class="monitor-grid">
+          {panels.map((id, index) => (
             <iframe
               src={`https://monitor.ustclug.org/d-solo/000000001/mirrors?theme=${theme}&panelId=${id}`}
-              width="49%"
               height={index >= 6 ? "400" : "300"}
               frameborder="0"
               loading="lazy"
+              title={`Mirrors server status panel ${id}`}
             ></iframe>
-          </>
-        ))}
+          ))}
+        </div>
       </div>
     </>
   );

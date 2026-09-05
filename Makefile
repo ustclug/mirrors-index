@@ -24,7 +24,7 @@ dev: clean typecheck
 	$(ESBUILD) $(ESBUILD_ENTRIES) $(ESBUILD_FLAGS) --outdir=$(STATIC_OUT) --entry-names=[ext]/[name] --sourcemap --watch
 
 example:
-	python3 tools/create_example_tree.py
+	python3 tools/create_example_tree.py --status-output $(OUTDIR)/status/json
 
 typecheck:
 	tsc -p tsconfig.json --noEmit

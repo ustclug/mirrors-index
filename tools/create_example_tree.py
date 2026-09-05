@@ -1,9 +1,45 @@
 #!/usr/bin/env python3
 
 import argparse
+import json
 from pathlib import Path
 
 MARKER = ".mirrors-index-example"
+STATUS = [
+    {
+        "name": "debian",
+        "upstream": "rsync.example.org/debian",
+        "syncing": False,
+        "size": 5368709120,
+        "exitCode": 0,
+        "lastSuccess": 1788624000,
+        "updatedAt": 1788624000,
+        "prevRun": 1788624000,
+        "nextRun": 1788627600,
+    },
+    {
+        "name": "archlinux",
+        "upstream": "rsync.example.org/archlinux",
+        "syncing": True,
+        "size": 2147483648,
+        "exitCode": 0,
+        "lastSuccess": 1788620400,
+        "updatedAt": 1788624000,
+        "prevRun": 1788624000,
+        "nextRun": 1788627600,
+    },
+    {
+        "name": "ubuntu",
+        "upstream": "rsync.example.org/ubuntu",
+        "syncing": False,
+        "size": 4294967296,
+        "exitCode": 30,
+        "lastSuccess": 1788537600,
+        "updatedAt": 1788624000,
+        "prevRun": 1788624000,
+        "nextRun": 1788627600,
+    },
+]
 FILES = {
     "alpine/latest-stable/releases/x86_64/README.txt": "Example Alpine release\n",
     "archlinux/core/os/x86_64/core.db": "Example Arch Linux database\n",
@@ -19,6 +55,12 @@ FILES = {
     "ubuntu/pool/main/h/hello/hello_1.0_amd64.deb": "Example Ubuntu package\n",
     "rust-static/dist/channel-rust-stable.toml": "# Example Rust channel\n",
 }
+
+
+def create_example_status(path: Path) -> None:
+    path = path.expanduser().resolve()
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(STATUS, indent=2) + "\n")
 
 
 def create_example_tree(root: Path) -> int:
@@ -51,6 +93,11 @@ def main() -> None:
         default=Path("/srv/repo"),
         help="destination directory (default: /srv/repo)",
     )
+    parser.add_argument(
+        "--status-output",
+        type=Path,
+        help="write example sync status JSON to this path",
+    )
     args = parser.parse_args()
 
     try:
@@ -58,6 +105,9 @@ def main() -> None:
     except RuntimeError as error:
         parser.error(str(error))
     print(f'Created {count} example files under "{args.output.resolve()}"')
+    if args.status_output:
+        create_example_status(args.status_output)
+        print(f'Created example sync status at "{args.status_output.resolve()}"')
 
 
 if __name__ == "__main__":

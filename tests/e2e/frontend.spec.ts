@@ -156,6 +156,7 @@ test.describe("without JavaScript", () => {
 test("status renders, sorts, and treats remote markup as text", async ({
   page,
 }) => {
+  await page.setViewportSize({ width: 1608, height: 900 });
   await page.emulateMedia({ colorScheme: "dark" });
   await page.route("https://monitor.ustclug.org/**", (route) => route.abort());
   await page.route("**/status/json", (route) =>
@@ -195,6 +196,7 @@ test("status renders, sorts, and treats remote markup as text", async ({
     "background-color",
     "rgb(24, 26, 27)",
   );
+  await expect(page.locator("body")).toHaveCSS("font-family", /Open Sans/);
   await expect(page.locator("iframe").first()).toHaveAttribute(
     "src",
     /theme=dark/,
@@ -205,6 +207,32 @@ test("status renders, sorts, and treats remote markup as text", async ({
   await expect(page.locator("#status tbody tr").first()).toHaveClass(
     /failedSync/,
   );
+  await expect(page.locator("#sync")).toHaveCSS("width", "1568px");
+  await expect(page.locator(".status-table-scroll")).toHaveCSS(
+    "overflow-y",
+    "hidden",
+  );
+  expect(
+    await page
+      .locator(".status-table-scroll")
+      .evaluate((element) => element.scrollWidth === element.clientWidth),
+  ).toBe(true);
+  const detail = page.locator("#status .status-detail").last();
+  const comment = detail.locator(".comment");
+  await detail.hover();
+  await expect(comment).toBeVisible();
+  const detailBox = await detail.boundingBox();
+  const commentBox = await comment.boundingBox();
+  expect(detailBox).not.toBeNull();
+  expect(commentBox).not.toBeNull();
+  expect(
+    Math.abs(
+      commentBox!.x +
+        commentBox!.width / 2 -
+        (detailBox!.x + detailBox!.width / 2),
+    ),
+  ).toBeLessThan(1);
+  expect(commentBox!.y + commentBox!.height).toBeLessThan(detailBox!.y);
   await page.getByRole("columnheader", { name: "Archive name" }).click();
   await expect(
     page.locator("#status tbody tr").first().locator("td").first(),
@@ -212,15 +240,15 @@ test("status renders, sorts, and treats remote markup as text", async ({
   await page.emulateMedia({ colorScheme: "light" });
   await expect(page.locator("body")).toHaveCSS(
     "background-color",
-    "rgb(255, 255, 255)",
+    "rgb(253, 255, 253)",
   );
   await expect(page.locator("#nav")).toHaveCSS(
-    "background-color",
-    "rgb(242, 242, 242)",
+    "background-image",
+    "linear-gradient(rgb(64, 189, 151) 0%, rgb(7, 168, 120) 100%)",
   );
   await expect(page.locator("#status th").nth(1)).toHaveCSS(
     "background-color",
-    "rgb(238, 238, 238)",
+    "rgb(220, 239, 233)",
   );
   await expect(page.locator(".failedSync")).toHaveCSS(
     "background-color",
@@ -229,6 +257,30 @@ test("status renders, sorts, and treats remote markup as text", async ({
   await expect(page.locator("iframe").first()).toHaveAttribute(
     "src",
     /theme=light/,
+  );
+});
+
+test("status keeps wide data usable on a narrow viewport", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.route("https://monitor.ustclug.org/**", (route) => route.abort());
+  await page.route("**/status/json", (route) => route.fulfill({ json: [] }));
+  await page.goto("/status/");
+
+  const tableScroll = page.locator(".status-table-scroll");
+  await expect(tableScroll).toBeVisible();
+  expect(
+    await tableScroll.evaluate(
+      (element) => element.scrollWidth > element.clientWidth,
+    ),
+  ).toBe(true);
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= window.innerWidth,
+    ),
+  ).toBe(true);
+  await expect(page.locator(".monitor-grid")).toHaveCSS(
+    "grid-template-columns",
+    "360px",
   );
 });
 

@@ -1,77 +1,133 @@
 @import "./theme.css";
+@import "./fonts.css";
 
 :root {
-  --status-page-background: #ffffff;
-  --status-text: #000000;
-  --status-header: #eeeeee;
-  --status-hover: #e0e0e0;
-  --status-nav: #f2f2f2;
-  --status-nav-link: #666666;
   --status-failed: #fff4e3;
   --status-ongoing: #e3f7ff;
-  --sort-indicator: #404040;
-  --tooltip-background: #000000;
+  --sort-indicator: #40534d;
+  --tooltip-background: #17372e;
   --tooltip-text: #ffffff;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --status-page-background: var(--page-background);
-    --status-text: var(--text-color);
-    --status-header: #252829;
-    --status-hover: #303436;
-    --status-nav: #202324;
-    --status-nav-link: #b2afaa;
     --status-failed: #4a3520;
     --status-ongoing: #163b47;
-    --sort-indicator: #c4c1bc;
-    --tooltip-background: #e8e6e3;
+    --sort-indicator: #c6c3bf;
+    --tooltip-background: #d8e8e2;
     --tooltip-text: #181a1b;
   }
 }
 
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--page-background);
+  color: var(--text-color);
+}
+
 body {
   margin: 0;
-  background: var(--status-page-background);
-  color: var(--status-text);
-  font-family: system-ui, sans-serif;
+  background: var(--page-background);
+  color: var(--text-color);
+  font-family:
+    "Open Sans", "Ubuntu", "Hiragino Sans GB", "Noto Sans CJK SC", sans-serif;
+}
+
+#nav {
+  display: flex;
+  min-height: 60px;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 25px;
+  padding: 10px max(20px, calc((100% - 1600px) / 2));
+  background: linear-gradient(
+    to bottom,
+    var(--hero-start) 0%,
+    var(--hero-end) 100%
+  );
+}
+
+#nav a {
+  color: #eeecdf;
+  font-size: 16px;
+  text-decoration: none;
+}
+
+#nav a:hover,
+#nav a:focus-visible {
+  color: #ffffff;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+#sync,
+#server {
+  width: min(1600px, calc(100% - 40px));
+  margin: 25px auto;
+}
+
+#sync h2,
+#server h2 {
+  margin: 0 0 12px;
+  color: var(--accent-bright);
+  font-size: 24px;
+  font-weight: 300;
+}
+
+#sync > p,
+#server > p {
+  margin: 0;
+  padding: 20px;
+  border: 1px solid var(--border-color);
+  background: var(--surface-subtle);
+  color: var(--control-text);
+}
+
+.status-table-scroll {
+  max-width: 100%;
+  border: 1px solid var(--border-color);
+  background: var(--surface);
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 
 table {
   width: 100%;
-  max-width: 100%;
-  margin: 10px 0;
+  min-width: 980px;
   border-collapse: collapse;
+  border-spacing: 0;
   background: var(--surface);
 }
 
 table th,
 table td {
-  padding: 8px;
-  line-height: 18px;
+  padding: 9px 10px;
+  border-bottom: 1px solid var(--border-subtle);
+  line-height: 20px;
   text-align: left;
+  white-space: nowrap;
 }
 
 table th {
-  background: var(--status-header);
-  text-shadow: 0 1px 0 #ffffff;
-  font-weight: bold;
+  background: var(--accent-soft);
+  color: var(--heading-color);
+  font-weight: 600;
   vertical-align: bottom;
-}
-
-@media (prefers-color-scheme: dark) {
-  table th {
-    text-shadow: none;
-  }
 }
 
 table td {
   vertical-align: top;
 }
 
-table th:hover,
-table tr:hover {
-  background: var(--status-hover);
+table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+table tbody tr:hover {
+  background: var(--row-hover);
 }
 
 .failedSync {
@@ -82,24 +138,6 @@ table tr:hover {
   background-color: var(--status-ongoing);
 }
 
-#sync,
-#server,
-#links {
-  margin: 20px;
-}
-
-#nav {
-  min-height: 20px;
-  padding: 20px 0;
-  background-color: var(--status-nav);
-}
-
-#nav a {
-  margin-left: 20px;
-  color: var(--status-nav-link);
-  text-decoration: none;
-}
-
 th[role="columnheader"]:not(.no-sort) {
   cursor: pointer;
 }
@@ -108,6 +146,7 @@ th[role="columnheader"]:not(.no-sort)::after {
   content: "";
   float: right;
   margin-top: 7px;
+  margin-left: 8px;
   border-width: 0 4px 4px;
   border-style: solid;
   border-color: var(--sort-indicator) transparent;
@@ -123,7 +162,7 @@ th[aria-sort="ascending"]:not(.no-sort)::after {
 
 th[aria-sort]:not(.no-sort)::after {
   visibility: visible;
-  opacity: 0.4;
+  opacity: 0.55;
 }
 
 th[role="columnheader"]:not(.no-sort):hover::after {
@@ -133,27 +172,83 @@ th[role="columnheader"]:not(.no-sort):hover::after {
 
 .withComment {
   position: relative;
+}
+
+.withComment:hover {
+  z-index: 2;
+}
+
+.status-detail {
+  position: relative;
   display: inline-block;
 }
 
-.withComment .comment {
+.status-detail .comment {
   position: absolute;
   z-index: 1;
-  top: -5px;
-  left: 105%;
-  width: 120px;
-  padding: 5px 0;
-  border-radius: 6px;
-  visibility: hidden;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  width: max-content;
+  max-width: 190px;
+  padding: 7px 9px;
+  border-radius: 4px;
+  display: none;
   background-color: var(--tooltip-background);
   color: var(--tooltip-text);
+  font-size: 12px;
+  line-height: 1.4;
   text-align: center;
+  white-space: normal;
+  box-shadow: 0 4px 12px var(--dialog-shadow);
+  transform: translateX(-50%);
 }
 
-.withComment:hover .comment {
-  visibility: visible;
+.status-detail .comment::after {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  border: 5px solid transparent;
+  border-top-color: var(--tooltip-background);
+  content: "";
+  transform: translateX(-50%);
 }
 
-iframe {
+.status-detail:hover .comment {
+  display: block;
+}
+
+.monitor-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.monitor-grid iframe {
+  display: block;
+  width: 100%;
+  border: 1px solid var(--border-color);
+  background: var(--surface);
   color-scheme: light dark;
+}
+
+@media screen and (max-width: 880px) {
+  .monitor-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media screen and (max-width: 540px) {
+  #nav {
+    min-height: 0;
+    justify-content: flex-start;
+    gap: 10px 20px;
+    padding: 16px 15px;
+    flex-wrap: wrap;
+  }
+
+  #sync,
+  #server {
+    width: auto;
+    margin: 24px 15px;
+  }
 }
