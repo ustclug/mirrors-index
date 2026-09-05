@@ -99,6 +99,7 @@ try {
   const data = readBootstrap();
   const root = document.getElementById("root");
   if (!root) throw new Error("Root element is missing");
+  root.replaceChildren();
   render(<App data={data} />, root);
   document.addEventListener("keydown", (event) => {
     const input = document.getElementById("search") as HTMLInputElement | null;

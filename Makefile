@@ -11,12 +11,14 @@ build: clean typecheck
 	mkdir -p $(STATIC_OUT)/js $(STATIC_OUT)/css $(OUTDIR)/status
 	$(ESBUILD) frontend/index.tsx frontend/status.tsx $(ESBUILD_FLAGS) --outdir=$(STATIC_OUT)/js --entry-names=[name]-[hash] --metafile=$(OUTDIR)/esbuild-meta.json
 	cp -a static/fonts $(STATIC_OUT)/
+	cp -a static/img $(STATIC_OUT)/
 	cp -a static/css/fonts.css static/css/style.css $(STATIC_OUT)/css/
 	python3 tools/build_manifest.py
 
 dev: clean typecheck
 	mkdir -p $(STATIC_OUT)/js $(STATIC_OUT)/css $(OUTDIR)/status
 	cp -a static/fonts $(STATIC_OUT)/
+	cp -a static/img $(STATIC_OUT)/
 	cp -a static/css/fonts.css static/css/style.css $(STATIC_OUT)/css/
 	$(ESBUILD) frontend/index.tsx frontend/status.tsx --bundle --outdir=$(STATIC_OUT)/js --format=esm --target=es2020 --jsx=automatic --jsx-import-source=preact --sourcemap --metafile=$(OUTDIR)/esbuild-meta.json
 	python3 tools/build_manifest.py

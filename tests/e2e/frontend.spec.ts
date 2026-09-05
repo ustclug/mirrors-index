@@ -8,6 +8,16 @@ test("homepage enhances fallback and keeps its interactions", async ({
     "alpha",
     "beta",
   ]);
+  await expect(page.getByText("此浏览器未启用或不支持 JavaScript")).toHaveCount(
+    0,
+  );
+  await expect
+    .poll(() =>
+      page
+        .locator("#announcement img")
+        .evaluate((image: HTMLImageElement) => image.naturalWidth),
+    )
+    .toBeGreaterThan(0);
   await page.locator("#search").fill("ALP");
   await expect(page.locator("#filelist .filename a")).toHaveText(["alpha"]);
   await page.locator("#search").fill("[");
@@ -76,6 +86,7 @@ test("status renders, sorts, and treats remote markup as text", async ({
     }),
   );
   await page.goto("/status/");
+  await expect(page.getByText("此页面需要 JavaScript")).toHaveCount(0);
   await expect(page.locator("#status tbody tr")).toHaveCount(2);
   await expect(page.locator("#status tbody img")).toHaveCount(0);
   await expect(page.locator("#status tbody tr").first()).toHaveClass(
