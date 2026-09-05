@@ -3,6 +3,7 @@
 
 import json
 import logging
+import shutil
 import subprocess
 import sys
 
@@ -129,8 +130,15 @@ def disk_info(site: dict) -> None:
     site["disk"] = f"{size(used)} / {size(used + available)}"
 
 
+def add_disk_info_if_available(site: dict) -> None:
+    if shutil.which("zfs") is None:
+        logger.warning("zfs is not available; skipping repository size")
+        return
+    disk_info(site)
+
+
 def getMirrorzJson(repolist, isolist):
-    disk_info(base["site"])
+    add_disk_info_if_available(base["site"])
     iso(isolist)
     mirrors = parse_repo_with_meta(repolist, metas)
 

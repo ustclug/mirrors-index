@@ -33,20 +33,22 @@ static application into the web root:
 
 ```shell
 make build
+python3 genindex.py --outdir /srv/www/
 make install WEBROOT=/srv/www
-python3 genindex.py -o /srv/www/index.html
 ```
 
-`make install` installs the hashed JavaScript and CSS bundles, fonts, and
-`/status/` page. It does not generate the homepage. The periodic job only needs
-Python and uses the build manifest left by `make build`; Node and package
-managers are not involved in hourly updates. See `vendor/preact/VENDORING.md`
-for the vendored source and update procedure.
+`make install` installs the already-built static homepage, hashed JavaScript and
+CSS bundles, fonts, and `/status/` page. It does not rebuild them. The periodic
+job only needs Python; build tools and Node package managers are not involved in
+hourly updates. The `mirror` user running the periodic job must be able to create
+and replace files in `/srv/www/` and `/srv/www/static/`. See
+`vendor/preact/VENDORING.md` for the vendored source and update procedure.
 
 The generated homepage links browsers without JavaScript or ES module support
 to a separate `index-nojs.html` containing the repository list. The full
-interface is rendered from versioned JSON embedded in `index.html`, so supported
-browsers do not make an additional homepage data request.
+interface fetches versioned data from `/static/index.json`. The periodic job
+atomically updates that file, `index-nojs.html`, and `mirrorz.json`; it never
+modifies `index.html`.
 
 ### Periodic updates
 
@@ -58,8 +60,8 @@ systemctl daemon-reload
 systemctl enable --now mirrors-index.timer
 ```
 
-The timer regenerates the homepage every hour at minute 10. Run an initial
-generation immediately after deployment with:
+The timer regenerates the homepage data files every hour at minute 10. Run an
+initial generation immediately after deployment with:
 
 ```shell
 systemctl start mirrors-index.service
@@ -117,7 +119,7 @@ make dev         # watch the TypeScript entry points
 make format      # format project-owned Python files with Ruff
 make lint        # check Ruff formatting and lint rules
 make test        # Python unit tests and Playwright browser tests
-python3 genindex.py -o dist/index.html
+python3 genindex.py --outdir dist/
 python3 -m http.server --directory dist
 ```
 

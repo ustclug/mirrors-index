@@ -12,9 +12,7 @@ test("homepage enhances fallback and keeps its interactions", async ({
     "alpha",
     "beta",
   ]);
-  await expect(page.getByText("此浏览器未启用或不支持 JavaScript")).toHaveCount(
-    0,
-  );
+  await expect(page.getByText("无法加载完整页面")).toHaveCount(0);
   await expect
     .poll(() =>
       page
@@ -84,8 +82,14 @@ test("homepage follows the system color scheme", async ({ page }) => {
   );
 });
 
-test("invalid bootstrap keeps fallback content", async ({ page }) => {
-  await page.goto("/invalid.html");
+test("invalid index data keeps fallback content", async ({ page }) => {
+  await page.route("**/static/index.json", async (route) => {
+    const response = await route.fetch();
+    const data = await response.json();
+    data.schemaVersion = 2;
+    await route.fulfill({ response, json: data });
+  });
+  await page.goto("/");
   await expect(page.locator("#root a")).toHaveAttribute(
     "href",
     "/index-nojs.html",
@@ -94,7 +98,13 @@ test("invalid bootstrap keeps fallback content", async ({ page }) => {
 });
 
 test("download buttons report empty download data", async ({ page }) => {
-  await page.goto("/empty-downloads.html");
+  await page.route("**/static/index.json", async (route) => {
+    const response = await route.fetch();
+    const data = await response.json();
+    data.downloads = [];
+    await route.fulfill({ response, json: data });
+  });
+  await page.goto("/");
   await page.getByRole("button", { name: "获取安装镜像 >" }).click();
   await expect(page.locator(".modalbody")).toContainText(
     "暂无可用的安装镜像下载",
@@ -106,20 +116,26 @@ test("download buttons report empty download data", async ({ page }) => {
   );
 });
 
+test("failed index data request keeps fallback content", async ({ page }) => {
+  await page.route("**/static/index.json", (route) => route.abort());
+  await page.goto("/");
+  await expect(page.locator("#root a")).toHaveAttribute(
+    "href",
+    "/index-nojs.html",
+  );
+  await expect(page.locator("#filelist")).toHaveCount(0);
+});
+
 test.describe("without JavaScript", () => {
   test.use({ javaScriptEnabled: false });
   test("homepage links to the basic repository list", async ({ page }) => {
     await page.emulateMedia({ colorScheme: "dark" });
     await page.goto("/");
-    await expect(page.locator("#root")).toContainText(
-      "此浏览器未启用或不支持 JavaScript",
-    );
+    await expect(page.locator("#root")).toContainText("无法加载完整页面");
     await page.locator("#root a").click();
     await expect(page).toHaveURL(/\/index-nojs\.html$/);
-    await expect(page.locator('link[rel="stylesheet"]')).toHaveAttribute(
-      "href",
-      /\/static\/css\/nojs-[A-Z0-9]+\.css$/,
-    );
+    await expect(page.locator("head style")).toHaveCount(1);
+    await expect(page.locator('link[rel="stylesheet"]')).toHaveCount(0);
     await expect(page.locator("body")).toHaveCSS(
       "background-color",
       "rgb(24, 26, 27)",

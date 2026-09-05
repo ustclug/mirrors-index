@@ -5,7 +5,7 @@ After=network.target
 [Service]
 Type=oneshot
 User=mirror
-ExecStart=/usr/bin/python3 /home/mirror/scripts/mirrors-index/genindex.py -o /srv/www/index.html
+ExecStart=/usr/bin/python3 /home/mirror/scripts/mirrors-index/genindex.py --outdir /srv/www/
 
 [Install]
 WantedBy=multi-user.target

@@ -1,10 +1,10 @@
 import { render } from "preact";
 import { useMemo, useState } from "preact/hooks";
-import { readBootstrap } from "./bootstrap";
+import { fetchIndexData } from "./bootstrap";
 import { DownloadModal, Footer, Header, Sidebar } from "./index-components";
-import type { IndexBootstrapV1 } from "./types";
+import type { IndexDataV1 } from "./types";
 
-function App({ data }: { data: IndexBootstrapV1 }) {
+function App({ data }: { data: IndexDataV1 }) {
   const [query, setQuery] = useState("");
   const [modal, setModal] = useState<"os" | "app" | null>(null);
   const repositories = useMemo(
@@ -98,8 +98,8 @@ function App({ data }: { data: IndexBootstrapV1 }) {
   );
 }
 
-try {
-  const data = readBootstrap();
+async function main() {
+  const data = await fetchIndexData();
   const root = document.getElementById("root");
   if (!root) throw new Error("Root element is missing");
   root.replaceChildren();
@@ -118,9 +118,11 @@ try {
       event.preventDefault();
     }
   });
-} catch (error) {
+}
+
+main().catch((error) => {
   console.error(
-    "Unable to start mirrors index; keeping fallback content",
+    "Unable to load mirrors index; keeping fallback content",
     error,
   );
-}
+});

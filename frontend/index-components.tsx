@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "preact/hooks";
-import type { DownloadGroup, IndexBootstrapV1 } from "./types";
+import type { DownloadGroup, IndexDataV1 } from "./types";
 
 export function Header() {
   return (
@@ -187,7 +187,7 @@ export function Sidebar({
   data,
   open,
 }: {
-  data: IndexBootstrapV1;
+  data: IndexDataV1;
   open: (kind: "os" | "app") => void;
 }) {
   const domains = [

@@ -3,24 +3,79 @@ import os
 import tempfile
 import unittest
 from types import SimpleNamespace
+from unittest import mock
 
 import genindex
 
 
 class GenIndexTests(unittest.TestCase):
-    def test_bootstrap_schema_and_script_escaping(self):
-        encoded = genindex.bootstrap_json(
+    def test_index_json_schema(self):
+        encoded = genindex.index_json(
             [("2026-01-02 03:04:05", "/help/debian.html", "Help", "debian")],
             [("source.example", "proxy.example")],
             [{"distro": "</script><img>", "category": "os", "urls": []}],
             [SimpleNamespace(title="News & more", link="https://example.com/news")],
             "2026-01-02 03:04:05",
         )
-        self.assertNotIn("</script>", encoded)
         data = json.loads(encoded)
         self.assertEqual(data["schemaVersion"], 1)
         self.assertEqual(data["repositories"][0]["name"], "debian")
         self.assertEqual(data["reverseProxies"][0]["destination"], "proxy.example")
+
+    def run_generator(self, directory, mirrorz_generator):
+        fake_mirrorz = SimpleNamespace(getMirrorzJson=mirrorz_generator)
+        repolist = [("2026-01-02 03:04:05", "/help/debian.html", "Help", "debian")]
+        with (
+            mock.patch.object(
+                genindex.gencontent, "genRepoList", return_value=repolist
+            ),
+            mock.patch.object(
+                genindex.gencontent,
+                "getOthers",
+                return_value=[("source.example", "proxy.example")],
+            ),
+            mock.patch.object(genindex, "get_isolist", return_value=[]),
+            mock.patch.object(genindex.genservernews, "getServerNews", return_value=[]),
+            mock.patch.dict("sys.modules", {"genmirrorz": fake_mirrorz}),
+            mock.patch("sys.argv", ["genindex.py", "--outdir", directory]),
+        ):
+            genindex.main()
+
+    def test_directory_generation_does_not_touch_index_html(self):
+        with tempfile.TemporaryDirectory() as directory:
+            index_html = os.path.join(directory, "index.html")
+            with open(index_html, "w") as output:
+                output.write("deployed homepage")
+
+            self.run_generator(directory, lambda _repos, _downloads: '{"site":{}}')
+
+            with open(index_html) as source:
+                self.assertEqual(source.read(), "deployed homepage")
+            with open(os.path.join(directory, "static", "index.json")) as source:
+                self.assertEqual(json.load(source)["repositories"][0]["name"], "debian")
+            self.assertTrue(os.path.exists(os.path.join(directory, "index-nojs.html")))
+            with open(os.path.join(directory, "mirrorz.json")) as source:
+                self.assertEqual(json.load(source), {"site": {}})
+
+    def test_mirrorz_failure_keeps_old_file_and_publishes_other_outputs(self):
+        with tempfile.TemporaryDirectory() as directory:
+            mirrorz_path = os.path.join(directory, "mirrorz.json")
+            with open(mirrorz_path, "w") as output:
+                output.write("old mirrorz")
+
+            def fail_mirrorz(_repos, _downloads):
+                raise RuntimeError("mirrorz unavailable")
+
+            with self.assertRaises(SystemExit) as raised:
+                self.run_generator(directory, fail_mirrorz)
+
+            self.assertEqual(raised.exception.code, 1)
+            with open(mirrorz_path) as source:
+                self.assertEqual(source.read(), "old mirrorz")
+            self.assertTrue(
+                os.path.exists(os.path.join(directory, "static", "index.json"))
+            )
+            self.assertTrue(os.path.exists(os.path.join(directory, "index-nojs.html")))
 
     def test_atomic_write_replaces_complete_file(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -31,14 +86,6 @@ class GenIndexTests(unittest.TestCase):
             with open(target) as output:
                 self.assertEqual(output.read(), "new" + os.linesep)
             self.assertEqual(os.stat(target).st_mode & 0o777, 0o644)
-
-    def test_frontend_manifest_rejects_non_static_paths(self):
-        with tempfile.TemporaryDirectory() as directory:
-            os.makedirs(os.path.join(directory, "dist"))
-            with open(os.path.join(directory, "dist", "manifest.json"), "w") as output:
-                json.dump({"index": "https://example.com/script.js"}, output)
-            with self.assertRaises(RuntimeError):
-                genindex.frontend_asset("index", directory)
 
 
 if __name__ == "__main__":

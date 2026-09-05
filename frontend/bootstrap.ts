@@ -1,15 +1,15 @@
-import type { IndexBootstrapV1 } from "./types";
+import type { IndexDataV1 } from "./types";
 
-export function readBootstrap(): IndexBootstrapV1 {
-  const element = document.getElementById("mirrors-bootstrap");
-  if (!element?.textContent) throw new Error("Bootstrap data is missing");
-  const value: unknown = JSON.parse(element.textContent);
-  if (!isBootstrap(value))
-    throw new Error("Unsupported or invalid bootstrap data");
+export async function fetchIndexData(): Promise<IndexDataV1> {
+  const response = await fetch("/static/index.json", { cache: "no-store" });
+  if (!response.ok)
+    throw new Error(`Unable to load index data: HTTP ${response.status}`);
+  const value: unknown = await response.json();
+  if (!isIndexData(value)) throw new Error("Unsupported or invalid index data");
   return value;
 }
 
-function isBootstrap(value: unknown): value is IndexBootstrapV1 {
+function isIndexData(value: unknown): value is IndexDataV1 {
   if (!value || typeof value !== "object") return false;
   const data = value as Record<string, unknown>;
   return (

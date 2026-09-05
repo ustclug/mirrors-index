@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import argparse
+import copy
 import json
 import logging
 import os
@@ -32,7 +33,7 @@ def atomic_write(path, content):
         raise
 
 
-def bootstrap_json(repolist, revproxy, isoinfo, newslist, generated_at):
+def index_json(repolist, revproxy, isoinfo, newslist, generated_at):
     data = {
         "schemaVersion": 1,
         "generatedAt": generated_at,
@@ -47,30 +48,7 @@ def bootstrap_json(repolist, revproxy, isoinfo, newslist, generated_at):
         "downloads": isoinfo,
         "news": [{"title": record.title, "url": record.link} for record in newslist],
     }
-    return (
-        json.dumps(data, ensure_ascii=False, separators=(",", ":"))
-        .replace("<", "\\u003c")
-        .replace(">", "\\u003e")
-        .replace("&", "\\u0026")
-    )
-
-
-def frontend_asset(name, base_directory=None):
-    base_directory = base_directory or os.path.dirname(__file__)
-    manifest_path = os.getenv("FRONTEND_MANIFEST") or os.path.join(
-        base_directory, "dist", "manifest.json"
-    )
-    try:
-        with open(manifest_path) as source:
-            manifest = json.load(source)
-        asset = manifest[name]
-        if not isinstance(asset, str) or not asset.startswith("/static/"):
-            raise ValueError("invalid asset path")
-        return asset
-    except (OSError, KeyError, ValueError, json.JSONDecodeError) as error:
-        raise RuntimeError(
-            f'Frontend assets are not built; invalid manifest "{manifest_path}"'
-        ) from error
+    return json.dumps(data, ensure_ascii=False, separators=(",", ":"))
 
 
 def main():
@@ -94,24 +72,10 @@ def main():
         help="specify output directory",
     )
     parser.add_argument(
-        "-o",
-        "--output",
-        type=str,
-        default=os.path.join(OUTDIR, "index.html"),
-        help="specify full output file path, and will overwrite outdir option",
-    )
-    parser.add_argument(
         "-v",
         "--verbose",
         help="show verbose information",
         action="store_true",
-    )
-    parser.add_argument(
-        "-m",
-        "--mirrorz",
-        type=str,
-        default=None,
-        help="set mirrorz output file path, mirrorz.json will not be generated if not set",
     )
     args = parser.parse_args()
 
@@ -123,17 +87,17 @@ def main():
     logger.debug(f'received command arguments: "{args!s}"')
 
     OUTDIR = args.outdir or OUTDIR
-    OUTFILE = args.output
     BASEDIR = os.path.dirname(__file__)
-    logger.info(f'OUTFILE is "{OUTFILE}"')
+    index_file = os.path.join(OUTDIR, "static", "index.json")
+    nojs_file = os.path.join(OUTDIR, "index-nojs.html")
+    mirrorz_file = os.path.join(OUTDIR, "mirrorz.json")
+    logger.info(f'OUTDIR is "{OUTDIR}"')
     logger.info(f'BASEDIR is "{BASEDIR}"')
     env = Environment(
         loader=FileSystemLoader(os.path.join(BASEDIR, "templates")),
         autoescape=select_autoescape(["html"]),
     )
-    template = env.get_template("index.html")
     nojs_template = env.get_template("index-nojs.html")
-    logger.debug("begin parsing template...")
 
     repolist = list(gencontent.genRepoList())
     revproxy = list(gencontent.getOthers())
@@ -141,37 +105,47 @@ def main():
     newslist = genservernews.getServerNews(logger)
     now = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
 
-    parsed_template = template.render(
-        repolist=repolist,
-        bootstrap=bootstrap_json(repolist, revproxy, isoinfo, newslist, now),
-        index_script=frontend_asset("index", BASEDIR),
-        index_style=frontend_asset("index_style", BASEDIR),
-        now=now,
+    failures = []
+
+    def generate(label, path, producer):
+        logger.info(f'begin {label} writing to "{path}"...')
+        try:
+            atomic_write(path, producer())
+        except Exception as error:
+            failures.append((label, error))
+            logger.exception(f"failed to generate {label}")
+        else:
+            logger.info(f"{label} completed!")
+
+    generate(
+        "index.json",
+        index_file,
+        lambda: index_json(repolist, revproxy, isoinfo, newslist, now),
     )
-    parsed_nojs_template = nojs_template.render(
-        repolist=repolist,
-        nojs_style=frontend_asset("nojs_style", BASEDIR),
-        now=now,
+    generate(
+        "index-nojs.html",
+        nojs_file,
+        lambda: nojs_template.render(
+            repolist=repolist,
+            now=now,
+        ),
     )
 
-    nojs_file = os.path.join(
-        os.path.dirname(os.path.abspath(OUTFILE)), "index-nojs.html"
-    )
-    logger.info(f'begin no-JavaScript index file writing to "{nojs_file}"...')
-    atomic_write(nojs_file, parsed_nojs_template)
-    logger.info("no-JavaScript index file completed!")
-
-    logger.info("begin index file writing...")
-    atomic_write(OUTFILE, parsed_template)
-    logger.info("index file completed!")
-
-    if args.mirrorz:
-        # Put genmirrorz inside genindex to save time and I/O generating files
+    def make_mirrorz():
+        # Keep this import in the independent MirrorZ generation phase because the
+        # module performs remote metadata discovery while it is imported.
         import genmirrorz
 
-        logger.info("begin mirrorz.json file writing...")
-        atomic_write(args.mirrorz, genmirrorz.getMirrorzJson(repolist, isoinfo))
-        logger.info("mirrorz.json file completed!")
+        return genmirrorz.getMirrorzJson(repolist, copy.deepcopy(isoinfo))
+
+    generate("mirrorz.json", mirrorz_file, make_mirrorz)
+
+    if failures:
+        logger.error(
+            "generation completed with failures: %s",
+            ", ".join(label for label, _error in failures),
+        )
+        raise SystemExit(1)
 
     logger.info("exiting...")
 

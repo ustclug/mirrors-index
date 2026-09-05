@@ -10,7 +10,7 @@ export interface DownloadGroup {
   urls: Array<{ name: string; url: string }>;
 }
 
-export interface IndexBootstrapV1 {
+export interface IndexDataV1 {
   schemaVersion: 1;
   generatedAt: string;
   repositories: Repository[];

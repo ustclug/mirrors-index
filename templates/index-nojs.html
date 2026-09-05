@@ -5,7 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="color-scheme" content="light dark">
     <title>USTC Open Source Software Mirror</title>
-    <link href="{{ nojs_style }}" rel="stylesheet">
+    <style>
+        :root {
+            color-scheme: light dark;
+            --background: #ffffff;
+            --text: #000000;
+            --link: #0000ee;
+            --visited-link: #551a8b;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --background: #181a1b;
+                --text: #e8e6e3;
+                --link: #6bb8df;
+                --visited-link: #c7a6ed;
+            }
+        }
+        body { background: var(--background); color: var(--text); }
+        a:link { color: var(--link); }
+        a:visited { color: var(--visited-link); }
+    </style>
 </head>
 <body>
 <h1>USTC Open Source Software Mirror</h1>
