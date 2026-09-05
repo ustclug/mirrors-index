@@ -6,15 +6,21 @@ DIST = ROOT / "dist"
 with open(DIST / "esbuild-meta.json") as source:
     metadata = json.load(source)
 
+entries = {
+    "frontend/index.tsx": "index",
+    "frontend/status.tsx": "status",
+    "static/css/style.css": "index_style",
+    "static/css/status.css": "status_style",
+    "static/css/nojs.css": "nojs_style",
+}
 manifest = {}
 for output, detail in metadata["outputs"].items():
     entrypoint = detail.get("entryPoint", "")
-    if entrypoint.endswith("frontend/index.tsx"):
-        manifest["index"] = "/" + str((ROOT / output).resolve().relative_to(DIST))
-    elif entrypoint.endswith("frontend/status.tsx"):
-        manifest["status"] = "/" + str((ROOT / output).resolve().relative_to(DIST))
+    for suffix, name in entries.items():
+        if entrypoint.endswith(suffix):
+            manifest[name] = "/" + str((ROOT / output).resolve().relative_to(DIST))
 
-if set(manifest) != {"index", "status"}:
+if set(manifest) != set(entries.values()):
     raise RuntimeError(f"Incomplete frontend manifest: {manifest}")
 
 with open(DIST / "manifest.json", "w") as output:
@@ -23,4 +29,5 @@ with open(DIST / "manifest.json", "w") as output:
 
 status_template = (ROOT / "status" / "status.html").read_text()
 status_html = status_template.replace("{{ STATUS_SCRIPT }}", manifest["status"])
+status_html = status_html.replace("{{ STATUS_STYLE }}", manifest["status_style"])
 (DIST / "status" / "index.html").write_text(status_html)

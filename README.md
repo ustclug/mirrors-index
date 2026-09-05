@@ -37,11 +37,11 @@ make install WEBROOT=/srv/www
 python3 genindex.py -o /srv/www/index.html
 ```
 
-`make install` installs the hashed JavaScript bundles, fonts, and `/status/`
-page. It does not generate the homepage. The periodic job only needs Python and
-uses the build manifest left by `make build`; Node and package managers are not
-involved in hourly updates. See `vendor/preact/VENDORING.md` for the vendored
-source and update procedure.
+`make install` installs the hashed JavaScript and CSS bundles, fonts, and
+`/status/` page. It does not generate the homepage. The periodic job only needs
+Python and uses the build manifest left by `make build`; Node and package
+managers are not involved in hourly updates. See `vendor/preact/VENDORING.md`
+for the vendored source and update procedure.
 
 The generated homepage links browsers without JavaScript or ES module support
 to a separate `index-nojs.html` containing the repository list. The full

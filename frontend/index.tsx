@@ -29,7 +29,7 @@ function App({ data }: { data: IndexBootstrapV1 }) {
               <img src="/static/img/new4.gif" alt="New!" />
             </a>
           </marquee>
-          <div style="overflow:hidden;display:none">
+          <div class="revproxy-section">
             <input id="revproxy" type="checkbox" />
             <h3>
               <label for="revproxy">
@@ -37,7 +37,7 @@ function App({ data }: { data: IndexBootstrapV1 }) {
                 <span>-</span>
               </label>
             </h3>
-            <div style="overflow-x:auto">
+            <div class="table-scroll">
               <table>
                 <tbody>
                   {data.reverseProxies.map((entry) => (
@@ -85,7 +85,6 @@ function App({ data }: { data: IndexBootstrapV1 }) {
           </table>
         </div>
         <Sidebar data={data} open={setModal} />
-        <div style="clear:both"></div>
       </div>
       <Footer />
       {modal && (

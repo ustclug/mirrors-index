@@ -1,0 +1,74 @@
+:root {
+  color-scheme: light dark;
+  --page-background: #fdfffd;
+  --text-color: #000000;
+  --link-color: #0b486b;
+  --sidebar-link: #030303;
+  --accent: #078b65;
+  --accent-strong: #067856;
+  --accent-bright: #07a878;
+  --accent-hover: #40bd97;
+  --button-background: #07a878;
+  --button-hover: #40bd97;
+  --button-text: #f3f3f3;
+  --hero-start: #40bd97;
+  --hero-end: #07a878;
+  --accent-soft: #dcefe9;
+  --accent-soft-hover: #e8efec;
+  --accent-surface: #f1f8f6;
+  --border-color: #e4e9e7;
+  --border-subtle: #edf0ef;
+  --row-hover: #ddeadd;
+  --surface: #ffffff;
+  --surface-subtle: #f7f9f8;
+  --dialog-text: #222222;
+  --heading-color: #17372e;
+  --dialog-close: #587069;
+  --control-text: #40534d;
+  --modal-muted: #75857f;
+  --filename-muted: #71817c;
+  --warning-text: #9a6512;
+  --footer-background: #333333;
+  --footer-text: #bbbbbb;
+  --footer-link: #cccccc;
+  --dialog-shadow: rgba(16, 35, 29, 0.3);
+  --backdrop: rgba(8, 22, 18, 0.66);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --page-background: #181a1b;
+    --text-color: #e8e6e3;
+    --link-color: #6bb8df;
+    --sidebar-link: #e8e6e3;
+    --accent: #46cfa5;
+    --accent-strong: #46cfa5;
+    --accent-bright: #2fc69a;
+    --accent-hover: #55d6ae;
+    --button-background: #087f5c;
+    --button-hover: #0a956c;
+    --button-text: #e8e6e3;
+    --hero-start: #2f8f72;
+    --hero-end: #087f5c;
+    --accent-soft: #24312d;
+    --accent-soft-hover: #2b3031;
+    --accent-surface: #22292a;
+    --border-color: #3e4446;
+    --border-subtle: #343a3c;
+    --row-hover: #2b3031;
+    --surface: #1f2223;
+    --surface-subtle: #1b1d1e;
+    --dialog-text: #e8e6e3;
+    --heading-color: #d8e8e2;
+    --dialog-close: #a8adaf;
+    --control-text: #c6c3bf;
+    --modal-muted: #aaa7a2;
+    --filename-muted: #9d9a96;
+    --warning-text: #e6b566;
+    --footer-background: #202223;
+    --footer-text: #b2afaa;
+    --footer-link: #d0cdc8;
+    --dialog-shadow: rgba(0, 0, 0, 0.6);
+    --backdrop: rgba(0, 0, 0, 0.72);
+  }
+}

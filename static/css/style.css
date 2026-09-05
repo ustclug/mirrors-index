@@ -1,7 +1,9 @@
-/* css reset */
+@import "./theme.css";
+@import "./fonts.css";
+
 html {
-  color: #000;
-  background: transparent;
+  background: var(--page-background);
+  color: var(--text-color);
 }
 body,
 div,
@@ -39,18 +41,6 @@ fieldset,
 img {
   border: 0;
 }
-address,
-caption,
-cite,
-code,
-dfn,
-em,
-strong,
-th,
-var {
-  font-style: normal;
-  font-weight: normal;
-}
 li {
   list-style: none;
 }
@@ -67,21 +57,6 @@ h6 {
   font-size: 100%;
   font-weight: normal;
 }
-q:before,
-q:after {
-  content: "";
-}
-abbr,
-acronym {
-  border: 0;
-  font-variant: normal;
-}
-sup {
-  vertical-align: text-top;
-}
-sub {
-  vertical-align: text-bottom;
-}
 input,
 textarea,
 select {
@@ -89,17 +64,9 @@ select {
   font-size: inherit;
   font-weight: inherit;
 }
-input,
-textarea,
-select {
-  *font-size: 100%;
-}
-legend {
-  color: #000;
-}
-/*stylesheet here*/
 body {
-  background-color: #fdfffd;
+  background-color: var(--page-background);
+  color: var(--text-color);
 }
 #header {
   width: 75%;
@@ -132,27 +99,11 @@ body {
 #welcome {
   /*width: 100%;*/
   padding: 40px 15px 40px 0px;
-  background: #40bd97; /* Old browsers */
-  background: -moz-linear-gradient(top, #40bd97 0%, #07a878 100%); /* FF3.6+ */
-  background: -webkit-gradient(
-    linear,
-    left top,
-    left bottom,
-    color-stop(0%, #40bd97),
-    color-stop(100%, #07a878)
-  ); /* Chrome,Safari4+ */
-  background: -webkit-linear-gradient(
-    top,
-    #40bd97 0%,
-    #07a878 100%
-  ); /* Chrome10+,Safari5.1+ */
-  background: -o-linear-gradient(
-    top,
-    #40bd97 0%,
-    #07a878 100%
-  ); /* Opera 11.10+ */
-  background: -ms-linear-gradient(top, #40bd97 0%, #07a878 100%); /* IE10+ */
-  background: linear-gradient(to bottom, #40bd97 0%, #07a878 100%); /* W3C */
+  background: linear-gradient(
+    to bottom,
+    var(--hero-start) 0%,
+    var(--hero-end) 100%
+  );
 }
 #intro {
   margin: 0 auto;
@@ -184,13 +135,26 @@ body {
   width: 75%;
   margin: 25px auto;
 }
+#wrapper::after,
+#footercontent::after {
+  display: table;
+  clear: both;
+  content: "";
+}
+.revproxy-section {
+  display: none;
+  overflow: hidden;
+}
+.table-scroll {
+  overflow-x: auto;
+}
 #filelist h3 {
-  color: #07a878;
+  color: var(--accent-bright);
   font-family:
     "Open Sans", "Ubuntu", "Hiragino Sans GB", "Noto Sans CJK SC",
     "Noto Sans Mono CJK SC", "WenQuanYi Zen Hei", "Apple LiGothic Medium",
     "STXihei", "ST Heiti", "WenQuanYi Zen Hei Sharp", sans-serif;
-  font-weight: 100;
+  font-weight: 300;
   font-size: 24px;
   margin: 5px 0 5px 0;
 }
@@ -271,9 +235,6 @@ th {
   font-family: "Open Sans", "Ubuntu", Helvetica, Arial, Geneva, sans-serif;
   padding: 3px 0px;
 }
-thead {
-  /*border-bottom:thin dotted #000;*/
-}
 #name {
   text-align: left;
   padding: 3px 0 3px 3px;
@@ -295,7 +256,7 @@ thead {
   padding-left: 3px;
 }
 #filelist td a {
-  color: #0b486b;
+  color: var(--link-color);
   text-decoration: none;
 }
 #filelist a:hover {
@@ -313,15 +274,6 @@ thead {
 #revproxy:checked ~ div {
   display: block;
 }
-#filename {
-  text-align: left;
-  width: 15%;
-}
-.filesize {
-  display: none;
-  text-align: right;
-  width: 0%;
-}
 .filetime {
   text-align: left;
   width: 35%;
@@ -332,13 +284,13 @@ thead {
   width: 20px;
 }
 tbody tr:hover {
-  background-color: #ddeadd;
+  background-color: var(--row-hover);
 }
 #sidebar div {
   margin-bottom: 25px;
 }
 #sidebar h3 {
-  color: #07a878;
+  color: var(--accent-bright);
   font-family:
     "Hiragino Sans GB", "Noto Sans CJK SC", "Noto Sans Mono CJK SC",
     "WenQuanYi Zen Hei", "Apple LiGothic Medium", "STXihei", "ST Heiti",
@@ -348,7 +300,7 @@ tbody tr:hover {
   margin: 0px 0 15px 0;
 }
 #sidebar p,
-a {
+#sidebar a {
   line-height: 1.5em;
   font-family:
     "Open Sans", "Ubuntu", "Hiragino Sans GB", "Noto Sans CJK SC",
@@ -356,11 +308,11 @@ a {
     "STXihei", "ST Heiti", "WenQuanYi Zen Hei Sharp", sans-serif;
 }
 #sidebar a {
-  color: #030303;
+  color: var(--sidebar-link);
   text-decoration: none;
 }
 #sidebar .btn {
-  color: #f3f3f3;
+  color: var(--button-text);
 }
 #sidebar a:hover {
   text-decoration: underline;
@@ -368,7 +320,7 @@ a {
 .btn {
   display: inline-block;
   border: 0;
-  background-color: #07a878;
+  background-color: var(--button-background);
   margin: 12px auto 12px auto;
   padding: 3px 20px;
   line-height: 1.5em;
@@ -377,21 +329,17 @@ a {
     "Noto Sans Mono CJK SC", "WenQuanYi Zen Hei", "Apple LiGothic Medium",
     "STXihei", "ST Heiti", "WenQuanYi Zen Hei Sharp", sans-serif;
   font-size: 20px;
-  color: #f3f3f3;
+  color: var(--button-text);
   text-align: center;
-  -webkit-transition: background 0.3s linear;
-  -moz-transition: background 0.3s linear;
-  -ms-transition: background 0.3s linear;
-  -o-transition: background 0.3s linear;
   transition: background 0.3s linear;
   cursor: pointer;
 }
 .btn:hover {
-  background-color: #40bd97;
+  background-color: var(--button-hover);
 }
 #footer {
-  background-color: #333;
-  color: #bbb;
+  background-color: var(--footer-background);
+  color: var(--footer-text);
   padding: 30px 0;
 }
 #footercontent {
@@ -409,7 +357,7 @@ a {
   line-height: 1.5em;
 }
 #footerleft a {
-  color: #ccc;
+  color: var(--footer-link);
 }
 #footerright {
   width: 33%;
@@ -418,6 +366,18 @@ a {
 }
 #footerright p {
   margin-top: 5px;
+}
+.footer-logo {
+  font-family: "Open Sans", sans-serif;
+  font-size: 2em;
+  font-weight: 400;
+}
+.footer-logo-light {
+  font-weight: 300;
+}
+.footer-motto {
+  font-family: "Clicker Script", cursive;
+  font-size: 28px;
 }
 body.modal-open {
   overflow: hidden;
@@ -429,15 +389,15 @@ body.modal-open {
   margin: auto;
   padding: 0;
   border: 0;
-  border-top: 4px solid #07a878;
-  background: #fff;
-  color: #222;
+  border-top: 4px solid var(--accent-bright);
+  background: var(--surface);
+  color: var(--dialog-text);
   text-align: left;
   overflow: hidden;
-  box-shadow: 0 24px 70px rgba(16, 35, 29, 0.3);
+  box-shadow: 0 24px 70px var(--dialog-shadow);
 }
 .modal::backdrop {
-  background: rgba(8, 22, 18, 0.66);
+  background: var(--backdrop);
 }
 .modal-os,
 .modal-app {
@@ -449,7 +409,7 @@ body.modal-open {
   width: 100%;
   height: 100%;
   max-height: calc(100dvh - 52px);
-  background: #fff;
+  background: var(--surface);
   overflow: hidden;
 }
 .modalheader {
@@ -459,11 +419,11 @@ body.modal-open {
   justify-content: space-between;
   min-height: 68px;
   padding: 0 24px;
-  border-bottom: 1px solid #e4e9e7;
-  background: #fff;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--surface);
 }
 .modalheader h2 {
-  color: #17372e;
+  color: var(--heading-color);
   font-family: "Open Sans", "Ubuntu", "Hiragino Sans GB", sans-serif;
   font-size: 23px;
   font-weight: 400;
@@ -477,7 +437,7 @@ body.modal-open {
   border: 0;
   place-items: center;
   background: transparent;
-  color: #587069;
+  color: var(--dialog-close);
   font:
     300 30px/1 Arial,
     sans-serif;
@@ -485,8 +445,8 @@ body.modal-open {
 }
 .modalclose:hover,
 .modalclose:focus-visible {
-  background: #edf7f4;
-  color: #078b65;
+  background: var(--accent-surface);
+  color: var(--accent);
 }
 .modalbody {
   min-width: 0;
@@ -502,8 +462,8 @@ body.modal-open {
 .modalnav {
   flex: 0 0 210px;
   padding: 16px 12px;
-  border-right: 1px solid #e4e9e7;
-  background: #f7f9f8;
+  border-right: 1px solid var(--border-color);
+  background: var(--surface-subtle);
   overflow: hidden auto;
 }
 .modalnav li {
@@ -514,18 +474,18 @@ body.modal-open {
   padding: 9px 12px;
   border: 0;
   background: transparent;
-  color: #40534d;
+  color: var(--control-text);
   font: inherit;
   text-align: left;
   cursor: pointer;
 }
 .modalnav button:hover {
-  background: #e8efec;
-  color: #17372e;
+  background: var(--accent-soft-hover);
+  color: var(--heading-color);
 }
 .modalnav button.active {
-  background: #dcefe9;
-  color: #067856;
+  background: var(--accent-soft);
+  color: var(--accent-strong);
   font-weight: 600;
 }
 .modalpanel {
@@ -538,18 +498,18 @@ body.modal-open {
 .modalpanel-header {
   flex: none;
   padding: 22px 24px 14px;
-  border-bottom: 1px solid #e9edeb;
+  border-bottom: 1px solid var(--border-color);
 }
 .modalpanel h3 {
   margin-bottom: 6px;
-  color: #17372e;
+  color: var(--heading-color);
   font-size: 22px;
   font-weight: 600;
 }
 .modalcount {
   min-height: 1.4em;
   margin-top: 6px;
-  color: #75857f;
+  color: var(--modal-muted);
   font-size: 12px;
   text-align: right;
 }
@@ -560,7 +520,7 @@ body.modal-open {
   overflow: hidden auto;
 }
 .modalfile {
-  border-bottom: 1px solid #edf0ef;
+  border-bottom: 1px solid var(--border-subtle);
 }
 .modalfile a {
   display: grid;
@@ -572,23 +532,23 @@ body.modal-open {
 }
 .modalfile a:hover,
 .modalfile a:focus-visible {
-  background: #f1f8f6;
+  background: var(--accent-surface);
   text-decoration: none;
 }
 .modalfile-name {
-  color: #17372e;
+  color: var(--heading-color);
   font-size: 15px;
   font-weight: 600;
 }
 .modalfile-warning {
   margin-left: 10px;
-  color: #9a6512;
+  color: var(--warning-text);
   font-size: 12px;
   font-weight: normal;
 }
 .modalfile-filename {
   min-width: 0;
-  color: #71817c;
+  color: var(--filename-muted);
   font-family: "Noto Sans Mono CJK SC", "SFMono-Regular", Consolas, monospace;
   font-size: 12px;
   overflow-wrap: anywhere;
@@ -598,8 +558,8 @@ body.modal-open {
   grid-row: 1 / 3;
   align-self: center;
   padding: 6px 10px;
-  background: #e2f3ee;
-  color: #067856;
+  background: var(--accent-soft);
+  color: var(--accent-strong);
   font-size: 13px;
   font-weight: 600;
 }
@@ -607,14 +567,14 @@ body.modal-open {
 .modalempty-state {
   margin: auto;
   padding: 36px 24px;
-  color: #75857f;
+  color: var(--modal-muted);
   text-align: center;
 }
 @media screen and (min-width: 881px) {
   #filelist {
     float: left;
     width: 60%;
-    border-right: 1px solid #eee;
+    border-right: 1px solid var(--border-color);
     padding-right: 30px;
   }
   #sidebar {
@@ -660,7 +620,7 @@ body.modal-open {
     flex: none;
     padding: 10px 8px;
     border-right: 0;
-    border-bottom: 1px solid #e4e9e7;
+    border-bottom: 1px solid var(--border-color);
     overflow: hidden;
   }
   .modalnav ul {
@@ -720,9 +680,6 @@ body.modal-open {
     width: 50%;
   }
 }
-.hidden {
-  display: none;
-}
 #filetitle {
   float: left;
   line-height: 36px;
@@ -731,13 +688,10 @@ body.modal-open {
   float: right;
   line-height: 18px;
   padding: 8px;
-  border: 1px solid #e3e3e3;
+  border: 1px solid var(--border-color);
+  background: var(--surface);
+  color: var(--text-color);
   margin-top: 5px;
   max-width: 240px;
   font-size: 16px;
-}
-.download_warning {
-  color: red;
-  font-size: 14px;
-  line-height: 1em;
 }

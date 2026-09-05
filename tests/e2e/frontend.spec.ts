@@ -4,6 +4,10 @@ test("homepage enhances fallback and keeps its interactions", async ({
   page,
 }) => {
   await page.goto("/");
+  await expect(page.locator('link[rel="stylesheet"]')).toHaveAttribute(
+    "href",
+    /\/static\/css\/style-[A-Z0-9]+\.css$/,
+  );
   await expect(page.locator("#filelist .filename a")).toHaveText([
     "alpha",
     "beta",
@@ -48,6 +52,38 @@ test("homepage enhances fallback and keeps its interactions", async ({
   await expect(page.locator(".modalfile")).toContainText("test-app.zip");
 });
 
+test("homepage follows the system color scheme", async ({ page }) => {
+  await page.emulateMedia({ colorScheme: "dark" });
+  await page.goto("/");
+  await expect(page.locator("body")).toHaveCSS(
+    "background-color",
+    "rgb(24, 26, 27)",
+  );
+  await page.getByRole("button", { name: "获取安装镜像 >" }).click();
+  await expect(page.getByRole("dialog")).toHaveCSS(
+    "background-color",
+    "rgb(31, 34, 35)",
+  );
+
+  await page.emulateMedia({ colorScheme: "light" });
+  await expect(page.locator("body")).toHaveCSS(
+    "background-color",
+    "rgb(253, 255, 253)",
+  );
+  await expect(page.locator("#welcome")).toHaveCSS(
+    "background-image",
+    "linear-gradient(rgb(64, 189, 151) 0%, rgb(7, 168, 120) 100%)",
+  );
+  await expect(page.locator(".btn").first()).toHaveCSS(
+    "background-color",
+    "rgb(7, 168, 120)",
+  );
+  await expect(page.getByRole("dialog")).toHaveCSS(
+    "background-color",
+    "rgb(255, 255, 255)",
+  );
+});
+
 test("invalid bootstrap keeps fallback content", async ({ page }) => {
   await page.goto("/invalid.html");
   await expect(page.locator("#root a")).toHaveAttribute(
@@ -73,19 +109,38 @@ test("download buttons report empty download data", async ({ page }) => {
 test.describe("without JavaScript", () => {
   test.use({ javaScriptEnabled: false });
   test("homepage links to the basic repository list", async ({ page }) => {
+    await page.emulateMedia({ colorScheme: "dark" });
     await page.goto("/");
     await expect(page.locator("#root")).toContainText(
       "此浏览器未启用或不支持 JavaScript",
     );
     await page.locator("#root a").click();
     await expect(page).toHaveURL(/\/index-nojs\.html$/);
+    await expect(page.locator('link[rel="stylesheet"]')).toHaveAttribute(
+      "href",
+      /\/static\/css\/nojs-[A-Z0-9]+\.css$/,
+    );
+    await expect(page.locator("body")).toHaveCSS(
+      "background-color",
+      "rgb(24, 26, 27)",
+    );
     await expect(page.locator("li a")).toHaveText(["alpha", "beta"]);
+    await page.emulateMedia({ colorScheme: "light" });
+    await expect(page.locator("body")).toHaveCSS(
+      "background-color",
+      "rgb(255, 255, 255)",
+    );
+    await expect(page.locator("a").first()).toHaveCSS(
+      "color",
+      "rgb(0, 0, 238)",
+    );
   });
 });
 
 test("status renders, sorts, and treats remote markup as text", async ({
   page,
 }) => {
+  await page.emulateMedia({ colorScheme: "dark" });
   await page.route("https://monitor.ustclug.org/**", (route) => route.abort());
   await page.route("**/status/json", (route) =>
     route.fulfill({
@@ -116,6 +171,18 @@ test("status renders, sorts, and treats remote markup as text", async ({
     }),
   );
   await page.goto("/status/");
+  await expect(page.locator('link[rel="stylesheet"]')).toHaveAttribute(
+    "href",
+    /\/static\/css\/status-[A-Z0-9]+\.css$/,
+  );
+  await expect(page.locator("body")).toHaveCSS(
+    "background-color",
+    "rgb(24, 26, 27)",
+  );
+  await expect(page.locator("iframe").first()).toHaveAttribute(
+    "src",
+    /theme=dark/,
+  );
   await expect(page.getByText("此页面需要 JavaScript")).toHaveCount(0);
   await expect(page.locator("#status tbody tr")).toHaveCount(2);
   await expect(page.locator("#status tbody img")).toHaveCount(0);
@@ -126,6 +193,27 @@ test("status renders, sorts, and treats remote markup as text", async ({
   await expect(
     page.locator("#status tbody tr").first().locator("td").first(),
   ).toHaveText("alpha");
+  await page.emulateMedia({ colorScheme: "light" });
+  await expect(page.locator("body")).toHaveCSS(
+    "background-color",
+    "rgb(255, 255, 255)",
+  );
+  await expect(page.locator("#nav")).toHaveCSS(
+    "background-color",
+    "rgb(242, 242, 242)",
+  );
+  await expect(page.locator("#status th").nth(1)).toHaveCSS(
+    "background-color",
+    "rgb(238, 238, 238)",
+  );
+  await expect(page.locator(".failedSync")).toHaveCSS(
+    "background-color",
+    "rgb(255, 244, 227)",
+  );
+  await expect(page.locator("iframe").first()).toHaveAttribute(
+    "src",
+    /theme=light/,
+  );
 });
 
 test("status reports an invalid response", async ({ page }) => {

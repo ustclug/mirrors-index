@@ -1,28 +1,27 @@
 OUTDIR := dist
 STATIC_OUT := $(OUTDIR)/static
-ESBUILD_FLAGS := --bundle --format=esm --target=es2020 --jsx=automatic --jsx-import-source=preact --alias:preact=$(CURDIR)/vendor/preact --minify
+ESBUILD_ENTRIES := frontend/index.tsx frontend/status.tsx static/css/style.css static/css/status.css static/css/nojs.css
+ESBUILD_FLAGS := --bundle --format=esm --target=es2020 --jsx=automatic --jsx-import-source=preact --alias:preact=$(CURDIR)/vendor/preact '--external:/static/fonts/*'
 ESBUILD := env NODE_PATH=$(CURDIR)/vendor esbuild
 PYTHON_FILES := gencontent.py genindex.py genmirrorz.py genservernews.py utils.py tests/render_fixture.py tests/test_example_tree.py tests/test_genindex.py tools/build_manifest.py tools/check_bundle_size.py tools/create_example_tree.py
-FRONTEND_FILES := playwright.config.ts frontend/*.ts frontend/*.tsx tests/e2e/*.ts static/css/style.css
+FRONTEND_FILES := playwright.config.ts frontend/*.ts frontend/*.tsx tests/e2e/*.ts static/css/*.css
 
 .PHONY: build dev example typecheck format lint test install clean
 
 build: clean typecheck
 	mkdir -p $(STATIC_OUT)/js $(STATIC_OUT)/css $(OUTDIR)/status
-	$(ESBUILD) frontend/index.tsx frontend/status.tsx $(ESBUILD_FLAGS) --outdir=$(STATIC_OUT)/js --entry-names=[name]-[hash] --metafile=$(OUTDIR)/esbuild-meta.json
+	$(ESBUILD) $(ESBUILD_ENTRIES) $(ESBUILD_FLAGS) --minify --outdir=$(STATIC_OUT) --entry-names=[ext]/[name]-[hash] --metafile=$(OUTDIR)/esbuild-meta.json
 	cp -a static/fonts $(STATIC_OUT)/
 	cp -a static/img $(STATIC_OUT)/
-	cp -a static/css/fonts.css static/css/style.css $(STATIC_OUT)/css/
 	python3 tools/build_manifest.py
 
 dev: clean typecheck
 	mkdir -p $(STATIC_OUT)/js $(STATIC_OUT)/css $(OUTDIR)/status
 	cp -a static/fonts $(STATIC_OUT)/
 	cp -a static/img $(STATIC_OUT)/
-	cp -a static/css/fonts.css static/css/style.css $(STATIC_OUT)/css/
-	$(ESBUILD) frontend/index.tsx frontend/status.tsx --bundle --outdir=$(STATIC_OUT)/js --format=esm --target=es2020 --jsx=automatic --jsx-import-source=preact --alias:preact=$(CURDIR)/vendor/preact --sourcemap --metafile=$(OUTDIR)/esbuild-meta.json
+	$(ESBUILD) $(ESBUILD_ENTRIES) $(ESBUILD_FLAGS) --outdir=$(STATIC_OUT) --entry-names=[ext]/[name] --sourcemap --metafile=$(OUTDIR)/esbuild-meta.json
 	python3 tools/build_manifest.py
-	$(ESBUILD) frontend/index.tsx frontend/status.tsx --bundle --outdir=$(STATIC_OUT)/js --format=esm --target=es2020 --jsx=automatic --jsx-import-source=preact --alias:preact=$(CURDIR)/vendor/preact --sourcemap --watch
+	$(ESBUILD) $(ESBUILD_ENTRIES) $(ESBUILD_FLAGS) --outdir=$(STATIC_OUT) --entry-names=[ext]/[name] --sourcemap --watch
 
 example:
 	python3 tools/create_example_tree.py

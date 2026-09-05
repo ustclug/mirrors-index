@@ -145,9 +145,14 @@ def main():
         repolist=repolist,
         bootstrap=bootstrap_json(repolist, revproxy, isoinfo, newslist, now),
         index_script=frontend_asset("index", BASEDIR),
+        index_style=frontend_asset("index_style", BASEDIR),
         now=now,
     )
-    parsed_nojs_template = nojs_template.render(repolist=repolist, now=now)
+    parsed_nojs_template = nojs_template.render(
+        repolist=repolist,
+        nojs_style=frontend_asset("nojs_style", BASEDIR),
+        now=now,
+    )
 
     nojs_file = os.path.join(
         os.path.dirname(os.path.abspath(OUTFILE)), "index-nojs.html"

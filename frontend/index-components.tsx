@@ -342,18 +342,11 @@ export function Footer() {
         </div>
         <div id="footerright">
           <p>
-            <span style="font-family:'Open Sans';font-size:2em;font-weight:400">
-              LUG
-            </span>
-            <span style="font-family:'Open Sans';font-size:2em;font-weight:100">
-              @USTC
-            </span>
+            <span class="footer-logo">LUG</span>
+            <span class="footer-logo footer-logo-light">@USTC</span>
           </p>
-          <p style="font-family:'clicker script';font-size:28px">
-            "life,love,linux"
-          </p>
+          <p class="footer-motto">"life,love,linux"</p>
         </div>
-        <div style="clear:both"></div>
       </div>
     </div>
   );

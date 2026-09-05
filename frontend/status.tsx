@@ -25,6 +25,21 @@ const errors: Record<number, string> = {
   [-2]: "The syncing container timed out and was thus terminated",
 };
 
+function usePreferredColorScheme() {
+  const [theme, setTheme] = useState<"light" | "dark">(() =>
+    window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? "dark"
+      : "light",
+  );
+  useEffect(() => {
+    const preference = window.matchMedia("(prefers-color-scheme: dark)");
+    const update = () => setTheme(preference.matches ? "dark" : "light");
+    preference.addEventListener("change", update);
+    return () => preference.removeEventListener("change", update);
+  }, []);
+  return theme;
+}
+
 function dateTime(timestamp: number) {
   if (!Number.isFinite(timestamp) || timestamp <= 0) return "-";
   const date = new Date(timestamp * 1000);
@@ -149,6 +164,7 @@ function StatusTable({ rows }: { rows: SyncStatus[] }) {
 function App() {
   const [rows, setRows] = useState<SyncStatus[] | null>(null);
   const [error, setError] = useState(false);
+  const theme = usePreferredColorScheme();
   useEffect(() => {
     fetch("/status/json")
       .then((response) => {
@@ -189,7 +205,7 @@ function App() {
           <>
             {index > 0 && index % 2 === 0 && <br />}
             <iframe
-              src={`https://monitor.ustclug.org/d-solo/000000001/mirrors?theme=light&panelId=${id}`}
+              src={`https://monitor.ustclug.org/d-solo/000000001/mirrors?theme=${theme}&panelId=${id}`}
               width="49%"
               height={index >= 6 ? "400" : "300"}
               frameborder="0"
