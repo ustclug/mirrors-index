@@ -17,7 +17,10 @@ downloads = [
     {
         "distro": "Test OS",
         "category": "os",
-        "urls": [{"name": "1.0 (amd64)", "url": "/test-os.iso"}],
+        "urls": [
+            {"name": "1.0 (amd64)", "url": "/test-os.iso"},
+            {"name": "1.0 (arm64)", "url": "/test-os-arm64.iso"},
+        ],
     },
     {
         "distro": "Test App",

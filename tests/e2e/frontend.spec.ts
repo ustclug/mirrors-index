@@ -25,10 +25,27 @@ test("homepage enhances fallback and keeps its interactions", async ({
   await page.locator("#search").fill("");
   await page.locator("body").press("s");
   await expect(page.locator("#search")).toBeFocused();
-  await page.getByText("获取安装镜像 >").click();
-  await expect(page.locator(".modal select").first()).toHaveValue("0");
-  await page.locator(".modaltitle span").last().click();
+  const isoTrigger = page.getByRole("button", { name: "获取安装镜像 >" });
+  await isoTrigger.click();
+  await expect(page.getByRole("dialog")).toBeVisible();
+  await expect(page.locator(".modalpanel h3")).toHaveText("Test OS");
+  await expect(page.locator(".modalfile")).toHaveCount(2);
+  await expect(page.locator(".modalfile").first()).not.toContainText(
+    "请确认设备支持",
+  );
+  await expect(page.locator(".modalfile").last()).toContainText(
+    "请确认设备支持 arm64",
+  );
+  await expect(page.getByRole("button", { name: "Test OS" })).toBeFocused();
+  await page.getByRole("dialog").press("Escape");
   await expect(page.locator(".modal")).toHaveCount(0);
+  await expect(isoTrigger).toBeFocused();
+
+  await page.getByRole("button", { name: "获取开源软件 >" }).click();
+  await expect(page.locator(".modalpanel h3")).toHaveText("Test App");
+  await expect(page.getByRole("button", { name: "Test App" })).toBeFocused();
+  await expect(page.locator(".modalfile")).toHaveCount(1);
+  await expect(page.locator(".modalfile")).toContainText("test-app.zip");
 });
 
 test("invalid bootstrap keeps fallback content", async ({ page }) => {
@@ -42,13 +59,13 @@ test("invalid bootstrap keeps fallback content", async ({ page }) => {
 
 test("download buttons report empty download data", async ({ page }) => {
   await page.goto("/empty-downloads.html");
-  await page.getByText("获取安装镜像 >").click();
-  await expect(page.locator(".modalcontent")).toContainText(
+  await page.getByRole("button", { name: "获取安装镜像 >" }).click();
+  await expect(page.locator(".modalbody")).toContainText(
     "暂无可用的安装镜像下载",
   );
-  await page.locator(".modaltitle span").last().click();
-  await page.getByText("获取开源软件 >").click();
-  await expect(page.locator(".modalcontent")).toContainText(
+  await page.getByRole("button", { name: "关闭" }).click();
+  await page.getByRole("button", { name: "获取开源软件 >" }).click();
+  await expect(page.locator(".modalbody")).toContainText(
     "暂无可用的开源软件下载",
   );
 });

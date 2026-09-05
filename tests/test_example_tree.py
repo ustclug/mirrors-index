@@ -15,6 +15,15 @@ class CreateExampleTreeTests(unittest.TestCase):
             self.assertTrue((root / MARKER).is_file())
             for relative_path in FILES:
                 self.assertTrue((root / relative_path).is_file())
+            self.assertTrue(
+                (
+                    root
+                    / "debian-cd/current/arm64/iso-cd/debian-13.1.0-arm64-netinst.iso"
+                ).is_file()
+            )
+            self.assertTrue(
+                (root / "node/latest-v22.x/node-v22.18.0-arm64.msi").is_file()
+            )
 
     def test_refuses_an_unmanaged_non_empty_directory(self):
         with tempfile.TemporaryDirectory() as directory:

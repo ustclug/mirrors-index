@@ -1,4 +1,4 @@
-import { useState } from "preact/hooks";
+import { useEffect, useRef, useState } from "preact/hooks";
 import type { DownloadGroup, IndexBootstrapV1 } from "./types";
 
 export function Header() {
@@ -53,72 +53,133 @@ export function DownloadModal({
   onClose: () => void;
 }) {
   const [distro, setDistro] = useState(0);
-  const [version, setVersion] = useState(0);
+  const dialog = useRef<HTMLDialogElement>(null);
+  const initialFocus = useRef<HTMLButtonElement>(null);
   const selected = groups[distro];
-  const item = selected?.urls[version];
-  const arch = item?.name.match(/aarch64|ppc64le|arm64/i)?.[0];
   const app = kind === "app";
-  function download() {
-    if (!item) return;
-    window.open(item.url, "_blank", "noopener");
-    onClose();
+
+  useEffect(() => {
+    const previousFocus = document.activeElement;
+    dialog.current?.showModal();
+    document.body.classList.add("modal-open");
+    initialFocus.current?.focus();
+    return () => {
+      document.body.classList.remove("modal-open");
+      if (previousFocus instanceof HTMLElement && previousFocus.isConnected) {
+        requestAnimationFrame(() => previousFocus.focus());
+      }
+    };
+  }, []);
+
+  function filename(url: string) {
+    const value = url.split("/").pop() || url;
+    try {
+      return decodeURIComponent(value);
+    } catch {
+      return value;
+    }
   }
+
+  function uncommonArchitecture(name: string) {
+    if (name.toLowerCase().includes("android")) return undefined;
+    return name.match(/aarch64|ppc64le|arm64/i)?.[0];
+  }
+
   return (
-    <div class="modal" style={{ visibility: "visible" }}>
-      <div class="modalclear" onClick={onClose}></div>
+    <dialog
+      ref={dialog}
+      class={`modal modal-${kind}`}
+      aria-labelledby="download-modal-title"
+      onClick={(event) => {
+        if (event.target === event.currentTarget) onClose();
+      }}
+      onCancel={(event) => {
+        event.preventDefault();
+        onClose();
+      }}
+    >
       <div class="modalcontainer">
-        <div class="modaltitle">
-          <span>{app ? "获取开源软件" : "获取安装镜像"}</span>
-          <span onClick={onClose} style="float:right;cursor:pointer">
-            X
-          </span>
-        </div>
-        <div class="modalcontent">
+        <header class="modalheader">
+          <h2 id="download-modal-title">
+            {app ? "获取开源软件" : "获取安装镜像"}
+          </h2>
+          <button
+            class="modalclose"
+            type="button"
+            aria-label="关闭"
+            title="关闭"
+            onClick={onClose}
+          >
+            ×
+          </button>
+        </header>
+        <div class="modalbody modalbody-split">
           {groups.length === 0 ? (
-            <p>暂无可用的{app ? "开源软件" : "安装镜像"}下载。</p>
+            <p class="modalempty-state">
+              暂无可用的{app ? "开源软件" : "安装镜像"}下载。
+            </p>
           ) : (
             <>
-              <p>
-                选择{app ? "开源软件" : "安装发行版"}：{" "}
-                <select
-                  value={distro}
-                  onChange={(event) => {
-                    setDistro(Number(event.currentTarget.value));
-                    setVersion(0);
-                  }}
-                >
+              <nav class="modalnav" aria-label={app ? "开源软件" : "发行版"}>
+                <ul>
                   {groups.map((entry, index) => (
-                    <option value={index}>{entry.distro}</option>
+                    <li>
+                      <button
+                        ref={index === 0 ? initialFocus : undefined}
+                        type="button"
+                        class={index === distro ? "active" : ""}
+                        aria-current={index === distro ? "true" : "false"}
+                        onClick={() => setDistro(index)}
+                      >
+                        {entry.distro}
+                      </button>
+                    </li>
                   ))}
-                </select>
-              </p>
-              <p>
-                选择{app ? "软件" : "发行版"}版本：{" "}
-                <select
-                  value={version}
-                  onChange={(event) =>
-                    setVersion(Number(event.currentTarget.value))
-                  }
-                >
-                  {(selected?.urls ?? []).map((entry, index) => (
-                    <option value={index}>{entry.name}</option>
-                  ))}
-                </select>
-              </p>
-              {arch && !item.name.toLowerCase().includes("android") && (
-                <p class="download_warning" style="display:block">
-                  提示：如果你不知道 {arch}{" "}
-                  是什么，你所选择的镜像或文件可能将无法在你的设备上正常运行，请考虑选择其他文件。
-                </p>
-              )}
-              <span class="btn" onClick={download}>
-                获取{app ? "文件" : " ISO"} &gt;
-              </span>
+                </ul>
+              </nav>
+              <section class="modalpanel" aria-labelledby="distro-title">
+                <div class="modalpanel-header">
+                  <h3 id="distro-title">{selected.distro}</h3>
+                  <p class="modalcount">{selected.urls.length} 个文件</p>
+                </div>
+                {selected.urls.length ? (
+                  <ul class="modalfile-list">
+                    {selected.urls.map((entry) => {
+                      const arch = uncommonArchitecture(entry.name);
+                      return (
+                        <li class="modalfile">
+                          <a
+                            href={entry.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={onClose}
+                          >
+                            <span class="modalfile-name">
+                              {entry.name}
+                              {arch && (
+                                <span class="modalfile-warning">
+                                  请确认设备支持 {arch}
+                                </span>
+                              )}
+                            </span>
+                            <span class="modalfile-filename">
+                              {filename(entry.url)}
+                            </span>
+                            <span class="modalfile-action">下载</span>
+                          </a>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                ) : (
+                  <p class="modalempty">暂无可用文件。</p>
+                )}
+              </section>
             </>
           )}
         </div>
       </div>
-    </div>
+    </dialog>
   );
 }
 
@@ -183,17 +244,17 @@ export function Sidebar({
           文件，请根据您的发行版及其详细版本进行选择：
         </p>
         <p></p>
-        <span class="btn" onClick={() => open("os")}>
+        <button class="btn" type="button" onClick={() => open("os")}>
           获取安装镜像 &gt;
-        </span>
+        </button>
       </div>
       <div id="ossapps">
         <h3>获取开源软件安装包</h3>
         <p>这里也为您提供常用开源软件的安装包：</p>
         <p></p>
-        <span class="btn" onClick={() => open("app")}>
+        <button class="btn" type="button" onClick={() => open("app")}>
           获取开源软件 &gt;
-        </span>
+        </button>
       </div>
       <div id="mirrorlinks">
         <h3>常用链接</h3>
