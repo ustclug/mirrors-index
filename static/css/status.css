@@ -122,6 +122,13 @@ table td {
   vertical-align: top;
 }
 
+#status td:nth-child(6) {
+  min-width: 180px;
+  max-width: 360px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
 table tbody tr:last-child td {
   border-bottom: 0;
 }

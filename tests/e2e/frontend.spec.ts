@@ -187,7 +187,9 @@ test("status renders, sorts, and treats remote markup as text", async ({
       json: [
         {
           name: "zeta",
-          upstream: "<img src=x onerror=alert(1)>",
+          upstream:
+            "<img src=x onerror=alert(1)>/" +
+            "very-long-unbroken-upstream-component-".repeat(8),
           syncing: false,
           size: 1024,
           exitCode: 10,
@@ -227,6 +229,18 @@ test("status renders, sorts, and treats remote markup as text", async ({
   await expect(page.getByText("此页面需要 JavaScript")).toHaveCount(0);
   await expect(page.locator("#status tbody tr")).toHaveCount(2);
   await expect(page.locator("#status tbody img")).toHaveCount(0);
+  const longUpstream = page
+    .locator("#status tbody tr")
+    .first()
+    .locator("td")
+    .nth(5);
+  await expect(longUpstream).toHaveCSS("white-space", "normal");
+  expect(
+    await longUpstream.evaluate(
+      (element) => element.scrollWidth <= element.clientWidth,
+    ),
+  ).toBe(true);
+  expect((await longUpstream.boundingBox())!.height).toBeGreaterThan(40);
   await expect(page.locator("#status tbody tr").first()).toHaveClass(
     /failedSync/,
   );
