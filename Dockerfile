@@ -4,7 +4,6 @@ ARG ESBUILD_VERSION=0.28.2
 ARG PNPM_VERSION=11.3.0
 ARG PRETTIER_VERSION=3.8.1
 ARG RUFF_VERSION=0.16.6
-ARG TYPESCRIPT_VERSION=6.0.3
 
 ENV DEBIAN_FRONTEND=noninteractive \
     LANG=zh_CN.UTF-8 \
@@ -19,6 +18,7 @@ RUN apt-get update \
         git \
         locales \
         make \
+        node-typescript \
         pipx \
         python3 \
         python3-jinja2 \
@@ -31,7 +31,6 @@ RUN npm install --global \
         "esbuild@${ESBUILD_VERSION}" \
         "pnpm@${PNPM_VERSION}" \
         "prettier@${PRETTIER_VERSION}" \
-        "typescript@${TYPESCRIPT_VERSION}" \
     && PIPX_HOME=/opt/pipx PIPX_BIN_DIR=/usr/local/bin \
         pipx install "ruff==${RUFF_VERSION}"
 
