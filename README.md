@@ -33,8 +33,8 @@ static application into the web root:
 
 ```shell
 make build
-make install WEBROOT=/srv/www-misc
-python3 genindex.py -o /srv/www-misc/index.html
+make install WEBROOT=/srv/www
+python3 genindex.py -o /srv/www/index.html
 ```
 
 `make install` installs the hashed JavaScript bundles, fonts, and `/status/`
