@@ -82,7 +82,7 @@ test("homepage follows the system color scheme", async ({ page }) => {
   );
 });
 
-test("invalid index data keeps fallback content", async ({ page }) => {
+test("invalid index data restores fallback content", async ({ page }) => {
   await page.route("**/static/index.json", async (route) => {
     const response = await route.fetch();
     const data = await response.json();
@@ -116,14 +116,37 @@ test("download buttons report empty download data", async ({ page }) => {
   );
 });
 
-test("failed index data request keeps fallback content", async ({ page }) => {
-  await page.route("**/static/index.json", (route) => route.abort());
-  await page.goto("/");
+test("failed index data request restores fallback content", async ({
+  page,
+}) => {
+  let failRequest: (() => void) | undefined;
+  await page.route("**/static/index.json", async (route) => {
+    await new Promise<void>((resolve) => {
+      failRequest = resolve;
+    });
+    await route.abort();
+  });
+  await page.goto("/", { waitUntil: "domcontentloaded" });
+  await expect(page.locator("#fallback")).toHaveCount(0);
+  expect(failRequest).toBeDefined();
+  failRequest?.();
   await expect(page.locator("#root a")).toHaveAttribute(
     "href",
     "/index-nojs.html",
   );
   await expect(page.locator("#filelist")).toHaveCount(0);
+});
+
+test("failed application script restores fallback content", async ({
+  page,
+}) => {
+  await page.route("**/static/js/index-*.js", (route) => route.abort());
+  await page.goto("/");
+  await expect(page.locator("#fallback")).toBeVisible();
+  await expect(page.locator("#fallback a")).toHaveAttribute(
+    "href",
+    "/index-nojs.html",
+  );
 });
 
 test.describe("without JavaScript", () => {

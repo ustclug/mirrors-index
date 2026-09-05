@@ -99,10 +99,22 @@ function App({ data }: { data: IndexDataV1 }) {
 }
 
 async function main() {
-  const data = await fetchIndexData();
   const root = document.getElementById("root");
   if (!root) throw new Error("Root element is missing");
+  const fallback = document.getElementById("fallback");
   root.replaceChildren();
+  document.documentElement.classList.remove("index-loading");
+
+  let data: IndexDataV1;
+  try {
+    data = await fetchIndexData();
+  } catch (error) {
+    if (fallback) {
+      root.replaceChildren(fallback);
+    }
+    throw error;
+  }
+
   render(<App data={data} />, root);
   document.addEventListener("keydown", (event) => {
     const input = document.getElementById("search") as HTMLInputElement | null;
@@ -122,7 +134,7 @@ async function main() {
 
 main().catch((error) => {
   console.error(
-    "Unable to load mirrors index; keeping fallback content",
+    "Unable to load mirrors index; showing fallback content",
     error,
   );
 });

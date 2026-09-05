@@ -5,13 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <meta name="color-scheme" content="light dark">
     <title>USTC Open Source Software Mirror</title>
+    <script>document.documentElement.classList.add("index-loading");</script>
+    <style>.index-loading #fallback { display: none; }</style>
     <link href="{{ index_style }}" rel="stylesheet">
     <link rel="shortcut icon" type="image/png" href="/static/img/favicon.png">
 </head>
 <body>
 <main id="root">
-    <p>你使用的浏览器无法加载完整页面，请访问<a href="/index-nojs.html">基础版镜像列表</a>。</p>
+    <p id="fallback">你使用的浏览器无法加载完整页面，请访问<a href="/index-nojs.html">基础版镜像列表</a>。</p>
 </main>
-<script type="module" src="{{ index_script }}"></script>
+<script type="module" src="{{ index_script }}" onerror="document.documentElement.classList.remove('index-loading')"></script>
 </body>
 </html>
