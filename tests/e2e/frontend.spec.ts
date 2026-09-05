@@ -40,6 +40,19 @@ test("invalid bootstrap keeps fallback content", async ({ page }) => {
   await expect(page.locator("#filelist")).toHaveCount(0);
 });
 
+test("download buttons report empty download data", async ({ page }) => {
+  await page.goto("/empty-downloads.html");
+  await page.getByText("获取安装镜像 >").click();
+  await expect(page.locator(".modalcontent")).toContainText(
+    "暂无可用的安装镜像下载",
+  );
+  await page.locator(".modaltitle span").last().click();
+  await page.getByText("获取开源软件 >").click();
+  await expect(page.locator(".modalcontent")).toContainText(
+    "暂无可用的开源软件下载",
+  );
+});
+
 test.describe("without JavaScript", () => {
   test.use({ javaScriptEnabled: false });
   test("homepage links to the basic repository list", async ({ page }) => {

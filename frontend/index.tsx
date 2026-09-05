@@ -88,8 +88,12 @@ function App({ data }: { data: IndexBootstrapV1 }) {
         <div style="clear:both"></div>
       </div>
       <Footer />
-      {modal && groups.length > 0 && (
-        <DownloadModal groups={groups} onClose={() => setModal(null)} />
+      {modal && (
+        <DownloadModal
+          kind={modal}
+          groups={groups}
+          onClose={() => setModal(null)}
+        />
       )}
     </>
   );

@@ -44,9 +44,11 @@ export function Header() {
 }
 
 export function DownloadModal({
+  kind,
   groups,
   onClose,
 }: {
+  kind: "os" | "app";
   groups: DownloadGroup[];
   onClose: () => void;
 }) {
@@ -55,7 +57,7 @@ export function DownloadModal({
   const selected = groups[distro];
   const item = selected?.urls[version];
   const arch = item?.name.match(/aarch64|ppc64le|arm64/i)?.[0];
-  const app = selected?.category === "app";
+  const app = kind === "app";
   function download() {
     if (!item) return;
     window.open(item.url, "_blank", "noopener");
@@ -72,42 +74,48 @@ export function DownloadModal({
           </span>
         </div>
         <div class="modalcontent">
-          <p>
-            选择{app ? "开源软件" : "安装发行版"}：{" "}
-            <select
-              value={distro}
-              onChange={(event) => {
-                setDistro(Number(event.currentTarget.value));
-                setVersion(0);
-              }}
-            >
-              {groups.map((entry, index) => (
-                <option value={index}>{entry.distro}</option>
-              ))}
-            </select>
-          </p>
-          <p>
-            选择{app ? "软件" : "发行版"}版本：{" "}
-            <select
-              value={version}
-              onChange={(event) =>
-                setVersion(Number(event.currentTarget.value))
-              }
-            >
-              {(selected?.urls ?? []).map((entry, index) => (
-                <option value={index}>{entry.name}</option>
-              ))}
-            </select>
-          </p>
-          {arch && !item.name.toLowerCase().includes("android") && (
-            <p class="download_warning" style="display:block">
-              提示：如果你不知道 {arch}{" "}
-              是什么，你所选择的镜像或文件可能将无法在你的设备上正常运行，请考虑选择其他文件。
-            </p>
+          {groups.length === 0 ? (
+            <p>暂无可用的{app ? "开源软件" : "安装镜像"}下载。</p>
+          ) : (
+            <>
+              <p>
+                选择{app ? "开源软件" : "安装发行版"}：{" "}
+                <select
+                  value={distro}
+                  onChange={(event) => {
+                    setDistro(Number(event.currentTarget.value));
+                    setVersion(0);
+                  }}
+                >
+                  {groups.map((entry, index) => (
+                    <option value={index}>{entry.distro}</option>
+                  ))}
+                </select>
+              </p>
+              <p>
+                选择{app ? "软件" : "发行版"}版本：{" "}
+                <select
+                  value={version}
+                  onChange={(event) =>
+                    setVersion(Number(event.currentTarget.value))
+                  }
+                >
+                  {(selected?.urls ?? []).map((entry, index) => (
+                    <option value={index}>{entry.name}</option>
+                  ))}
+                </select>
+              </p>
+              {arch && !item.name.toLowerCase().includes("android") && (
+                <p class="download_warning" style="display:block">
+                  提示：如果你不知道 {arch}{" "}
+                  是什么，你所选择的镜像或文件可能将无法在你的设备上正常运行，请考虑选择其他文件。
+                </p>
+              )}
+              <span class="btn" onClick={download}>
+                获取{app ? "文件" : " ISO"} &gt;
+              </span>
+            </>
           )}
-          <span class="btn" onClick={download}>
-            获取{app ? "文件" : " ISO"} &gt;
-          </span>
         </div>
       </div>
     </div>

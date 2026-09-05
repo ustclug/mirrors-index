@@ -47,3 +47,14 @@ html = env.get_template("index.html").render(
 (ROOT / "dist" / "invalid.html").write_text(
     html.replace('"schemaVersion":1', '"schemaVersion":2') + "\n"
 )
+(ROOT / "dist" / "empty-downloads.html").write_text(
+    env.get_template("index.html").render(
+        repolist=repolist,
+        bootstrap=genindex.bootstrap_json(
+            repolist, [], [], news, "2026-01-02 03:04:05"
+        ),
+        index_script=genindex.frontend_asset("index", ROOT),
+        now="2026-01-02 03:04:05",
+    )
+    + "\n"
+)
