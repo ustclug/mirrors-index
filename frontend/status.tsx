@@ -1,6 +1,9 @@
 import { render } from "preact";
 import { useEffect, useMemo, useState } from "preact/hooks";
+import { initializePalette } from "./palette";
 import type { SyncStatus } from "./types";
+
+initializePalette();
 
 type SortKey =
   | "name"

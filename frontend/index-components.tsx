@@ -1,4 +1,10 @@
 import { useEffect, useRef, useState } from "preact/hooks";
+import {
+  currentPalette,
+  PALETTES,
+  selectPalette,
+  type Palette,
+} from "./palette";
 import type { DownloadGroup, IndexDataV1 } from "./types";
 
 export function Header() {
@@ -305,6 +311,13 @@ export function Sidebar({
 }
 
 export function Footer() {
+  const [palette, setPalette] = useState<Palette>(currentPalette);
+
+  function choosePalette(nextPalette: Palette) {
+    selectPalette(nextPalette);
+    setPalette(nextPalette);
+  }
+
   return (
     <div id="footer">
       <div id="footercontent">
@@ -346,6 +359,26 @@ export function Footer() {
             <span class="footer-logo footer-logo-light">@USTC</span>
           </p>
           <p class="footer-motto">"life,love,linux"</p>
+          <div class="palette-picker" role="group" aria-label="选择配色">
+            {PALETTES.map((option) => (
+              <button
+                key={option.id}
+                class="palette-option"
+                type="button"
+                aria-label={option.name}
+                aria-pressed={palette === option.id}
+                onClick={() => choosePalette(option.id)}
+              >
+                <span
+                  class={`palette-swatch palette-swatch-${option.id}`}
+                  aria-hidden="true"
+                />
+                <span class="palette-tooltip" role="tooltip">
+                  {option.name}
+                </span>
+              </button>
+            ))}
+          </div>
         </div>
       </div>
     </div>

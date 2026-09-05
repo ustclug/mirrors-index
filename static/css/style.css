@@ -82,19 +82,19 @@ body {
   margin-left: 25px;
   font-family: "Open Sans", "Ubuntu", Helvetica, Arial, Geneva, sans-serif;
   font-size: 16px;
-  color: #eeecdf;
+  color: var(--hero-link);
 }
 #headlinks li:hover {
-  color: #fff;
+  color: var(--hero-link-hover);
 }
 #headlinks li a {
   font-family: "Open Sans", "Ubuntu", Helvetica, Arial, Geneva, sans-serif;
   font-size: 16px;
-  color: #eeecdf;
+  color: var(--hero-link);
   text-decoration: none;
 }
 #headlinks li a:hover {
-  color: #fff;
+  color: var(--hero-link-hover);
 }
 #welcome {
   /*width: 100%;*/
@@ -108,14 +108,14 @@ body {
 #intro {
   margin: 0 auto;
   width: 75%;
-  color: #f1f1f1;
+  color: var(--hero-text);
 }
 #intro h1 {
   font-family: "Open Sans", "Ubuntu", Helvetica, Arial, Geneva, sans-serif;
   font-weight: 400;
   font-size: 48px;
   margin-top: 10px;
-  color: #fff;
+  color: var(--hero-heading);
 }
 #intro h2 {
   font-family: "Open Sans", "Ubuntu", Helvetica, Arial, Geneva, sans-serif;
@@ -378,6 +378,76 @@ tbody tr:hover {
 .footer-motto {
   font-family: "Clicker Script", cursive;
   font-size: 28px;
+}
+.palette-picker {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  margin-top: 12px;
+}
+.palette-option {
+  position: relative;
+  display: grid;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 0;
+  place-items: center;
+  background: transparent;
+  cursor: pointer;
+}
+.palette-option:focus-visible {
+  outline: 2px solid var(--footer-link);
+  outline-offset: 1px;
+}
+.palette-swatch {
+  width: 20px;
+  height: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.28);
+}
+.palette-swatch-classic-green {
+  background: #07a878;
+}
+.palette-swatch-ustc-blue {
+  background: #004d94;
+}
+.palette-swatch-quiet-pink {
+  background: #f2c9d5;
+}
+.palette-swatch-sunrise-red {
+  background: #b43e44;
+}
+.palette-swatch-summer-wheat {
+  background: #fadf92;
+}
+.palette-option[aria-pressed="true"] .palette-swatch {
+  box-shadow:
+    0 0 0 2px var(--footer-background),
+    0 0 0 4px var(--footer-link);
+}
+.palette-tooltip {
+  position: absolute;
+  z-index: 1;
+  bottom: calc(100% + 4px);
+  left: 50%;
+  width: max-content;
+  padding: 4px 7px;
+  background: var(--heading-color);
+  color: var(--surface);
+  font-family: "Open Sans", "Ubuntu", sans-serif;
+  font-size: 12px;
+  line-height: 1.3;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-50%);
+  transition: opacity 0.12s linear;
+  visibility: hidden;
+}
+.palette-option:hover .palette-tooltip,
+.palette-option:focus-visible .palette-tooltip {
+  opacity: 1;
+  visibility: visible;
 }
 body.modal-open {
   overflow: hidden;

@@ -4,8 +4,8 @@
 :root {
   --status-failed: #fff4e3;
   --status-ongoing: #e3f7ff;
-  --sort-indicator: #40534d;
-  --tooltip-background: #17372e;
+  --sort-indicator: var(--control-text);
+  --tooltip-background: var(--heading-color);
   --tooltip-text: #ffffff;
 }
 
@@ -13,8 +13,6 @@
   :root {
     --status-failed: #4a3520;
     --status-ongoing: #163b47;
-    --sort-indicator: #c6c3bf;
-    --tooltip-background: #d8e8e2;
     --tooltip-text: #181a1b;
   }
 }
@@ -51,14 +49,14 @@ body {
 }
 
 #nav a {
-  color: #eeecdf;
+  color: var(--hero-link);
   font-size: 16px;
   text-decoration: none;
 }
 
 #nav a:hover,
 #nav a:focus-visible {
-  color: #ffffff;
+  color: var(--hero-link-hover);
   text-decoration: underline;
   text-underline-offset: 0.2em;
 }

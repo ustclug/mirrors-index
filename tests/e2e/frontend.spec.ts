@@ -82,6 +82,145 @@ test("homepage follows the system color scheme", async ({ page }) => {
   );
 });
 
+test("palette picker persists and is shared with the status page", async ({
+  page,
+}) => {
+  await page.emulateMedia({ colorScheme: "light" });
+  await page.goto("/");
+
+  const picker = page.getByRole("group", { name: "选择配色" });
+  const classic = picker.getByRole("button", { name: "经典绿" });
+  const blue = picker.getByRole("button", { name: "科大蓝" });
+  const pink = picker.getByRole("button", { name: "安静粉" });
+  const red = picker.getByRole("button", { name: "朝霞红" });
+  const yellow = picker.getByRole("button", { name: "夏麦黄" });
+  await expect(picker.getByRole("button")).toHaveCount(5);
+  await expect(classic).toHaveAttribute("aria-pressed", "true");
+  await expect(pink.locator(".palette-swatch")).toHaveCSS(
+    "background-color",
+    "rgb(242, 201, 213)",
+  );
+  await expect(red.locator(".palette-swatch")).toHaveCSS(
+    "background-color",
+    "rgb(180, 62, 68)",
+  );
+  await expect(yellow.locator(".palette-swatch")).toHaveCSS(
+    "background-color",
+    "rgb(250, 223, 146)",
+  );
+
+  for (const [button, id, color, gradient, textColor] of [
+    [
+      pink,
+      "quiet-pink",
+      "rgb(155, 67, 93)",
+      "linear-gradient(rgb(242, 201, 213) 0%, rgb(233, 176, 192) 100%)",
+      "rgb(66, 40, 50)",
+    ],
+    [
+      red,
+      "sunrise-red",
+      "rgb(169, 54, 60)",
+      "linear-gradient(rgb(200, 91, 97) 0%, rgb(180, 62, 68) 100%)",
+      "rgb(241, 241, 241)",
+    ],
+    [
+      yellow,
+      "summer-wheat",
+      "rgb(138, 91, 0)",
+      "linear-gradient(rgb(250, 223, 146) 0%, rgb(242, 198, 93) 100%)",
+      "rgb(60, 43, 9)",
+    ],
+  ] as const) {
+    await button.click();
+    await expect(page.locator("html")).toHaveAttribute("data-palette", id);
+    await expect(page.locator(".btn").first()).toHaveCSS(
+      "background-color",
+      color,
+    );
+    await expect(page.locator("#welcome")).toHaveCSS(
+      "background-image",
+      gradient,
+    );
+    await expect(page.locator("#intro")).toHaveCSS("color", textColor);
+  }
+
+  await blue.hover();
+  await expect(blue.getByRole("tooltip")).toBeVisible();
+  await expect(blue.getByRole("tooltip")).toHaveText("科大蓝");
+
+  await blue.click();
+  await expect(blue).toHaveAttribute("aria-pressed", "true");
+  await expect(classic).toHaveAttribute("aria-pressed", "false");
+  await expect(page.locator("html")).toHaveAttribute(
+    "data-palette",
+    "ustc-blue",
+  );
+  expect(
+    await page.evaluate(() => localStorage.getItem("mirrors-index-palette")),
+  ).toBe("ustc-blue");
+  await expect(page.locator("#welcome")).toHaveCSS(
+    "background-image",
+    "linear-gradient(rgb(36, 113, 173) 0%, rgb(0, 77, 148) 100%)",
+  );
+  await expect(page.locator(".btn").first()).toHaveCSS(
+    "background-color",
+    "rgb(0, 77, 148)",
+  );
+
+  await page.reload();
+  await expect(blue).toHaveAttribute("aria-pressed", "true");
+  await expect(page.locator("html")).toHaveAttribute(
+    "data-palette",
+    "ustc-blue",
+  );
+
+  await page.route("https://monitor.ustclug.org/**", (route) => route.abort());
+  await page.goto("/status/");
+  await expect(page.locator("html")).toHaveAttribute(
+    "data-palette",
+    "ustc-blue",
+  );
+  await expect(page.locator("#nav")).toHaveCSS(
+    "background-image",
+    "linear-gradient(rgb(36, 113, 173) 0%, rgb(0, 77, 148) 100%)",
+  );
+
+  await page.emulateMedia({ colorScheme: "dark" });
+  await expect(page.locator("body")).toHaveCSS(
+    "background-color",
+    "rgb(24, 26, 27)",
+  );
+  await expect(page.locator("#nav")).toHaveCSS(
+    "background-image",
+    "linear-gradient(rgb(37, 101, 143) 0%, rgb(24, 79, 117) 100%)",
+  );
+});
+
+test("palette picker falls back from invalid storage and fits narrow screens", async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    localStorage.setItem("mirrors-index-palette", "unknown");
+  });
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/");
+
+  await expect(page.locator("html")).toHaveAttribute(
+    "data-palette",
+    "classic-green",
+  );
+  await expect(page.getByRole("button", { name: "经典绿" })).toHaveAttribute(
+    "aria-pressed",
+    "true",
+  );
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= window.innerWidth,
+    ),
+  ).toBe(true);
+});
+
 test("invalid index data restores fallback content", async ({ page }) => {
   await page.route("**/static/index.json", async (route) => {
     const response = await route.fetch();

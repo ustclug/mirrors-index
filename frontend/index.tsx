@@ -2,7 +2,10 @@ import { render } from "preact";
 import { useMemo, useState } from "preact/hooks";
 import { fetchIndexData } from "./bootstrap";
 import { DownloadModal, Footer, Header, Sidebar } from "./index-components";
+import { initializePalette } from "./palette";
 import type { IndexDataV1 } from "./types";
+
+initializePalette();
 
 function App({ data }: { data: IndexDataV1 }) {
   const [query, setQuery] = useState("");
