@@ -132,6 +132,7 @@ def main():
         autoescape=select_autoescape(["html"]),
     )
     template = env.get_template("index.html")
+    nojs_template = env.get_template("index-nojs.html")
     logger.debug("begin parsing template...")
 
     repolist = list(gencontent.genRepoList())
@@ -146,6 +147,14 @@ def main():
         index_script=frontend_asset("index", BASEDIR),
         now=now,
     )
+    parsed_nojs_template = nojs_template.render(repolist=repolist, now=now)
+
+    nojs_file = os.path.join(
+        os.path.dirname(os.path.abspath(OUTFILE)), "index-nojs.html"
+    )
+    logger.info(f'begin no-JavaScript index file writing to "{nojs_file}"...')
+    atomic_write(nojs_file, parsed_nojs_template)
+    logger.info("no-JavaScript index file completed!")
 
     logger.info("begin index file writing...")
     atomic_write(OUTFILE, parsed_template)

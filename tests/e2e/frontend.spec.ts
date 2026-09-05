@@ -18,15 +18,18 @@ test("homepage enhances fallback and keeps its interactions", async ({ page }) =
 
 test("invalid bootstrap keeps fallback content", async ({ page }) => {
   await page.goto("/invalid.html");
-  await expect(page.locator("#root li a")).toHaveText(["alpha", "beta"]);
+  await expect(page.locator("#root a")).toHaveAttribute("href", "/index-nojs.html");
   await expect(page.locator("#filelist")).toHaveCount(0);
 });
 
 test.describe("without JavaScript", () => {
   test.use({ javaScriptEnabled: false });
-  test("repository links remain available", async ({ page }) => {
+  test("homepage links to the basic repository list", async ({ page }) => {
     await page.goto("/");
-    await expect(page.locator("#root li a")).toHaveText(["alpha", "beta"]);
+    await expect(page.locator("#root")).toContainText("此浏览器未启用或不支持 JavaScript");
+    await page.locator("#root a").click();
+    await expect(page).toHaveURL(/\/index-nojs\.html$/);
+    await expect(page.locator("li a")).toHaveText(["alpha", "beta"]);
   });
 });
 

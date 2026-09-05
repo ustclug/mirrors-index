@@ -38,6 +38,12 @@ html = env.get_template("index.html").render(
     now="2026-01-02 03:04:05",
 )
 (ROOT / "dist" / "index.html").write_text(html + "\n")
+(ROOT / "dist" / "index-nojs.html").write_text(
+    env.get_template("index-nojs.html").render(
+        repolist=repolist, now="2026-01-02 03:04:05"
+    )
+    + "\n"
+)
 (ROOT / "dist" / "invalid.html").write_text(
     html.replace('"schemaVersion":1', '"schemaVersion":2') + "\n"
 )

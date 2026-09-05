@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="zh-Hans-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>USTC Open Source Software Mirror</title>
+</head>
+<body>
+<h1>USTC Open Source Software Mirror</h1>
+<ul>
+{% for MODTIME, HREF, HELP, DIR in repolist -%}
+    <li><a href="{{ DIR }}/">{{ DIR }}</a></li>
+{% endfor -%}
+</ul>
+<!-- Last generated at {{ now }} -->
+</body>
+</html>

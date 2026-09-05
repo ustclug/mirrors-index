@@ -11,13 +11,7 @@
 <body>
 <!-- Last generated at {{ now }} -->
 <main id="root">
-    <h1>USTC Open Source Software Mirror</h1>
-    <p>JavaScript is unavailable. The mirror repositories remain accessible below.</p>
-    <ul>
-    {% for MODTIME, HREF, HELP, DIR in repolist -%}
-        <li><a href="{{ DIR }}/">{{ DIR }}</a></li>
-    {% endfor -%}
-    </ul>
+    <p>此浏览器未启用或不支持 JavaScript，请访问<a href="/index-nojs.html">基础版镜像列表</a>。</p>
 </main>
 <script id="mirrors-bootstrap" type="application/json">{{ bootstrap|safe }}</script>
 <script type="module" src="{{ index_script }}"></script>

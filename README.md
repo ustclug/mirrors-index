@@ -43,9 +43,10 @@ uses the build manifest left by `make build`; Node and package managers are not
 involved in hourly updates. See `vendor/preact/VENDORING.md` for the vendored
 source and update procedure.
 
-The generated homepage contains a minimal repository list for browsers where
-JavaScript is unavailable. The full interface is rendered from versioned JSON
-embedded in that same file, so no additional homepage data request is needed.
+The generated homepage links browsers without JavaScript or ES module support
+to a separate `index-nojs.html` containing the repository list. The full
+interface is rendered from versioned JSON embedded in `index.html`, so supported
+browsers do not make an additional homepage data request.
 
 ### Periodic updates
 
