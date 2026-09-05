@@ -1,17 +1,15 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
-import os
-import time
-import json
-from urllib.parse import urlencode, urljoin
-from urllib.parse import urlparse
-import requests
 import fnmatch
 import json
-import utils
 import logging
+import os
+import time
+from urllib.parse import urlencode, urljoin, urlparse
 
+import requests
+
+import utils
 from utils import CONFIG_FOLDER, get_mirrorz_cname
 
 with open(CONFIG_FOLDER / "gencontent.json") as f:
@@ -57,8 +55,7 @@ def CTimeWA(dirpath):
             continue
 
         _ctime = os.stat(subdirpath).st_ctime
-        if _ctime > ctime:
-            ctime = _ctime
+        ctime = max(ctime, _ctime)
 
     return ctime
 
@@ -81,13 +78,12 @@ def testHelpLink(name):
     """
     Check if the help page exists on sphinx.
     """
-    sphinx_exist = True
     url = urljoin(HELPBASE_SPHI, name + ".html")
     try:
         html = requests.get(url, timeout=1)
-    except:
-        sphinx_exist = False
-    if sphinx_exist == True and "404 Not Found" not in html.text:
+    except requests.RequestException:
+        html = None
+    if html is not None and "404 Not Found" not in html.text:
         return urlparse(url).path
 
     """
@@ -113,8 +109,8 @@ def genRepoList():
             resp = resp.json()
             for repo in resp:
                 homepage_repos[repo["name"]] = repo["lastSuccess"]
-        except Exception as e:
-            logger.warning("Failed to parse remote-yuki response: {}".format(e))
+        except (KeyError, TypeError, ValueError) as e:
+            logger.warning(f"Failed to parse remote-yuki response: {e}")
     for d in sorted(os.listdir(HTTPDIR), key=str.lower):
         fpath = os.path.join(HTTPDIR, d)
 
@@ -136,8 +132,7 @@ def genRepoList():
             # repos whose top-level dirs have a old change time.
             if time.time() - ctime > 3600 * 24 * 2:
                 _ctime = CTimeWA(fpath)
-                if _ctime > ctime:
-                    ctime = _ctime
+                ctime = max(ctime, _ctime)
 
         ctime_str = (
             time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(ctime))

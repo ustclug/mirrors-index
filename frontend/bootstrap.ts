@@ -1,0 +1,33 @@
+import type { IndexBootstrapV1 } from "./types";
+
+export function readBootstrap(): IndexBootstrapV1 {
+  const element = document.getElementById("mirrors-bootstrap");
+  if (!element?.textContent) throw new Error("Bootstrap data is missing");
+  const value: unknown = JSON.parse(element.textContent);
+  if (!isBootstrap(value)) throw new Error("Unsupported or invalid bootstrap data");
+  return value;
+}
+
+function isBootstrap(value: unknown): value is IndexBootstrapV1 {
+  if (!value || typeof value !== "object") return false;
+  const data = value as Record<string, unknown>;
+  return data.schemaVersion === 1 && typeof data.generatedAt === "string" &&
+    isArrayOf(data.repositories, (item) => isObject(item) && strings(item, "name", "updatedAt", "helpUrl")) &&
+    isArrayOf(data.reverseProxies, (item) => isObject(item) && strings(item, "source", "destination")) &&
+    isArrayOf(data.news, (item) => isObject(item) && strings(item, "title", "url")) &&
+    isArrayOf(data.downloads, (item) => isObject(item) && strings(item, "distro", "category") &&
+      (item.category === "os" || item.category === "app") &&
+      isArrayOf(item.urls, (url) => isObject(url) && strings(url, "name", "url")));
+}
+
+function isObject(value: unknown): value is Record<string, unknown> {
+  return !!value && typeof value === "object";
+}
+
+function strings(value: Record<string, unknown>, ...keys: string[]) {
+  return keys.every((key) => typeof value[key] === "string");
+}
+
+function isArrayOf(value: unknown, predicate: (item: unknown) => boolean): value is unknown[] {
+  return Array.isArray(value) && value.every(predicate);
+}

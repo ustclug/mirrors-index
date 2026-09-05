@@ -1,8 +1,9 @@
 [Unit]
-Description=Update Mirrors Index Page Daily, If path file fails
+Description=Update Mirrors index page hourly
 
 [Timer]
-OnCalendar=*-*-* 04:28:30
+OnCalendar=*-*-* *:10:00
+Persistent=true
 
 [Install]
 WantedBy=timers.target

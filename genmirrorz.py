@@ -1,17 +1,13 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 
 import json
-import sys
+import logging
 import subprocess
 import sys
-import os
-import logging
 
-from utils import CONFIG_FOLDER, get_mirrorz_cname, get_resp_with_timeout
 from gencontent import USER_CONFIG as gencontent_config
-
+from utils import CONFIG_FOLDER, get_mirrorz_cname, get_resp_with_timeout
 
 cname = get_mirrorz_cname()
 logger = logging.getLogger(__name__)
@@ -100,9 +96,9 @@ def parse_repo_with_meta(repolist: list, meta: dict) -> dict:
             next_run = i.get("nextRun")
             last_success = i.get("lastSuccess")
             if next_run < 0:
-                content_list[ind][
-                    "status"
-                ] = "P"  # negative next_run means cron date set to 2/30 or 2/31 (unreachable)
+                content_list[ind]["status"] = (
+                    "P"  # negative next_run means cron date set to 2/30 or 2/31 (unreachable)
+                )
             elif i["syncing"]:
                 content_list[ind]["status"] = "Y" + str(i.get("prevRun"))
                 if last_success:
@@ -146,8 +142,8 @@ def getMirrorzJson(repolist, isolist):
 
 
 if __name__ == "__main__":
-    from utils import get_isolist
     import gencontent
+    from utils import get_isolist
 
     isolist = get_isolist()
     repolist = gencontent.genRepoList()

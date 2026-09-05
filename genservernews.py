@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 import datetime
 import logging
@@ -7,6 +6,7 @@ import re
 import xml
 import xml.dom
 import xml.dom.minidom
+from xml.parsers.expat import ExpatError
 
 import utils
 
@@ -18,7 +18,7 @@ SERVERNEWS_FEED = "https://servers.ustclug.org/feed/mirrors.xml"
 SERVERNEWS_MAX_NUM = 3
 
 
-def getServerNews(glob_logger: logging.Logger = None) -> list:
+def getServerNews(glob_logger: logging.Logger | None = None) -> list:
     """
     return list of NewsRecord object.
 
@@ -31,13 +31,14 @@ def getServerNews(glob_logger: logging.Logger = None) -> list:
         """
         Will return proper HTML String by input.
         """
-        class NewsRecord():
+
+        class NewsRecord:
             def __init__(self, item):
                 """Only The most useful data are picked for now."""
-                self.title = item.getElementsByTagName('title')[0].firstChild.nodeValue
-                self.link = item.getElementsByTagName('link')[0].getAttribute('href')
+                self.title = item.getElementsByTagName("title")[0].firstChild.nodeValue
+                self.link = item.getElementsByTagName("link")[0].getAttribute("href")
                 self.date = datetime.datetime.fromisoformat(
-                    item.getElementsByTagName('published')[0].firstChild.nodeValue
+                    item.getElementsByTagName("published")[0].firstChild.nodeValue
                 )
                 self.date_str = self.date.strftime("%Y-%m-%d")
 
@@ -48,15 +49,18 @@ def getServerNews(glob_logger: logging.Logger = None) -> list:
         # impl = xml.dom.getDOMImplementation() # Not needed in parsing
         doc = xml.dom.minidom.parseString(text)
         current_num = 0
-        for item in doc.getElementsByTagName('entry'):
-            if (current_num >= SERVERNEWS_MAX_NUM):
+        for item in doc.getElementsByTagName("entry"):
+            if current_num >= SERVERNEWS_MAX_NUM:
                 break
-            if item.getElementsByTagName("category")[0].getAttribute("term") != "mirrors":
+            if (
+                item.getElementsByTagName("category")[0].getAttribute("term")
+                != "mirrors"
+            ):
                 continue
             current_num += 1
             yield NewsRecord(item)
 
-    logger.info('begin generation of ServerNews...')
+    logger.info("begin generation of ServerNews...")
     newslist = []
     try:
         resp = utils.get_resp_with_timeout(SERVERNEWS_FEED, logger=logger)
@@ -64,11 +68,10 @@ def getServerNews(glob_logger: logging.Logger = None) -> list:
             # failed
             return newslist
         newslist = list(parseFeedData(resp.text))
-        logger.info('newslist generation successful, size is {}.'.format(len(newslist)))
-    except Exception as e:
-        logger.error('unknown exception caught: "{}".'.format(str(e)))
-    finally:
-        return newslist
+        logger.info(f"newslist generation successful, size is {len(newslist)}.")
+    except (AttributeError, ExpatError, IndexError, ValueError) as e:
+        logger.error(f'unknown exception caught: "{e!s}".')
+    return newslist
 
 
 if __name__ == "__main__":

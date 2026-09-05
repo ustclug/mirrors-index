@@ -1,0 +1,13 @@
+{
+  "name": "mirrors-index",
+  "private": true,
+  "packageManager": "pnpm@11.3.0",
+  "devDependencies": {
+    "@playwright/test": "1.62.1"
+  },
+  "scripts": {
+    "build": "make build",
+    "typecheck": "make typecheck",
+    "test": "make test"
+  }
+}

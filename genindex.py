@@ -1,15 +1,76 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
-import os
-import logging
 import argparse
-from jinja2 import Environment, FileSystemLoader
+import json
+import logging
+import os
+import tempfile
 import time
 
+from jinja2 import Environment, FileSystemLoader, select_autoescape
+
 import gencontent
-from utils import get_isolist
 import genservernews
+from utils import get_isolist
+
+
+def atomic_write(path, content):
+    directory = os.path.dirname(os.path.abspath(path))
+    os.makedirs(directory, exist_ok=True)
+    fd, temporary = tempfile.mkstemp(prefix=".mirrors-index-", dir=directory, text=True)
+    try:
+        with os.fdopen(fd, "w") as output:
+            output.write(content)
+            output.write(os.linesep)
+        os.chmod(temporary, 0o644)
+        os.replace(temporary, path)
+    except Exception:
+        try:
+            os.unlink(temporary)
+        except FileNotFoundError:
+            pass
+        raise
+
+
+def bootstrap_json(repolist, revproxy, isoinfo, newslist, generated_at):
+    data = {
+        "schemaVersion": 1,
+        "generatedAt": generated_at,
+        "repositories": [
+            {"updatedAt": updated_at, "helpUrl": help_url, "name": name}
+            for updated_at, help_url, _help_text, name in repolist
+        ],
+        "reverseProxies": [
+            {"source": source, "destination": destination}
+            for source, destination in revproxy
+        ],
+        "downloads": isoinfo,
+        "news": [{"title": record.title, "url": record.link} for record in newslist],
+    }
+    return (
+        json.dumps(data, ensure_ascii=False, separators=(",", ":"))
+        .replace("<", "\\u003c")
+        .replace(">", "\\u003e")
+        .replace("&", "\\u0026")
+    )
+
+
+def frontend_asset(name, base_directory=None):
+    base_directory = base_directory or os.path.dirname(__file__)
+    manifest_path = os.getenv("FRONTEND_MANIFEST") or os.path.join(
+        base_directory, "dist", "manifest.json"
+    )
+    try:
+        with open(manifest_path) as source:
+            manifest = json.load(source)
+        asset = manifest[name]
+        if not isinstance(asset, str) or not asset.startswith("/static/"):
+            raise ValueError("invalid asset path")
+        return asset
+    except (OSError, KeyError, ValueError, json.JSONDecodeError) as error:
+        raise RuntimeError(
+            f'Frontend assets are not built; invalid manifest "{manifest_path}"'
+        ) from error
 
 
 def main():
@@ -59,34 +120,35 @@ def main():
     ch.setLevel(LOGLEVEL)
     ch.setFormatter(logging.Formatter("[%(asctime)s] [%(levelname)s] %(message)s"))
     logger.addHandler(ch)
-    logger.debug('received command arguments: "{}"'.format(str(args)))
+    logger.debug(f'received command arguments: "{args!s}"')
 
     OUTDIR = args.outdir or OUTDIR
     OUTFILE = args.output
     BASEDIR = os.path.dirname(__file__)
-    logger.info('OUTFILE is "%(OUTFILE)s"' % locals())
-    logger.info('BASEDIR is "%(BASEDIR)s"' % locals())
-    env = Environment(loader=FileSystemLoader(os.path.join(BASEDIR, "templates")))
+    logger.info(f'OUTFILE is "{OUTFILE}"')
+    logger.info(f'BASEDIR is "{BASEDIR}"')
+    env = Environment(
+        loader=FileSystemLoader(os.path.join(BASEDIR, "templates")),
+        autoescape=select_autoescape(["html"]),
+    )
     template = env.get_template("index.html")
     logger.debug("begin parsing template...")
 
     repolist = list(gencontent.genRepoList())
-    revproxy = gencontent.getOthers()
+    revproxy = list(gencontent.getOthers())
     isoinfo = get_isolist()
     newslist = genservernews.getServerNews(logger)
+    now = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
 
     parsed_template = template.render(
         repolist=repolist,
-        revproxy=revproxy,
-        isoinfo=isoinfo,
-        newslist=newslist,
-        now=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()),
+        bootstrap=bootstrap_json(repolist, revproxy, isoinfo, newslist, now),
+        index_script=frontend_asset("index", BASEDIR),
+        now=now,
     )
 
     logger.info("begin index file writing...")
-    with open(OUTFILE, "w") as fout:
-        fout.write(parsed_template)
-        fout.write(os.linesep)
+    atomic_write(OUTFILE, parsed_template)
     logger.info("index file completed!")
 
     if args.mirrorz:
@@ -94,9 +156,7 @@ def main():
         import genmirrorz
 
         logger.info("begin mirrorz.json file writing...")
-        with open(args.mirrorz, "w") as fout:
-            fout.write(genmirrorz.getMirrorzJson(repolist, isoinfo))
-            fout.write(os.linesep)
+        atomic_write(args.mirrorz, genmirrorz.getMirrorzJson(repolist, isoinfo))
         logger.info("mirrorz.json file completed!")
 
     logger.info("exiting...")

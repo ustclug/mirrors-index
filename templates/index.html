@@ -10,66 +10,16 @@
 </head>
 <body>
 <!-- Last generated at {{ now }} -->
-{% include 'header.html' %}
-<div id="wrapper">
-    <div id="filelist">
-        <marquee id="announcement" behavior="alternate"><a href="https://servers.ustclug.org/2026/08/mirrorz/"><span>MirrorZ 震撼发布</span> <img src="/static/img/new4.gif" alt="New!"></a></marquee>
-        <!--FIXME: kind of ugly :(-->
-        <div style="overflow:hidden">
-            <input id="revproxy" type="checkbox"/>
-            <h3>
-            <label for="revproxy">
-            反向代理列表
-            <span>+</span><span>-</span>
-            </label>
-            </h3>
-            <div style="overflow-x:auto">
-                <table>
-                    <tbody>
-                        {% for SRC, DST in revproxy -%}
-                        <tr>
-                            <td>{{ SRC }}</td>
-                            <td>{{ DST }}</td>
-                        </tr>
-                        {% endfor -%}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div>
-            <h3 id="filetitle">文件列表</h3>
-            <input placeholder="按 S 过滤" id="search" type="search" autocomplete="off"/>
-        </div>
-        <table class="filelist">
-            <thead>
-                <tr id="firstline">
-                    <th id="name">Folder</th>
-                    <th class="update">Last Update</th>
-                    <th id="help">Help</th>
-                </tr>
-            </thead>
-            <tbody>
-            {% for MODTIME, HREF, HELP, DIR in repolist -%}
-            <tr>
-                <td class="filename"><a href="{{ DIR }}/">{{ DIR }}</a></td>
-                <td class="filetime">{{ MODTIME }}</td>
-                <td class="help">
-                    <a href="{{ HREF }}">{{ HELP }}</a>
-                </td>
-            </tr>
-            {%- endfor %}
-            </tbody>
-        </table>
-    </div>
-{% include 'sidebar.html' %}
-</div>
-{% include 'footer.html' %}
-{% with type='iso' %}
-{% include 'modal.html' %}
-{% endwith %}
-{% with type='app' %}
-{% include 'modal.html' %}
-{% endwith %}
-{% include 'script.html' %}
+<main id="root">
+    <h1>USTC Open Source Software Mirror</h1>
+    <p>JavaScript is unavailable. The mirror repositories remain accessible below.</p>
+    <ul>
+    {% for MODTIME, HREF, HELP, DIR in repolist -%}
+        <li><a href="{{ DIR }}/">{{ DIR }}</a></li>
+    {% endfor -%}
+    </ul>
+</main>
+<script id="mirrors-bootstrap" type="application/json">{{ bootstrap|safe }}</script>
+<script type="module" src="{{ index_script }}"></script>
 </body>
 </html>
