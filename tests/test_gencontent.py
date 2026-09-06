@@ -1,5 +1,7 @@
+import tempfile
 import time
 import unittest
+from pathlib import Path
 from unittest import mock
 
 import gencontent
@@ -63,6 +65,28 @@ class GenContentTests(unittest.TestCase):
     def test_invalid_last_success_is_rejected(self):
         with self.assertRaisesRegex(gencontent.YukiMetadataError, "lastSuccess"):
             self.repositories([make_task(last_success=True)])
+
+    def test_help_link_is_read_from_output_directory(self):
+        with tempfile.TemporaryDirectory() as directory:
+            helpdir = Path(directory) / "help"
+            helpdir.mkdir()
+            (helpdir / "repo.html").write_text("help")
+            with mock.patch.object(gencontent, "HELPDIR", None):
+                self.assertEqual(
+                    "/help/repo.html", gencontent.testHelpLink("repo", directory)
+                )
+                self.assertEqual("", gencontent.testHelpLink("missing", directory))
+
+    def test_help_link_uses_configured_local_directory(self):
+        with tempfile.TemporaryDirectory() as directory:
+            helpdir = Path(directory) / "custom-help"
+            helpdir.mkdir()
+            (helpdir / "repo.html").write_text("help")
+            with mock.patch.object(gencontent, "HELPDIR", str(helpdir)):
+                self.assertEqual(
+                    "/help/repo.html",
+                    gencontent.testHelpLink("repo", "/unused/output"),
+                )
 
     def test_fetch_yuki_metadata_is_strict(self):
         valid_response = mock.Mock()

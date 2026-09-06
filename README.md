@@ -68,6 +68,10 @@ to a separate `index-nojs.html` containing the repository list. The full
 interface fetches versioned data from `/static/json/index.json`. The periodic job
 atomically updates that file, `index-nojs.html`, and
 `/static/json/mirrorz.json`; it never modifies `index.html`.
+Repository help links are included when `help/<repository>.html` exists under
+the selected output directory. Set `helpdir` in `config/gencontent.json` to
+override the local directory checked for these files; links remain under
+`/help/` on the generated site.
 
 ### Periodic updates
 

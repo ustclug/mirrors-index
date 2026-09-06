@@ -124,7 +124,7 @@ def main():
     import genmirrorz
 
     genmirrorz.collect_repo_contributions(mirrorz_meta)
-    repolist = list(gencontent.genRepoList(homepage_meta))
+    repolist = list(gencontent.genRepoList(homepage_meta, outdir=OUTDIR))
     revproxy = list(gencontent.getOthers())
     isoinfo = get_isolist()
     newslist = genservernews.getServerNews(logger)

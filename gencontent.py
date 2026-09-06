@@ -3,9 +3,8 @@
 import json
 import logging
 import time
-from urllib.parse import urlencode, urljoin, urlparse
-
-import requests
+from pathlib import Path
+from urllib.parse import urlencode, urljoin
 
 import utils
 from utils import CONFIG_FOLDER, get_mirrorz_cname
@@ -17,7 +16,8 @@ OUTDIR = USER_CONFIG.get("outdir")
 """Default directory for generated output, if configured."""
 HTTPDIR = USER_CONFIG.get("httpdir", "/srv/repo")
 """Repository root checked for deployment diagnostics only."""
-HELPBASE_SPHI = USER_CONFIG.get("help-sphinx", "https://mirrors.ustc.edu.cn/help/")
+HELPDIR = USER_CONFIG.get("helpdir")
+"""Local help directory override; defaults to the help directory under OUTDIR."""
 HELPBASE_MIRRORZ = USER_CONFIG.get(
     "help-mirrorz", "https://help.mirrors.cernet.edu.cn/"
 )
@@ -113,25 +113,23 @@ def getMirrorzURL(name):
     return urljoin(HELPBASE_MIRRORZ, name + "?" + urlencode(params))
 
 
-def testHelpLink(name):
+def testHelpLink(name, outdir=None):
     """Return the configured help URL for a repository, if one is available."""
     if "*" in MIRRORZ_HELP:
         return getMirrorzURL(name)
 
-    url = urljoin(HELPBASE_SPHI, name + ".html")
-    try:
-        html = requests.get(url, timeout=1)
-    except requests.RequestException:
-        html = None
-    if html is not None and "404 Not Found" not in html.text:
-        return urlparse(url).path
+    helpdir = HELPDIR
+    if helpdir is None and (outdir or OUTDIR):
+        helpdir = Path(outdir or OUTDIR) / "help"
+    if helpdir is not None and (Path(helpdir) / f"{name}.html").is_file():
+        return f"/help/{name}.html"
 
     if name in MIRRORZ_HELP:
         return getMirrorzURL(name)
     return ""
 
 
-def genRepoList(meta: list[dict] | None = None):
+def genRepoList(meta: list[dict] | None = None, outdir=None):
     if meta is None:
         meta = metadata_for(fetch_yuki_metadata(), "homepage")
 
@@ -165,7 +163,7 @@ def genRepoList(meta: list[dict] | None = None):
             if timestamp > 0
             else ""
         )
-        help_href = testHelpLink(name)
+        help_href = testHelpLink(name, outdir=outdir)
         help_text = "Help" if help_href.strip() else ""
         yield (updated_at, help_href, help_text, name)
 
