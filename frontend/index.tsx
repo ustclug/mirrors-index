@@ -1,5 +1,5 @@
 import { render } from "preact";
-import { useEffect, useMemo, useState } from "preact/hooks";
+import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 import { fetchIndexData } from "./bootstrap";
 import { DownloadModal, Footer, Header, Sidebar } from "./index-components";
 import { initializePalette } from "./palette";
@@ -11,6 +11,7 @@ function App({ data }: { data: IndexDataV1 }) {
   const [query, setQuery] = useState("");
   const [modal, setModal] = useState<"os" | "app" | null>(null);
   const [openRepository, setOpenRepository] = useState<string | null>(null);
+  const repositoryPointerType = useRef<string | null>(null);
   const repositories = useMemo(
     () =>
       data.repositories.filter((repo) =>
@@ -96,6 +97,14 @@ function App({ data }: { data: IndexDataV1 }) {
                     if (!repo.desc) return;
                     const link = (event.target as Element).closest("a");
                     if (link && !link.closest(".filename")) return;
+                    const pointerType = repositoryPointerType.current;
+                    repositoryPointerType.current = null;
+                    if (
+                      link &&
+                      pointerType !== "touch" &&
+                      pointerType !== "pen"
+                    )
+                      return;
                     if (link && openRepository === repo.name) return;
                     event.preventDefault();
                     event.stopPropagation();
@@ -121,6 +130,9 @@ function App({ data }: { data: IndexDataV1 }) {
                     >
                       <a
                         href={`${repo.name}/`}
+                        onPointerDown={(event) => {
+                          repositoryPointerType.current = event.pointerType;
+                        }}
                         aria-describedby={
                           repo.desc ? `repo-description-${index}` : undefined
                         }

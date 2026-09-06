@@ -30,6 +30,9 @@ test("homepage enhances fallback and keeps its interactions", async ({
   expect(tooltipBox!.x).toBeGreaterThan(nameBox!.x + nameBox!.width);
   await alpha.focus();
   await expect(repositoryTooltip).toBeVisible();
+  await alpha.click();
+  await expect(page).toHaveURL(/\/alpha\/$/);
+  await page.goBack();
   await expect(page.getByText("无法加载完整页面")).toHaveCount(0);
   await expect
     .poll(() =>
@@ -389,6 +392,19 @@ test("repository and status tooltips work on touch screens", async ({
   );
   await statusDetail.tap();
   await expect(statusTooltip).toBeHidden();
+
+  await context.close();
+});
+
+test("mouse clicks navigate directly on touch-capable devices", async ({
+  browser,
+}) => {
+  const context = await browser.newContext({ hasTouch: true });
+  const page = await context.newPage();
+
+  await page.goto("/");
+  await page.getByRole("link", { name: "alpha", exact: true }).click();
+  await expect(page).toHaveURL(/\/alpha\/$/);
 
   await context.close();
 });
