@@ -42,8 +42,13 @@ CSS bundles, fonts, and `/status/` page. It does not rebuild them. The periodic
 job only needs Python; build tools and Node package managers are not involved in
 hourly updates. MirrorZ repository descriptions are maintained locally in
 `config/genmirrorz.json`; site generation does not fetch description text from
-another mirror. The `mirror` user running the periodic job must be able to create
-and replace files in `/srv/www/` and `/srv/www/static/`. See
+another mirror. Yuki tasks are grouped by their logical `mirrorz` repository
+mapping before status generation. Cache mappings take precedence; otherwise a
+failure takes precedence over syncing and success, disabled tasks are ignored
+unless all tasks are disabled, repository size is the largest task size, and
+conflicting upstream URLs are omitted. The `mirror` user running the periodic
+job must be able to create and replace files in `/srv/www/` and
+`/srv/www/static/`. See
 `vendor/preact/VENDORING.md` for the vendored source and update procedure.
 
 The generated homepage links browsers without JavaScript or ES module support

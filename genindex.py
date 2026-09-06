@@ -17,6 +17,9 @@ from utils import get_isolist
 BASEDIR = os.path.dirname(__file__)
 with open(os.path.join(BASEDIR, "config", "genmirrorz.json")) as source:
     descriptions = json.load(source).get("descriptions", {})
+    descriptions_by_name = {
+        name.lower(): description for name, description in descriptions.items()
+    }
 
 
 def atomic_write(path, content):
@@ -46,7 +49,7 @@ def index_json(repolist, revproxy, isoinfo, newslist, generated_at):
                 "updatedAt": updated_at,
                 "helpUrl": help_url,
                 "name": name,
-                "desc": descriptions.get(name, ""),
+                "desc": descriptions_by_name.get(name.lower(), ""),
             }
             for updated_at, help_url, _help_text, name in repolist
         ],
@@ -135,7 +138,7 @@ def main():
         nojs_file,
         lambda: nojs_template.render(
             repolist=repolist,
-            descriptions=descriptions,
+            descriptions_by_name=descriptions_by_name,
             now=now,
         ),
     )
