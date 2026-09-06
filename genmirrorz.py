@@ -17,6 +17,7 @@ with open(CONFIG_FOLDER / "genmirrorz.json") as f:
     options = json.load(f)
     base = options["base"]
     skiplist = options.get("skip", [])
+    descriptions = options.get("descriptions", {})
 
 metas = []
 for yuki_endpoint in gencontent_config.get("yuki", []):
@@ -42,6 +43,26 @@ def name_func(name: str) -> str:
         return cname[name]
     else:
         return name
+
+
+def repo_description(name: str) -> str:
+    description = descriptions.get(name)
+    if not description:
+        logger.warning("missing MirrorZ description for %s", name)
+        return ""
+    return description
+
+
+def cached_repo_names(meta: list) -> set[str]:
+    cached = set()
+    for task in meta:
+        mappings = task.get("mirrorz")
+        if mappings is None:
+            mappings = [{"name": task["name"]}]
+        for mapping in mappings:
+            if mapping.get("cache"):
+                cached.add(name_func(mapping.get("name", task["name"])).lower())
+    return cached
 
 
 def iso(iso_orig: list) -> None:
@@ -74,7 +95,7 @@ def parse_repo_with_meta(repolist: list, meta: dict) -> dict:
         content_list.append(
             {
                 "cname": cname,
-                "desc": "",  # now we don't have desc yet...
+                "desc": repo_description(name),
                 "url": f"/{name}",
                 "status": "U",
                 "help": help_url,
@@ -116,6 +137,11 @@ def parse_repo_with_meta(repolist: list, meta: dict) -> dict:
             content_list[ind]["upstream"] = i["upstream"]
         except KeyError:
             print(f"failed to parse {i['name']}", file=sys.stderr)
+    for name in cached_repo_names(meta):
+        try:
+            content_list[content_hash[name]]["status"] = "C"
+        except KeyError:
+            logger.warning("cached MirrorZ repository %s is not published", name)
     return content_list
 
 

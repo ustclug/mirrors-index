@@ -40,7 +40,9 @@ make install WEBROOT=/srv/www
 `make install` installs the already-built static homepage, hashed JavaScript and
 CSS bundles, fonts, and `/status/` page. It does not rebuild them. The periodic
 job only needs Python; build tools and Node package managers are not involved in
-hourly updates. The `mirror` user running the periodic job must be able to create
+hourly updates. MirrorZ repository descriptions are maintained locally in
+`config/genmirrorz.json`; site generation does not fetch description text from
+another mirror. The `mirror` user running the periodic job must be able to create
 and replace files in `/srv/www/` and `/srv/www/static/`. See
 `vendor/preact/VENDORING.md` for the vendored source and update procedure.
 
