@@ -49,6 +49,26 @@ class GenMirrorzTests(unittest.TestCase):
     def test_repository_description_is_case_insensitive(self):
         self.assertEqual("Perl 语言软件库", self.genmirrorz.repo_description("CPAN"))
 
+    def test_canonical_name_collision_keeps_last_repository(self):
+        with mock.patch.object(
+            self.genmirrorz,
+            "cname",
+            {"archive.raspberrypi.org": "raspberrypi"},
+        ):
+            mirrors = self.genmirrorz.parse_repo_with_meta(
+                [
+                    ("", "/help/archive.html", "", "archive.raspberrypi.org"),
+                    ("", "/help/raspberrypi.html", "", "raspberrypi"),
+                ],
+                [make_meta("raspberrypi", syncing=True)],
+            )
+
+        self.assertEqual(1, len(mirrors))
+        self.assertEqual("raspberrypi", mirrors[0]["cname"])
+        self.assertEqual("/raspberrypi", mirrors[0]["url"])
+        self.assertEqual("/help/raspberrypi.html", mirrors[0]["help"])
+        self.assertEqual("Y40O50X100", mirrors[0]["status"])
+
     def test_cache_mapping_overrides_sync_status(self):
         repolist = [("", "", "", "pypi")]
         metas = [

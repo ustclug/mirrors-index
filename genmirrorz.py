@@ -246,17 +246,20 @@ def parse_repo_with_meta(repolist: list, meta: list[dict]) -> list[dict]:
         if skipped_repo(name):
             continue
         cname = name_func(name)
-        content_hash[cname.lower()] = len(content_list)
-        content_list.append(
-            {
-                "cname": cname,
-                "desc": repo_description(name),
-                "url": f"/{name}",
-                "status": "U",
-                "help": help_url,
-                "upstream": "",
-            }
-        )
+        key = cname.lower()
+        content = {
+            "cname": cname,
+            "desc": repo_description(name),
+            "url": f"/{name}",
+            "status": "U",
+            "help": help_url,
+            "upstream": "",
+        }
+        if key in content_hash:
+            content_list[content_hash[key]] = content
+        else:
+            content_hash[key] = len(content_list)
+            content_list.append(content)
     for name, contributions in collect_repo_contributions(meta).items():
         ind = content_hash.get(name)
         if ind is None:
