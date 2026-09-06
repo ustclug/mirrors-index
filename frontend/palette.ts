@@ -4,6 +4,7 @@ export const PALETTES = [
   { id: "quiet-pink", name: "安静粉" },
   { id: "sunrise-red", name: "朝霞红" },
   { id: "summer-wheat", name: "夏麦黄" },
+  { id: "rainbow", name: "七彩虹" },
 ] as const;
 
 export type Palette = (typeof PALETTES)[number]["id"];

@@ -94,7 +94,8 @@ test("palette picker persists and is shared with the status page", async ({
   const pink = picker.getByRole("button", { name: "安静粉" });
   const red = picker.getByRole("button", { name: "朝霞红" });
   const yellow = picker.getByRole("button", { name: "夏麦黄" });
-  await expect(picker.getByRole("button")).toHaveCount(5);
+  const rainbow = picker.getByRole("button", { name: "七彩虹" });
+  await expect(picker.getByRole("button")).toHaveCount(6);
   await expect(classic).toHaveAttribute("aria-pressed", "true");
   await expect(pink.locator(".palette-swatch")).toHaveCSS(
     "background-color",
@@ -107,6 +108,10 @@ test("palette picker persists and is shared with the status page", async ({
   await expect(yellow.locator(".palette-swatch")).toHaveCSS(
     "background-color",
     "rgb(250, 223, 146)",
+  );
+  await expect(rainbow.locator(".palette-swatch")).toHaveCSS(
+    "background-image",
+    /linear-gradient\(124deg/,
   );
 
   for (const [button, id, color, gradient, textColor] of [
@@ -131,6 +136,13 @@ test("palette picker persists and is shared with the status page", async ({
       "linear-gradient(rgb(250, 223, 146) 0%, rgb(242, 198, 93) 100%)",
       "rgb(60, 43, 9)",
     ],
+    [
+      rainbow,
+      "rainbow",
+      "rgb(7, 168, 120)",
+      /linear-gradient\(124deg, rgb\(255, 36, 0\)/,
+      "rgb(241, 241, 241)",
+    ],
   ] as const) {
     await button.click();
     await expect(page.locator("html")).toHaveAttribute("data-palette", id);
@@ -144,6 +156,11 @@ test("palette picker persists and is shared with the status page", async ({
     );
     await expect(page.locator("#intro")).toHaveCSS("color", textColor);
   }
+  await expect(page.locator("#welcome")).toHaveCSS(
+    "background-size",
+    "1800% 1800%",
+  );
+  await expect(page.locator("#welcome")).toHaveCSS("animation-name", "rainbow");
 
   await blue.hover();
   await expect(blue.getByRole("tooltip")).toBeVisible();

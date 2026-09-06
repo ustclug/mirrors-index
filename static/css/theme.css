@@ -13,6 +13,13 @@
   --button-text: #f3f3f3;
   --hero-start: #40bd97;
   --hero-end: #07a878;
+  --hero-background: linear-gradient(
+    to bottom,
+    var(--hero-start) 0%,
+    var(--hero-end) 100%
+  );
+  --hero-background-size: auto;
+  --hero-animation: none;
   --hero-text: #f1f1f1;
   --hero-heading: #ffffff;
   --hero-link: #eeecdf;
@@ -165,6 +172,39 @@
   --footer-link: #e1ddd4;
   --dialog-shadow: rgba(57, 43, 14, 0.3);
   --backdrop: rgba(29, 22, 7, 0.66);
+}
+
+:root[data-palette="rainbow"] {
+  --hero-background: linear-gradient(
+    124deg,
+    #ff2400,
+    #e81d1d,
+    #e8b71d,
+    #e3e81d,
+    #1de840,
+    #1ddde8,
+    #2b1de8,
+    #dd00f3,
+    #dd00f3
+  );
+  --hero-background-size: 1800% 1800%;
+  --hero-animation: rainbow 15s ease-in-out infinite;
+}
+
+@keyframes rainbow {
+  0%,
+  100% {
+    background-position: 0% 82%;
+  }
+  50% {
+    background-position: 100% 19%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root[data-palette="rainbow"] {
+    --hero-animation: none;
+  }
 }
 
 @media (prefers-color-scheme: dark) {

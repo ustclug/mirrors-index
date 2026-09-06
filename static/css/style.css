@@ -99,11 +99,9 @@ body {
 #welcome {
   /*width: 100%;*/
   padding: 40px 15px 40px 0px;
-  background: linear-gradient(
-    to bottom,
-    var(--hero-start) 0%,
-    var(--hero-end) 100%
-  );
+  background: var(--hero-background);
+  background-size: var(--hero-background-size);
+  animation: var(--hero-animation);
 }
 #intro {
   margin: 0 auto;
@@ -420,6 +418,17 @@ tbody tr:hover {
 }
 .palette-swatch-summer-wheat {
   background: #fadf92;
+}
+.palette-swatch-rainbow {
+  background: linear-gradient(
+    124deg,
+    #e86b5c,
+    #e4bd55,
+    #68c77b,
+    #62c6cb,
+    #7168d8,
+    #c065cb
+  );
 }
 .palette-option[aria-pressed="true"] .palette-swatch {
   box-shadow:

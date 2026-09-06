@@ -41,11 +41,9 @@ body {
   justify-content: flex-end;
   gap: 25px;
   padding: 10px max(20px, calc((100% - 1600px) / 2));
-  background: linear-gradient(
-    to bottom,
-    var(--hero-start) 0%,
-    var(--hero-end) 100%
-  );
+  background: var(--hero-background);
+  background-size: var(--hero-background-size);
+  animation: var(--hero-animation);
 }
 
 #nav a {
