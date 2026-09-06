@@ -191,6 +191,12 @@ th[aria-sort] .sort-indicator {
 .status-detail {
   position: relative;
   display: inline-block;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: help;
 }
 
 .status-detail .comment {
@@ -223,8 +229,46 @@ th[aria-sort] .sort-indicator {
   transform: translateX(-50%);
 }
 
-.status-detail:hover .comment {
+.status-detail:hover .comment,
+.status-detail:focus-visible .comment,
+.status-detail[aria-expanded="true"] .comment {
   display: block;
+}
+
+@media (hover: none), (pointer: coarse) {
+  .status-detail {
+    min-width: 32px;
+    min-height: 32px;
+    margin: -6px 0;
+  }
+
+  .status-detail .comment {
+    top: 50%;
+    right: auto;
+    bottom: auto;
+    left: calc(100% + 8px);
+    width: max-content;
+    max-width: 190px;
+    transform: translateY(-50%);
+  }
+
+  .status-detail .comment::after {
+    top: 50%;
+    right: 100%;
+    left: auto;
+    border-top-color: transparent;
+    border-right-color: var(--tooltip-background);
+    transform: translateY(-50%);
+  }
+
+  .status-detail:hover .comment,
+  .status-detail:focus-visible .comment {
+    display: none;
+  }
+
+  .status-detail[aria-expanded="true"] .comment {
+    display: block;
+  }
 }
 
 .monitor-grid {

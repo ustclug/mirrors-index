@@ -292,6 +292,104 @@ test("palette picker falls back from invalid storage and fits narrow screens", a
   ).toBe(true);
 });
 
+test("repository and status tooltips work on touch screens", async ({
+  browser,
+}) => {
+  const context = await browser.newContext({
+    hasTouch: true,
+    viewport: { width: 390, height: 844 },
+  });
+  const touchPage = await context.newPage();
+
+  await touchPage.route("**/static/json/index.json", async (route) => {
+    const response = await route.fetch();
+    const data = await response.json();
+    data.repositories[0] = {
+      ...data.repositories[0],
+      name: "packaging-gitea-act-runner",
+      desc: "Gitea Actions Runner 的 Debian 和 Ubuntu 软件包",
+    };
+    await route.fulfill({ response, json: data });
+  });
+  await touchPage.goto("/");
+  const repositoryRow = touchPage.locator(".filelist tbody tr").first();
+  const repositoryName = touchPage.getByRole("link", {
+    name: "packaging-gitea-act-runner",
+  });
+  expect(
+    await touchPage.evaluate(
+      () => document.documentElement.scrollWidth <= window.innerWidth,
+    ),
+  ).toBe(true);
+  const rowHeightBeforeTooltip = (await repositoryRow.boundingBox())!.height;
+  await repositoryName.tap();
+  const repositoryTooltip = touchPage.getByRole("tooltip");
+  await expect(repositoryTooltip).toBeVisible();
+  await expect(repositoryName).toHaveAttribute(
+    "href",
+    "packaging-gitea-act-runner/",
+  );
+  const [repositoryNameBox, repositoryTooltipBox] = await Promise.all([
+    repositoryName.boundingBox(),
+    repositoryTooltip.boundingBox(),
+  ]);
+  expect(repositoryTooltipBox!.x).toBeGreaterThan(
+    repositoryNameBox!.x + repositoryNameBox!.width,
+  );
+  expect((await repositoryRow.boundingBox())!.height).toBe(
+    rowHeightBeforeTooltip,
+  );
+  const pageWidth = await touchPage.evaluate(() => ({
+    innerWidth: window.innerWidth,
+    scrollWidth: document.documentElement.scrollWidth,
+  }));
+  expect(pageWidth.scrollWidth, JSON.stringify(pageWidth)).toBeLessThanOrEqual(
+    pageWidth.innerWidth,
+  );
+  await touchPage.locator("#filetitle").tap();
+  await expect(repositoryTooltip).toBeHidden();
+
+  await touchPage.route("https://monitor.ustclug.org/**", (route) =>
+    route.abort(),
+  );
+  await touchPage.route("**/status/json", (route) =>
+    route.fulfill({
+      json: [
+        {
+          name: "alpha",
+          upstream: "safe",
+          syncing: false,
+          size: 2048,
+          exitCode: 10,
+          lastSuccess: 1,
+          updatedAt: 1,
+          prevRun: 2,
+          nextRun: 3,
+        },
+      ],
+    }),
+  );
+  await touchPage.goto("/status/");
+  const statusDetail = touchPage.locator("#status .status-detail").last();
+  await statusDetail.tap();
+  const statusTooltip = statusDetail.getByRole("tooltip");
+  await expect(statusTooltip).toBeVisible();
+  const [statusDetailBox, statusTooltipBox] = await Promise.all([
+    statusDetail.boundingBox(),
+    statusTooltip.boundingBox(),
+  ]);
+  expect(statusTooltipBox!.x).toBeGreaterThan(
+    statusDetailBox!.x + statusDetailBox!.width,
+  );
+  expect(statusTooltipBox!.x + statusTooltipBox!.width).toBeLessThanOrEqual(
+    390,
+  );
+  await statusDetail.tap();
+  await expect(statusTooltip).toBeHidden();
+
+  await context.close();
+});
+
 test("invalid index data restores fallback content", async ({ page }) => {
   await page.route("**/static/json/index.json", async (route) => {
     const response = await route.fetch();

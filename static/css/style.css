@@ -302,6 +302,26 @@ th {
   opacity: 1;
   visibility: visible;
 }
+@media (hover: none), (pointer: coarse) {
+  .repo-tooltip {
+    display: none;
+    box-sizing: border-box;
+    max-width: var(--repo-tooltip-max-width, 190px);
+    overflow-wrap: anywhere;
+  }
+
+  .repo-name:hover .repo-tooltip,
+  .repo-name:focus-within .repo-tooltip {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .repo-name.tooltip-open .repo-tooltip {
+    display: block;
+    opacity: 1;
+    visibility: visible;
+  }
+}
 #revproxy,
 #revproxy + h3 > label > span + span,
 #revproxy:checked + h3 > label > span,

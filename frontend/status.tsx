@@ -1,5 +1,5 @@
 import { render } from "preact";
-import { useEffect, useMemo, useState } from "preact/hooks";
+import { useEffect, useId, useMemo, useState } from "preact/hooks";
 import { initializePalette } from "./palette";
 import type { SyncStatus } from "./types";
 
@@ -57,14 +57,47 @@ function fileSize(bytes: number) {
   return `${(bytes / 1024 ** exp).toFixed(2)} ${exp === 0 ? "bytes" : `${"KMGTPEZY"[exp - 1]}B`}`;
 }
 
+function StatusDetail({
+  children,
+  comment,
+}: {
+  children: preact.ComponentChildren;
+  comment: string;
+}) {
+  const [open, setOpen] = useState(false);
+  const commentId = useId();
+  return (
+    <button
+      class="status-detail"
+      type="button"
+      aria-expanded={open}
+      aria-describedby={commentId}
+      onClick={() => setOpen((current) => !current)}
+      onBlur={() => setOpen(false)}
+      onKeyDown={(event) => {
+        if (event.key === "Escape") {
+          setOpen(false);
+          event.currentTarget.blur();
+        }
+      }}
+    >
+      {children}
+      <span id={commentId} class="comment" role="tooltip">
+        {comment}
+      </span>
+    </button>
+  );
+}
+
 function ErrorStatus({ code }: { code: number }) {
   if (code === 0) return <span>✅</span>;
-  return (
-    <span class="status-detail">
-      {code === 25 ? "🧹" : "❌"} ({code}
-      {errors[code] && <span class="comment">{errors[code]}</span>})
-    </span>
+  const label = (
+    <>
+      {code === 25 ? "🧹" : "❌"} ({code})
+    </>
   );
+  if (!errors[code]) return <span>{label}</span>;
+  return <StatusDetail comment={errors[code]}>{label}</StatusDetail>;
 }
 
 function isSyncStatus(value: unknown): value is SyncStatus {
@@ -161,10 +194,9 @@ function StatusTable({ rows }: { rows: SyncStatus[] }) {
               <td>{dateTime(item.nextRun)}</td>
               <td>{item.upstream}</td>
               <td class="withComment">
-                <span class="status-detail">
+                <StatusDetail comment={`${item.size} bytes`}>
                   {fileSize(item.size)}
-                  <span class="comment">{item.size} bytes</span>
-                </span>
+                </StatusDetail>
               </td>
               <td>{item.syncing ? "🔄" : "⏸️ "}</td>
             </tr>

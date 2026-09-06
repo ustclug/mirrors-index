@@ -1,5 +1,5 @@
 import { render } from "preact";
-import { useMemo, useState } from "preact/hooks";
+import { useEffect, useMemo, useState } from "preact/hooks";
 import { fetchIndexData } from "./bootstrap";
 import { DownloadModal, Footer, Header, Sidebar } from "./index-components";
 import { initializePalette } from "./palette";
@@ -10,6 +10,7 @@ initializePalette();
 function App({ data }: { data: IndexDataV1 }) {
   const [query, setQuery] = useState("");
   const [modal, setModal] = useState<"os" | "app" | null>(null);
+  const [openRepository, setOpenRepository] = useState<string | null>(null);
   const repositories = useMemo(
     () =>
       data.repositories.filter((repo) =>
@@ -20,6 +21,22 @@ function App({ data }: { data: IndexDataV1 }) {
   const groups = modal
     ? data.downloads.filter((group) => group.category === modal)
     : [];
+
+  useEffect(() => {
+    if (!openRepository) return;
+    const close = () => setOpenRepository(null);
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") close();
+    };
+    document.addEventListener("click", close);
+    document.addEventListener("keydown", closeOnEscape);
+    window.addEventListener("resize", close);
+    return () => {
+      document.removeEventListener("click", close);
+      document.removeEventListener("keydown", closeOnEscape);
+      window.removeEventListener("resize", close);
+    };
+  }, [openRepository]);
 
   return (
     <>
@@ -74,9 +91,34 @@ function App({ data }: { data: IndexDataV1 }) {
             </thead>
             <tbody>
               {repositories.map((repo, index) => (
-                <tr>
+                <tr
+                  onClick={(event) => {
+                    if (!repo.desc) return;
+                    const link = (event.target as Element).closest("a");
+                    if (link && !link.closest(".filename")) return;
+                    if (link && openRepository === repo.name) return;
+                    event.preventDefault();
+                    event.stopPropagation();
+                    const name = event.currentTarget.querySelector(
+                      ".repo-name",
+                    ) as HTMLElement;
+                    const availableWidth =
+                      window.innerWidth -
+                      name.getBoundingClientRect().right -
+                      16;
+                    name.style.setProperty(
+                      "--repo-tooltip-max-width",
+                      `${Math.max(1, Math.min(190, availableWidth))}px`,
+                    );
+                    setOpenRepository((current) =>
+                      current === repo.name ? null : repo.name,
+                    );
+                  }}
+                >
                   <td class="filename">
-                    <span class="repo-name">
+                    <span
+                      class={`repo-name ${openRepository === repo.name ? "tooltip-open" : ""}`}
+                    >
                       <a
                         href={`${repo.name}/`}
                         aria-describedby={
