@@ -1,5 +1,6 @@
 export interface Repository {
   name: string;
+  desc: string;
   updatedAt: string;
   helpUrl: string;
 }

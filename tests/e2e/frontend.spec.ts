@@ -12,6 +12,21 @@ test("homepage enhances fallback and keeps its interactions", async ({
     "alpha",
     "beta",
   ]);
+  const alpha = page.getByRole("link", { name: "alpha", exact: true });
+  await alpha.hover();
+  const repositoryTooltip = page.getByRole("tooltip");
+  await expect(repositoryTooltip).toBeVisible();
+  await expect(repositoryTooltip).toHaveText("Alpha repository description");
+  await expect(repositoryTooltip).toHaveCSS("border-radius", "4px");
+  const [nameBox, tooltipBox] = await Promise.all([
+    alpha.boundingBox(),
+    repositoryTooltip.boundingBox(),
+  ]);
+  expect(nameBox).not.toBeNull();
+  expect(tooltipBox).not.toBeNull();
+  expect(tooltipBox!.x).toBeGreaterThan(nameBox!.x + nameBox!.width);
+  await alpha.focus();
+  await expect(repositoryTooltip).toBeVisible();
   await expect(page.getByText("无法加载完整页面")).toHaveCount(0);
   await expect
     .poll(() =>
@@ -203,6 +218,7 @@ test("palette picker persists and is shared with the status page", async ({
   await blue.hover();
   await expect(blue.getByRole("tooltip")).toBeVisible();
   await expect(blue.getByRole("tooltip")).toHaveText("科大蓝");
+  await expect(blue.getByRole("tooltip")).toHaveCSS("border-radius", "4px");
 
   await blue.click();
   await expect(blue).toHaveAttribute("aria-pressed", "true");

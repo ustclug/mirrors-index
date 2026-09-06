@@ -260,6 +260,48 @@ th {
 #filelist a:hover {
   text-decoration: underline;
 }
+.repo-name {
+  position: relative;
+  display: inline-block;
+}
+.repo-tooltip {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  left: calc(100% + 8px);
+  width: max-content;
+  max-width: min(480px, calc(75vw - 32px));
+  padding: 7px 9px;
+  border-radius: 4px;
+  background-color: var(--tooltip-background);
+  color: var(--tooltip-text);
+  font-size: 12px;
+  line-height: 1.4;
+  text-align: center;
+  white-space: normal;
+  box-shadow: 0 4px 12px var(--dialog-shadow);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-50%);
+  visibility: hidden;
+}
+.repo-tooltip::after {
+  position: absolute;
+  top: 50%;
+  right: 100%;
+  border: 5px solid transparent;
+  border-right-color: var(--tooltip-background);
+  content: "";
+  transform: translateY(-50%);
+}
+.repo-name:hover {
+  z-index: 2;
+}
+.repo-name:hover .repo-tooltip,
+.repo-name:focus-within .repo-tooltip {
+  opacity: 1;
+  visibility: visible;
+}
 #revproxy,
 #revproxy + h3 > label > span + span,
 #revproxy:checked + h3 > label > span,
@@ -438,20 +480,33 @@ tbody tr:hover {
 .palette-tooltip {
   position: absolute;
   z-index: 1;
-  bottom: calc(100% + 4px);
+  bottom: calc(100% + 8px);
   left: 50%;
   width: max-content;
-  padding: 4px 7px;
-  background: var(--heading-color);
-  color: var(--surface);
+  max-width: 190px;
+  padding: 7px 9px;
+  border-radius: 4px;
+  background-color: var(--tooltip-background);
+  color: var(--tooltip-text);
   font-family: "Open Sans", "Ubuntu", sans-serif;
   font-size: 12px;
-  line-height: 1.3;
+  line-height: 1.4;
+  text-align: center;
+  white-space: normal;
+  box-shadow: 0 4px 12px var(--dialog-shadow);
   opacity: 0;
   pointer-events: none;
   transform: translateX(-50%);
-  transition: opacity 0.12s linear;
   visibility: hidden;
+}
+.palette-tooltip::after {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  border: 5px solid transparent;
+  border-top-color: var(--tooltip-background);
+  content: "";
+  transform: translateX(-50%);
 }
 .palette-option:hover .palette-tooltip,
 .palette-option:focus-visible .palette-tooltip {

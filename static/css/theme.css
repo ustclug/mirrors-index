@@ -45,6 +45,8 @@
   --footer-text: #bbbbbb;
   --footer-link: #cccccc;
   --dialog-shadow: rgba(16, 35, 29, 0.3);
+  --tooltip-background: var(--heading-color);
+  --tooltip-text: #ffffff;
   --backdrop: rgba(8, 22, 18, 0.66);
 }
 
@@ -219,6 +221,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
+    --tooltip-text: #181a1b;
     --page-background: #181a1b;
     --text-color: #e8e6e3;
     --link-color: #6bb8df;

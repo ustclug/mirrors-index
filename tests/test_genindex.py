@@ -20,6 +20,10 @@ class GenIndexTests(unittest.TestCase):
         data = json.loads(encoded)
         self.assertEqual(data["schemaVersion"], 1)
         self.assertEqual(data["repositories"][0]["name"], "debian")
+        self.assertEqual(
+            data["repositories"][0]["desc"],
+            "Debian Linux 的官方软件包仓库",
+        )
         self.assertEqual(data["reverseProxies"][0]["destination"], "proxy.example")
 
     def run_generator(self, directory, mirrorz_generator):

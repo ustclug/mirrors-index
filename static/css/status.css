@@ -5,15 +5,12 @@
   --status-failed: #fff4e3;
   --status-ongoing: #e3f7ff;
   --sort-indicator: var(--control-text);
-  --tooltip-background: var(--heading-color);
-  --tooltip-text: #ffffff;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --status-failed: #4a3520;
     --status-ongoing: #163b47;
-    --tooltip-text: #181a1b;
   }
 }
 

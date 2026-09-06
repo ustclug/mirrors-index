@@ -73,10 +73,28 @@ function App({ data }: { data: IndexDataV1 }) {
               </tr>
             </thead>
             <tbody>
-              {repositories.map((repo) => (
+              {repositories.map((repo, index) => (
                 <tr>
                   <td class="filename">
-                    <a href={`${repo.name}/`}>{repo.name}</a>
+                    <span class="repo-name">
+                      <a
+                        href={`${repo.name}/`}
+                        aria-describedby={
+                          repo.desc ? `repo-description-${index}` : undefined
+                        }
+                      >
+                        {repo.name}
+                      </a>
+                      {repo.desc && (
+                        <span
+                          id={`repo-description-${index}`}
+                          class="repo-tooltip"
+                          role="tooltip"
+                        >
+                          {repo.desc}
+                        </span>
+                      )}
+                    </span>
                   </td>
                   <td class="filetime">{repo.updatedAt}</td>
                   <td class="help">

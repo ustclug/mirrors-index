@@ -32,7 +32,7 @@
 <p>For modern browser, please use <a href="/">Homepage</a>.</p>
 <ul>
 {% for MODTIME, HREF, HELP, DIR in repolist -%}
-    <li><a href="{{ DIR }}/">{{ DIR }}</a></li>
+    <li><a href="{{ DIR }}/"{% if descriptions.get(DIR) %} title="{{ descriptions[DIR] }}"{% endif %}>{{ DIR }}</a></li>
 {% endfor -%}
 </ul>
 <!-- Last generated at {{ now }} -->

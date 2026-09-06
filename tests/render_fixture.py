@@ -29,6 +29,7 @@ downloads = [
     },
 ]
 news = [SimpleNamespace(title="Test news", link="https://example.com/news")]
+genindex.descriptions["alpha"] = "Alpha repository description"
 env = Environment(
     loader=FileSystemLoader(ROOT / "templates"), autoescape=select_autoescape(["html"])
 )
@@ -41,6 +42,7 @@ env = Environment(
 (ROOT / "dist" / "index-nojs.html").write_text(
     env.get_template("index-nojs.html").render(
         repolist=repolist,
+        descriptions=genindex.descriptions,
         now="2026-01-02 03:04:05",
     )
     + "\n"

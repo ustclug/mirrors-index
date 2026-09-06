@@ -14,6 +14,10 @@ import gencontent
 import genservernews
 from utils import get_isolist
 
+BASEDIR = os.path.dirname(__file__)
+with open(os.path.join(BASEDIR, "config", "genmirrorz.json")) as source:
+    descriptions = json.load(source).get("descriptions", {})
+
 
 def atomic_write(path, content):
     directory = os.path.dirname(os.path.abspath(path))
@@ -38,7 +42,12 @@ def index_json(repolist, revproxy, isoinfo, newslist, generated_at):
         "schemaVersion": 1,
         "generatedAt": generated_at,
         "repositories": [
-            {"updatedAt": updated_at, "helpUrl": help_url, "name": name}
+            {
+                "updatedAt": updated_at,
+                "helpUrl": help_url,
+                "name": name,
+                "desc": descriptions.get(name, ""),
+            }
             for updated_at, help_url, _help_text, name in repolist
         ],
         "reverseProxies": [
@@ -87,7 +96,6 @@ def main():
     logger.debug(f'received command arguments: "{args!s}"')
 
     OUTDIR = args.outdir or OUTDIR
-    BASEDIR = os.path.dirname(__file__)
     index_file = os.path.join(OUTDIR, "static", "index.json")
     nojs_file = os.path.join(OUTDIR, "index-nojs.html")
     mirrorz_file = os.path.join(OUTDIR, "mirrorz.json")
@@ -127,6 +135,7 @@ def main():
         nojs_file,
         lambda: nojs_template.render(
             repolist=repolist,
+            descriptions=descriptions,
             now=now,
         ),
     )
