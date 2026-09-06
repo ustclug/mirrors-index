@@ -293,7 +293,7 @@ test("palette picker falls back from invalid storage and fits narrow screens", a
 });
 
 test("invalid index data restores fallback content", async ({ page }) => {
-  await page.route("**/static/index.json", async (route) => {
+  await page.route("**/static/json/index.json", async (route) => {
     const response = await route.fetch();
     const data = await response.json();
     data.schemaVersion = 2;
@@ -308,7 +308,7 @@ test("invalid index data restores fallback content", async ({ page }) => {
 });
 
 test("download buttons report empty download data", async ({ page }) => {
-  await page.route("**/static/index.json", async (route) => {
+  await page.route("**/static/json/index.json", async (route) => {
     const response = await route.fetch();
     const data = await response.json();
     data.downloads = [];
@@ -330,7 +330,7 @@ test("failed index data request restores fallback content", async ({
   page,
 }) => {
   let failRequest: (() => void) | undefined;
-  await page.route("**/static/index.json", async (route) => {
+  await page.route("**/static/json/index.json", async (route) => {
     await new Promise<void>((resolve) => {
       failRequest = resolve;
     });

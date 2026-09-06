@@ -33,7 +33,9 @@ genindex.descriptions["alpha"] = "Alpha repository description"
 env = Environment(
     loader=FileSystemLoader(ROOT / "templates"), autoescape=select_autoescape(["html"])
 )
-(ROOT / "dist" / "static" / "index.json").write_text(
+json_dir = ROOT / "dist" / "static" / "json"
+json_dir.mkdir(parents=True, exist_ok=True)
+(json_dir / "index.json").write_text(
     genindex.index_json(
         repolist, [("source", "destination")], downloads, news, "2026-01-02 03:04:05"
     )

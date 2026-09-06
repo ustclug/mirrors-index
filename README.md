@@ -48,9 +48,9 @@ and replace files in `/srv/www/` and `/srv/www/static/`. See
 
 The generated homepage links browsers without JavaScript or ES module support
 to a separate `index-nojs.html` containing the repository list. The full
-interface fetches versioned data from `/static/index.json`. The periodic job
-atomically updates that file, `index-nojs.html`, and `mirrorz.json`; it never
-modifies `index.html`.
+interface fetches versioned data from `/static/json/index.json`. The periodic job
+atomically updates that file, `index-nojs.html`, and
+`/static/json/mirrorz.json`; it never modifies `index.html`.
 
 ### Periodic updates
 

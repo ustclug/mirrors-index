@@ -55,15 +55,20 @@ class GenIndexTests(unittest.TestCase):
 
             with open(index_html) as source:
                 self.assertEqual(source.read(), "deployed homepage")
-            with open(os.path.join(directory, "static", "index.json")) as source:
+            with open(
+                os.path.join(directory, "static", "json", "index.json")
+            ) as source:
                 self.assertEqual(json.load(source)["repositories"][0]["name"], "debian")
             self.assertTrue(os.path.exists(os.path.join(directory, "index-nojs.html")))
-            with open(os.path.join(directory, "mirrorz.json")) as source:
+            with open(
+                os.path.join(directory, "static", "json", "mirrorz.json")
+            ) as source:
                 self.assertEqual(json.load(source), {"site": {}})
 
     def test_mirrorz_failure_keeps_old_file_and_publishes_other_outputs(self):
         with tempfile.TemporaryDirectory() as directory:
-            mirrorz_path = os.path.join(directory, "mirrorz.json")
+            mirrorz_path = os.path.join(directory, "static", "json", "mirrorz.json")
+            os.makedirs(os.path.dirname(mirrorz_path), exist_ok=True)
             with open(mirrorz_path, "w") as output:
                 output.write("old mirrorz")
 
@@ -77,7 +82,7 @@ class GenIndexTests(unittest.TestCase):
             with open(mirrorz_path) as source:
                 self.assertEqual(source.read(), "old mirrorz")
             self.assertTrue(
-                os.path.exists(os.path.join(directory, "static", "index.json"))
+                os.path.exists(os.path.join(directory, "static", "json", "index.json"))
             )
             self.assertTrue(os.path.exists(os.path.join(directory, "index-nojs.html")))
 

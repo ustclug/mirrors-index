@@ -96,9 +96,9 @@ def main():
     logger.debug(f'received command arguments: "{args!s}"')
 
     OUTDIR = args.outdir or OUTDIR
-    index_file = os.path.join(OUTDIR, "static", "index.json")
+    index_file = os.path.join(OUTDIR, "static", "json", "index.json")
     nojs_file = os.path.join(OUTDIR, "index-nojs.html")
-    mirrorz_file = os.path.join(OUTDIR, "mirrorz.json")
+    mirrorz_file = os.path.join(OUTDIR, "static", "json", "mirrorz.json")
     logger.info(f'OUTDIR is "{OUTDIR}"')
     logger.info(f'BASEDIR is "{BASEDIR}"')
     env = Environment(

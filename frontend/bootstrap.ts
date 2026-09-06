@@ -1,7 +1,9 @@
 import type { IndexDataV1 } from "./types";
 
 export async function fetchIndexData(): Promise<IndexDataV1> {
-  const response = await fetch("/static/index.json", { cache: "no-store" });
+  const response = await fetch("/static/json/index.json", {
+    cache: "no-store",
+  });
   if (!response.ok)
     throw new Error(`Unable to load index data: HTTP ${response.status}`);
   const value: unknown = await response.json();
