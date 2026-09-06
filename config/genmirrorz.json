@@ -1,5 +1,5 @@
 {
-    "skip": ["misc", "nix-channels-index", "ustclug"],
+    "skip": ["misc", "ustclug"],
     "descriptions": {
         "adoptium": "Eclipse Temurin 的 OpenJDK 二进制包",
         "alpine": "Alpine Linux 的安装镜像和官方软件包仓库",
