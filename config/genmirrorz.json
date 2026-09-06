@@ -67,7 +67,7 @@
         "julia-releases": "Julia 二进制程序镜像",
         "kali": "Kali Linux 的官方软件包仓库",
         "kali-images": "Kali Linux 的安装镜像",
-        "kde-application": "KDE应用程序源码镜像",
+        "kde-application": "KDE 应用程序源码镜像",
         "kernel.org": "kernel.org 托管的 Linux 内核及相关项目发布文件",
         "knoppix": "基于 Debian 的 Live Linux 发行版 KNOPPIX",
         "knoppix-dvd": "KNOPPIX 的 DVD 安装镜像",
