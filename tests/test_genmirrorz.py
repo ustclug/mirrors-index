@@ -125,6 +125,13 @@ class GenMirrorzTests(unittest.TestCase):
         self.assertNotIn("size", mirrors[0])
         self.assertEqual("", stderr.getvalue())
 
+    def test_legacy_empty_mapping_object_excludes_task_metadata(self):
+        meta = make_meta("internal-index", {})
+
+        mirrors = self.genmirrorz.parse_repo_with_meta([("", "", "", "aosp")], [meta])
+
+        self.assertEqual("U", mirrors[0]["status"])
+
     def test_status_aggregation_is_conservative_and_order_independent(self):
         contributions = [
             self.genmirrorz.RepoContribution(
@@ -221,9 +228,12 @@ class GenMirrorzTests(unittest.TestCase):
         self.assertEqual(1, len(matching))
         self.assertIn("one, two", matching[0])
 
-    def test_invalid_task_does_not_block_valid_metadata(self):
-        with self.assertLogs("genmirrorz", level="WARNING"):
-            grouped = self.genmirrorz.collect_repo_contributions(
+    def test_invalid_task_rejects_metadata_snapshot(self):
+        with self.assertRaisesRegex(
+            self.genmirrorz.gencontent.YukiMetadataError,
+            "runtime and size fields must be integers",
+        ):
+            self.genmirrorz.collect_repo_contributions(
                 [
                     {"name": "invalid"},
                     make_meta("wrong-type", nextRun="tomorrow"),
@@ -231,40 +241,19 @@ class GenMirrorzTests(unittest.TestCase):
                 ]
             )
 
-        self.assertEqual({"valid"}, set(grouped))
-
-    def test_fetch_yuki_metas_keeps_successful_endpoints(self):
-        response = mock.Mock()
-        response.json.return_value = [make_meta("valid")]
-        config = {
-            "yuki": [
-                {"url": "https://disabled.invalid", "mirrorz": False},
-                {"url": "https://failed.invalid", "mirrorz": True},
-                {"url": "https://valid.invalid", "mirrorz": True},
-            ]
-        }
-
-        with (
-            mock.patch.object(self.genmirrorz, "gencontent_config", config),
-            mock.patch.object(
-                self.genmirrorz,
-                "get_resp_with_timeout",
-                side_effect=[None, response],
-            ) as get_response,
-            self.assertLogs("genmirrorz", level="ERROR"),
-        ):
-            metas = self.genmirrorz.fetch_yuki_metas()
-
-        self.assertEqual([make_meta("valid")], metas)
-        self.assertEqual(2, get_response.call_count)
-
     def test_get_mirrorz_json_fetches_metadata_without_mutating_base(self):
         original_base = json.loads(json.dumps(self.genmirrorz.base))
+        snapshots = [
+            (
+                {"homepage": True, "mirrorz": True},
+                [make_meta("aosp")],
+            )
+        ]
         with (
             mock.patch.object(
-                self.genmirrorz,
-                "fetch_yuki_metas",
-                return_value=[make_meta("aosp")],
+                self.genmirrorz.gencontent,
+                "fetch_yuki_metadata",
+                return_value=snapshots,
             ) as fetch,
             mock.patch.object(self.genmirrorz, "add_disk_info_if_available"),
         ):
@@ -276,7 +265,7 @@ class GenMirrorzTests(unittest.TestCase):
         self.assertEqual("S50X100", result["mirrors"][0]["status"])
         self.assertEqual(original_base, self.genmirrorz.base)
 
-    def test_cname_is_applied_before_grouping(self):
+    def test_cname_is_not_used_for_status_grouping(self):
         with mock.patch.object(
             self.genmirrorz,
             "cname",
@@ -286,7 +275,13 @@ class GenMirrorzTests(unittest.TestCase):
                 [make_meta("debian-multimedia")]
             )
 
-        self.assertEqual({"deb-multimedia"}, set(grouped))
+        self.assertEqual({"debian-multimedia"}, set(grouped))
+
+        mirrors = self.genmirrorz.parse_repo_with_meta(
+            [("", "", "", "deb-multimedia")],
+            [make_meta("debian-multimedia")],
+        )
+        self.assertEqual("U", mirrors[0]["status"])
 
     def test_missing_repository_description_warns(self):
         with self.assertLogs("genmirrorz", level="WARNING") as logs:

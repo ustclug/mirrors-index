@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 
-import fnmatch
 import json
 import logging
-import os
 import time
 from urllib.parse import urlencode, urljoin, urlparse
 
@@ -15,49 +13,97 @@ from utils import CONFIG_FOLDER, get_mirrorz_cname
 with open(CONFIG_FOLDER / "gencontent.json") as f:
     USER_CONFIG: dict = json.load(f)
 
+OUTDIR = USER_CONFIG.get("outdir")
+"""Default directory for generated output, if configured."""
 HTTPDIR = USER_CONFIG.get("httpdir", "/srv/repo")
-"""Where repo files (or rsync-huai metadata files) are stored."""
-OUTDIR = USER_CONFIG.get("outdir", HTTPDIR)
-"""Where generated files will be stored."""
+"""Repository root checked for deployment diagnostics only."""
 HELPBASE_SPHI = USER_CONFIG.get("help-sphinx", "https://mirrors.ustc.edu.cn/help/")
 HELPBASE_MIRRORZ = USER_CONFIG.get(
     "help-mirrorz", "https://help.mirrors.cernet.edu.cn/"
 )
 MIRROR_NAME = USER_CONFIG.get("mirror-name", "USTC")
-
-EXCLUDE = ("tmpfs", ".*")
-"""Directories match these glob will be ignored."""
-UPDATE_DATE_EXCLUDE = USER_CONFIG["extra-exclude"]
-"""Directories match these names will not have update date calculated."""
 MIRRORZ_HELP = USER_CONFIG.get("mirrorz-help", [])
 """Set which repos should use mirrorz-help, if '*' in list then all help links will use mirrorz-help."""
+MANUAL_REPOSITORIES = USER_CONFIG.get("manual-repositories", [])
 
 logger = logging.getLogger(__name__)
-
 
 if MIRRORZ_HELP:
     cname = get_mirrorz_cname()
 
-if os.environ.get("DEBUG_WITH_REPOLIST"):
-    with open("examples/repolist.txt") as f:
-        for l in f:
-            os.makedirs(os.path.join(HTTPDIR, l.strip()), exist_ok=True)
+
+class YukiMetadataError(RuntimeError):
+    pass
 
 
-def CTimeWA(dirpath):
-    """A unreliable workaround for nested repos.
-    See comments in main program.
-    """
-    ctime = 0
-    for subd in os.listdir(dirpath):
-        subdirpath = os.path.join(dirpath, subd)
-        if not os.path.isdir(subdirpath):
+def validate_repository_name(name, label="repository name") -> str:
+    if not isinstance(name, str) or not name or name in {".", ".."}:
+        raise YukiMetadataError(f"{label} must be a non-empty directory name")
+    if "/" in name or "\\" in name:
+        raise YukiMetadataError(f"{label} must be a single directory name")
+    return name
+
+
+def task_mappings(task: dict) -> list[dict]:
+    if not isinstance(task, dict):
+        raise YukiMetadataError("Yuki metadata entries must be objects")
+    task_name = validate_repository_name(task.get("name"), "task name")
+    mappings = task.get("mirrorz")
+    if mappings is None:
+        return [{"name": task_name}]
+    if mappings == {}:
+        return []
+    if not isinstance(mappings, list):
+        raise YukiMetadataError(f"mirrorz for task {task_name!r} must be a list")
+    for mapping in mappings:
+        if not isinstance(mapping, dict):
+            raise YukiMetadataError(
+                f"mirrorz entries for task {task_name!r} must be objects"
+            )
+        validate_repository_name(mapping.get("name"), "mirrorz name")
+        if not isinstance(mapping.get("cache", False), bool):
+            raise YukiMetadataError(
+                f"mirrorz cache for task {task_name!r} must be a boolean"
+            )
+    return mappings
+
+
+def fetch_yuki_metadata() -> list[tuple[dict, list[dict]]]:
+    snapshots = []
+    for endpoint in USER_CONFIG.get("yuki", []):
+        if not endpoint.get("homepage") and not endpoint.get("mirrorz"):
             continue
+        url = endpoint.get("url")
+        if not isinstance(url, str) or not url:
+            raise YukiMetadataError("Yuki endpoint URL must be a non-empty string")
+        response = utils.get_resp_with_timeout(url, logger=logger)
+        if response is None:
+            raise YukiMetadataError(f"failed to get Yuki metadata from {url}")
+        try:
+            metadata = response.json()
+        except ValueError as error:
+            raise YukiMetadataError(
+                f"failed to decode Yuki metadata from {url}"
+            ) from error
+        if not isinstance(metadata, list) or not metadata:
+            raise YukiMetadataError(
+                f"Yuki metadata from {url} must be a non-empty list"
+            )
+        for task in metadata:
+            task_mappings(task)
+        snapshots.append((endpoint, metadata))
+    if not any(endpoint.get("homepage") for endpoint, _metadata in snapshots):
+        raise YukiMetadataError("at least one homepage Yuki endpoint is required")
+    return snapshots
 
-        _ctime = os.stat(subdirpath).st_ctime
-        ctime = max(ctime, _ctime)
 
-    return ctime
+def metadata_for(snapshots: list[tuple[dict, list[dict]]], purpose: str) -> list[dict]:
+    return [
+        task
+        for endpoint, metadata in snapshots
+        if endpoint.get(purpose)
+        for task in metadata
+    ]
 
 
 def getMirrorzURL(name):
@@ -68,16 +114,10 @@ def getMirrorzURL(name):
 
 
 def testHelpLink(name):
-    """
-    For non-ustc mirrors, we can use mirrorz-help to generate help links.
-    Currently we don't check the existence of help pages.
-    """
+    """Return the configured help URL for a repository, if one is available."""
     if "*" in MIRRORZ_HELP:
         return getMirrorzURL(name)
 
-    """
-    Check if the help page exists on sphinx.
-    """
     url = urljoin(HELPBASE_SPHI, name + ".html")
     try:
         html = requests.get(url, timeout=1)
@@ -86,67 +126,51 @@ def testHelpLink(name):
     if html is not None and "404 Not Found" not in html.text:
         return urlparse(url).path
 
-    """
-    If user specified the help page exists on mirrorz-help, we use it.
-    """
     if name in MIRRORZ_HELP:
         return getMirrorzURL(name)
-
     return ""
 
 
-def genRepoList():
-    # get yuki repo list from gencontent.json
-    homepage_repos = {}
-    for yuki_endpoint in USER_CONFIG.get("yuki", []):
-        if not yuki_endpoint["homepage"]:
-            continue
-        url = yuki_endpoint["url"]
-        resp = utils.get_resp_with_timeout(url)
-        if resp is None:
-            continue
-        try:
-            resp = resp.json()
-            for repo in resp:
-                homepage_repos[repo["name"]] = repo["lastSuccess"]
-        except (KeyError, TypeError, ValueError) as e:
-            logger.warning(f"Failed to parse remote-yuki response: {e}")
-    for d in sorted(os.listdir(HTTPDIR), key=str.lower):
-        fpath = os.path.join(HTTPDIR, d)
+def genRepoList(meta: list[dict] | None = None):
+    if meta is None:
+        meta = metadata_for(fetch_yuki_metadata(), "homepage")
 
-        if not os.path.isdir(fpath) or any(fnmatch.fnmatch(d, p) for p in EXCLUDE):
-            continue
+    homepage_repos: dict[str, int] = {}
+    for task in meta:
+        mappings = task_mappings(task)
+        last_success = task.get("lastSuccess")
+        if (
+            isinstance(last_success, bool)
+            or not isinstance(last_success, int)
+            or last_success < 0
+        ):
+            raise YukiMetadataError(
+                f"lastSuccess for task {task['name']!r} must be a non-negative integer"
+            )
+        for mapping in mappings:
+            name = mapping["name"]
+            homepage_repos[name] = max(homepage_repos.get(name, 0), last_success)
 
-        # Change time is lastsync time if sync destination is exactly the same
-        # top-level dir of http. However, some repos are divided to several
-        # sub-dirs which are actually sync-ed instead of top-level directory.
-        # We need to check these sub-dirs to find correct lastsync time.
-        if d in homepage_repos:
-            ctime = homepage_repos[d]
-        elif d in UPDATE_DATE_EXCLUDE:
-            ctime = 0
-        else:
-            ctime = os.stat(fpath).st_ctime
+    if not isinstance(MANUAL_REPOSITORIES, list):
+        raise YukiMetadataError("manual-repositories must be a list")
+    for name in MANUAL_REPOSITORIES:
+        homepage_repos.setdefault(
+            validate_repository_name(name, "manual repository name"), 0
+        )
 
-            # Since checking all sub-dirs wastes much time, the script just check
-            # repos whose top-level dirs have a old change time.
-            if time.time() - ctime > 3600 * 24 * 2:
-                _ctime = CTimeWA(fpath)
-                ctime = max(ctime, _ctime)
-
-        ctime_str = (
-            time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(ctime))
-            if ctime != 0
+    for name in sorted(homepage_repos, key=lambda item: (item.lower(), item)):
+        timestamp = homepage_repos[name]
+        updated_at = (
+            time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(timestamp))
+            if timestamp > 0
             else ""
         )
-        help_href = testHelpLink(d)
+        help_href = testHelpLink(name)
         help_text = "Help" if help_href.strip() else ""
-
-        yield (ctime_str, help_href, help_text, d)
+        yield (updated_at, help_href, help_text, name)
 
 
 def getOthers():
-    info = None
     with open(CONFIG_FOLDER / "revproxy.json", "r") as fin:
         info = json.load(fin)
     for repo in info:
@@ -154,5 +178,5 @@ def getOthers():
 
 
 if __name__ == "__main__":
-    for i in genRepoList():
-        print(i)
+    for item in genRepoList():
+        print(item)

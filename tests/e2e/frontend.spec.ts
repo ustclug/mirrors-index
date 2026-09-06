@@ -12,6 +12,9 @@ test("homepage enhances fallback and keeps its interactions", async ({
     "alpha",
     "beta",
   ]);
+  await expect(page.locator(".data-updated-at")).toHaveText(
+    "数据更新时间：2026-01-02 03:04:05",
+  );
   const alpha = page.getByRole("link", { name: "alpha", exact: true });
   await alpha.hover();
   const repositoryTooltip = page.getByRole("tooltip");
@@ -463,7 +466,7 @@ test.describe("without JavaScript", () => {
     await page.emulateMedia({ colorScheme: "dark" });
     await page.goto("/");
     await expect(page.locator("#root")).toContainText("无法加载完整页面");
-    await page.locator("#root a").click();
+    await page.locator("#fallback a").click();
     await expect(page).toHaveURL(/\/index-nojs\.html$/);
     await expect(page.locator("head style")).toHaveCount(1);
     await expect(page.locator('link[rel="stylesheet"]')).toHaveCount(0);
@@ -472,6 +475,9 @@ test.describe("without JavaScript", () => {
       "rgb(24, 26, 27)",
     );
     await expect(page.locator("li a")).toHaveText(["alpha", "beta"]);
+    await expect(
+      page.getByText("数据更新时间：2026-01-02 03:04:05"),
+    ).toBeVisible();
     await page.emulateMedia({ colorScheme: "light" });
     await expect(page.locator("body")).toHaveCSS(
       "background-color",

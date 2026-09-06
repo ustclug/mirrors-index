@@ -35,6 +35,6 @@
     <li><a href="{{ DIR }}/"{% if descriptions_by_name.get(DIR.lower()) %} title="{{ descriptions_by_name[DIR.lower()] }}"{% endif %}>{{ DIR }}</a></li>
 {% endfor -%}
 </ul>
-<!-- Last generated at {{ now }} -->
+<p>数据更新时间：{{ now }}</p>
 </body>
 </html>

@@ -20,9 +20,17 @@ genisolist is a submodule of mirrorz-genisolist, so please checkout the submodul
 git submodule update --init --recursive
 ```
 
-Assuming that your metadata is stored in `/srv/repo`. Otherwise, you should modify the `HTTPDIR` variable in gencontent.py (by gencontent.json), and root attribute in genisolist.ini.
+The repository list and synchronization metadata are read from the Yuki API
+endpoints configured in `config/gencontent.json`. Each Yuki `mirrorz.name` must
+exactly match the published top-level directory, including case. A task without
+a `mirrorz` field uses its task name, while `mirrorz: []` excludes it. The legacy
+empty object `mirrorz: {}` is accepted with the same exclusion meaning. Static
+entries without Yuki metadata can be added to the `manual-repositories` string
+list; their Last Update column is left blank.
 
-Metadata now is generated from rsync-huai hook after every sync by yuki.
+`httpdir` defaults to `/srv/repo` and is checked as a deployment diagnostic.
+If it does not exist, generation logs a warning and continues; repository
+discovery never reads it.
 
 ### Build and deploy
 
@@ -40,10 +48,14 @@ make install WEBROOT=/srv/www
 `make install` installs the already-built static homepage, hashed JavaScript and
 CSS bundles, fonts, and `/status/` page. It does not rebuild them. The periodic
 job only needs Python; build tools and Node package managers are not involved in
-hourly updates. MirrorZ repository descriptions are maintained locally in
-`config/genmirrorz.json`; site generation does not fetch description text from
-another mirror. Yuki tasks are grouped by their logical `mirrorz` repository
-mapping before status generation. Cache mappings take precedence; otherwise a
+hourly updates. All configured Yuki data sources are validated before any
+generated file is replaced, so a failed or malformed response leaves the
+previous data set intact. MirrorZ repository descriptions are maintained
+locally in `config/genmirrorz.json`; site generation does not fetch description
+text from another mirror. Yuki tasks are grouped by their logical `mirrorz`
+repository mapping, using the mapping name directly rather than `cname.json`,
+before status generation. `cname.json` only controls the canonical name in
+MirrorZ output. Cache mappings take precedence; otherwise a
 failure takes precedence over syncing and success, disabled tasks are ignored
 unless all tasks are disabled, repository size is the largest task size, and
 conflicting upstream URLs are omitted. The `mirror` user running the periodic
@@ -108,12 +120,12 @@ docker run --rm -it -p 8000:8000 \
 pnpm install --frozen-lockfile --ignore-scripts
 ```
 
-The image provides a writable `/srv/repo` directory for fake metadata. Run
-`make example` to populate it with a small representative repository tree. The
-generator is idempotent and refuses to touch a non-empty directory it did not
-create. It also writes example sync data to `dist/status/json`, so the
-status page works with the same local server. A different destination can be
-passed directly, for example:
+The image provides a writable `/srv/repo` directory for fake download files.
+Run `make example` to populate it with a small representative repository tree.
+The generator is idempotent and refuses to touch a non-empty directory it did
+not create. It also writes example sync data to `dist/status/json`, so the status
+page works with the same local server. A different destination can be passed
+directly, for example:
 
 ```shell
 python3 tools/create_example_tree.py /tmp/example-repo
@@ -143,8 +155,6 @@ If you need to debug genisolist, use `z-genisolist/utils/rsync-stub-generator.py
 ```shell
 z-genisolist/utils/rsync-stub-generator.py rsync://rsync.mirrors.ustc.edu.cn/archlinux --dist /srv/repo/archlinux
 ```
-
-Also `DEBUG_WITH_REPOLIST=1 python3 genindex.py` can help create folders within `HTTPDIR`/`OUTDIR` without the necessity to create stub files one by one.
 
 ## Copyright
 

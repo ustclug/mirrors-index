@@ -3,7 +3,7 @@ STATIC_OUT := $(OUTDIR)/static
 ESBUILD_ENTRIES := frontend/index.tsx frontend/status.tsx static/css/style.css static/css/status.css
 ESBUILD_FLAGS := --bundle --format=esm --target=es2020 --jsx=automatic --jsx-import-source=preact --alias:preact=$(CURDIR)/vendor/preact '--external:/static/fonts/*'
 ESBUILD := env NODE_PATH=$(CURDIR)/vendor esbuild
-PYTHON_FILES := gencontent.py genindex.py genmirrorz.py genservernews.py utils.py tests/render_fixture.py tests/test_example_tree.py tests/test_genindex.py tests/test_genmirrorz.py tools/build_manifest.py tools/check_bundle_size.py tools/create_example_tree.py
+PYTHON_FILES := gencontent.py genindex.py genmirrorz.py genservernews.py utils.py tests/render_fixture.py tests/test_example_tree.py tests/test_gencontent.py tests/test_genindex.py tests/test_genmirrorz.py tools/build_manifest.py tools/check_bundle_size.py tools/create_example_tree.py
 FRONTEND_FILES := playwright.config.ts frontend/*.ts frontend/*.tsx tests/e2e/*.ts static/css/*.css
 
 .PHONY: build dev example typecheck format lint test install clean

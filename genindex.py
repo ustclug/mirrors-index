@@ -63,15 +63,14 @@ def index_json(repolist, revproxy, isoinfo, newslist, generated_at):
     return json.dumps(data, ensure_ascii=False, separators=(",", ":"))
 
 
+def httpdir_exists(path):
+    return os.path.exists(path)
+
+
 def main():
     logger = logging.getLogger("mirrors-genindex")
     ch = logging.StreamHandler()
-    OUTDIR = (
-        os.getenv("OUTDIR")
-        or gencontent.OUTDIR
-        or os.getenv("HTTPDIR")
-        or gencontent.HTTPDIR
-    )
+    OUTDIR = os.getenv("OUTDIR") or gencontent.OUTDIR
     parser = argparse.ArgumentParser(
         description="USTC Mirrors Index Page Generator",
         epilog="Brought to you by LUG@USTC.",
@@ -91,6 +90,9 @@ def main():
     )
     args = parser.parse_args()
 
+    if not args.outdir:
+        parser.error("--outdir is required when OUTDIR is not configured")
+
     LOGLEVEL = logging.DEBUG if args.verbose else logging.INFO
     logger.setLevel(LOGLEVEL)
     ch.setLevel(LOGLEVEL)
@@ -104,13 +106,25 @@ def main():
     mirrorz_file = os.path.join(OUTDIR, "static", "json", "mirrorz.json")
     logger.info(f'OUTDIR is "{OUTDIR}"')
     logger.info(f'BASEDIR is "{BASEDIR}"')
+    if not httpdir_exists(gencontent.HTTPDIR):
+        logger.warning(
+            'HTTPDIR "%s" does not exist; continuing without filesystem discovery',
+            gencontent.HTTPDIR,
+        )
     env = Environment(
         loader=FileSystemLoader(os.path.join(BASEDIR, "templates")),
         autoescape=select_autoescape(["html"]),
     )
     nojs_template = env.get_template("index-nojs.html")
 
-    repolist = list(gencontent.genRepoList())
+    snapshots = gencontent.fetch_yuki_metadata()
+    homepage_meta = gencontent.metadata_for(snapshots, "homepage")
+    mirrorz_meta = gencontent.metadata_for(snapshots, "mirrorz")
+
+    import genmirrorz
+
+    genmirrorz.collect_repo_contributions(mirrorz_meta)
+    repolist = list(gencontent.genRepoList(homepage_meta))
     revproxy = list(gencontent.getOthers())
     isoinfo = get_isolist()
     newslist = genservernews.getServerNews(logger)
@@ -144,11 +158,9 @@ def main():
     )
 
     def make_mirrorz():
-        # Keep this import in the independent MirrorZ generation phase because the
-        # module performs remote metadata discovery while it is imported.
-        import genmirrorz
-
-        return genmirrorz.getMirrorzJson(repolist, copy.deepcopy(isoinfo))
+        return genmirrorz.getMirrorzJson(
+            repolist, copy.deepcopy(isoinfo), meta=mirrorz_meta
+        )
 
     generate("mirrorz.json", mirrorz_file, make_mirrorz)
 

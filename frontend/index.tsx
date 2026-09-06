@@ -146,6 +146,7 @@ function App({ data }: { data: IndexDataV1 }) {
               ))}
             </tbody>
           </table>
+          <p class="data-updated-at">数据更新时间：{data.generatedAt}</p>
         </div>
         <Sidebar data={data} open={setModal} />
       </div>

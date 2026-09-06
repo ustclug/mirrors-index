@@ -260,6 +260,13 @@ th {
 #filelist a:hover {
   text-decoration: underline;
 }
+.data-updated-at {
+  margin-top: 10px;
+  color: var(--filename-muted);
+  font-family: "Open Sans", "Ubuntu", Helvetica, Arial, Geneva, sans-serif;
+  font-size: 12px;
+  text-align: right;
+}
 .repo-name {
   position: relative;
   display: inline-block;

@@ -8,5 +8,5 @@
       "mirrorz": true
     }
   ],
-  "extra-exclude": []
+  "manual-repositories": []
 }
