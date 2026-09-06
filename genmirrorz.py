@@ -302,7 +302,7 @@ def getMirrorzJson(repolist, isolist, meta=None):
     mirrorz["info"] = isolist
     mirrorz["mirrors"] = mirrors
 
-    return json.dumps(mirrorz)
+    return json.dumps(mirrorz, ensure_ascii=False, separators=(",", ":"))
 
 
 if __name__ == "__main__":
