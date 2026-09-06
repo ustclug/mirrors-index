@@ -118,7 +118,7 @@ test("palette picker persists and is shared with the status page", async ({
     [
       pink,
       "quiet-pink",
-      "rgb(155, 67, 93)",
+      "rgb(242, 201, 213)",
       "linear-gradient(rgb(242, 201, 213) 0%, rgb(233, 176, 192) 100%)",
       "rgb(66, 40, 50)",
     ],
@@ -132,7 +132,7 @@ test("palette picker persists and is shared with the status page", async ({
     [
       yellow,
       "summer-wheat",
-      "rgb(138, 91, 0)",
+      "rgb(250, 223, 146)",
       "linear-gradient(rgb(250, 223, 146) 0%, rgb(242, 198, 93) 100%)",
       "rgb(60, 43, 9)",
     ],
@@ -150,6 +150,10 @@ test("palette picker persists and is shared with the status page", async ({
       "background-color",
       color,
     );
+    await expect(page.locator("#announcement")).toHaveCSS(
+      "background-color",
+      color,
+    );
     await expect(page.locator("#welcome")).toHaveCSS(
       "background-image",
       gradient,
@@ -161,6 +165,40 @@ test("palette picker persists and is shared with the status page", async ({
     "1800% 1800%",
   );
   await expect(page.locator("#welcome")).toHaveCSS("animation-name", "rainbow");
+
+  for (const [button, textColor] of [
+    [pink, "rgb(66, 40, 50)"],
+    [yellow, "rgb(60, 43, 9)"],
+  ] as const) {
+    await button.click();
+    await expect(page.locator(".btn").first()).toHaveCSS("color", textColor);
+    await expect(page.locator("#announcement a")).toHaveCSS("color", textColor);
+  }
+
+  await page.emulateMedia({ colorScheme: "dark" });
+  for (const [button, buttonColor, gradient] of [
+    [
+      pink,
+      "rgb(207, 130, 153)",
+      "linear-gradient(rgb(192, 107, 134) 0%, rgb(157, 74, 99) 100%)",
+    ],
+    [
+      yellow,
+      "rgb(223, 189, 100)",
+      "linear-gradient(rgb(228, 176, 53) 0%, rgb(169, 125, 30) 100%)",
+    ],
+  ] as const) {
+    await button.click();
+    await expect(page.locator(".btn").first()).toHaveCSS(
+      "background-color",
+      buttonColor,
+    );
+    await expect(page.locator("#welcome")).toHaveCSS(
+      "background-image",
+      gradient,
+    );
+  }
+  await page.emulateMedia({ colorScheme: "light" });
 
   await blue.hover();
   await expect(blue.getByRole("tooltip")).toBeVisible();

@@ -11,6 +11,8 @@
   --button-background: #07a878;
   --button-hover: #40bd97;
   --button-text: #f3f3f3;
+  --announcement-text: #ffff00;
+  --announcement-text-shadow: 2px 2px 0 #004040;
   --hero-start: #40bd97;
   --hero-end: #07a878;
   --hero-background: linear-gradient(
@@ -55,6 +57,7 @@
   --accent-hover: #2877b5;
   --button-background: #004d94;
   --button-hover: #003d76;
+  --announcement-text-shadow: 2px 2px 0 #002b54;
   --hero-start: #2471ad;
   --hero-end: #004d94;
   --accent-soft: #dbeaf6;
@@ -83,8 +86,11 @@
   --accent-strong: #8f4059;
   --accent-bright: #a84f69;
   --accent-hover: #bd6f86;
-  --button-background: #9b435d;
-  --button-hover: #84364e;
+  --button-background: #f2c9d5;
+  --button-hover: #e9b0c0;
+  --button-text: #422832;
+  --announcement-text: #422832;
+  --announcement-text-shadow: 1px 1px 0 #fff0f4;
   --hero-start: #f2c9d5;
   --hero-end: #e9b0c0;
   --hero-text: #422832;
@@ -119,6 +125,7 @@
   --accent-hover: #c75b60;
   --button-background: #a9363c;
   --button-hover: #8f2d32;
+  --announcement-text-shadow: 2px 2px 0 #6f2025;
   --hero-start: #c85b61;
   --hero-end: #b43e44;
   --accent-soft: #f3d9da;
@@ -147,8 +154,11 @@
   --accent-strong: #7d5400;
   --accent-bright: #9a6800;
   --accent-hover: #b58118;
-  --button-background: #8a5b00;
-  --button-hover: #704900;
+  --button-background: #fadf92;
+  --button-hover: #f2c65d;
+  --button-text: #3c2b09;
+  --announcement-text: #3c2b09;
+  --announcement-text-shadow: 1px 1px 0 #fff3cd;
   --hero-start: #fadf92;
   --hero-end: #f2c65d;
   --hero-text: #3c2b09;
@@ -281,10 +291,11 @@
     --accent-strong: #f0a8bd;
     --accent-bright: #e999b1;
     --accent-hover: #f4bfd0;
-    --button-background: #9b435d;
-    --button-hover: #b15370;
-    --hero-start: #99536a;
-    --hero-end: #713649;
+    --button-background: #cf8299;
+    --button-hover: #c36e88;
+    --button-text: #422832;
+    --hero-start: #c06b86;
+    --hero-end: #9d4a63;
     --hero-text: #f1f1f1;
     --hero-heading: #ffffff;
     --hero-link: #eeecdf;
@@ -345,10 +356,11 @@
     --accent-strong: #f1cd72;
     --accent-bright: #e8bd53;
     --accent-hover: #f5dc99;
-    --button-background: #84600a;
-    --button-hover: #9c7515;
-    --hero-start: #8c6813;
-    --hero-end: #674b08;
+    --button-background: #dfbd64;
+    --button-hover: #d2a746;
+    --button-text: #3c2b09;
+    --hero-start: #e4b035;
+    --hero-end: #a97d1e;
     --hero-text: #f1f1f1;
     --hero-heading: #ffffff;
     --hero-link: #eeecdf;
