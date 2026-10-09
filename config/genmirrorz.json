@@ -38,6 +38,7 @@
         "debian-multimedia": "Debian Linux 第三方多媒体软件源",
         "debian-security": "Debian Linux 的安全更新",
         "debiancn": "Debian 中文社区维护的软件包仓库",
+        "debuginfod": "部分发行版的调试符号服务器缓存",
         "deepin": "Deepin Linux 的官方软件包仓库",
         "deepin-cd": "Deepin Linux 的安装镜像",
         "docker-ce": "Docker Community Edition 的安装包",
