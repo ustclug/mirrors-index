@@ -366,7 +366,7 @@ export function Footer() {
           </p>
           <p>
             源代码：
-            <a href="https://git.lug.ustc.edu.cn/mirrors/mirrors-index">
+            <a href="https://git.ustc.edu.cn/mirrors/mirrors-index">
               镜像站主页
             </a>{" "}
             <a href="https://github.com/ustclug/yuki">镜像管理器</a>{" "}
