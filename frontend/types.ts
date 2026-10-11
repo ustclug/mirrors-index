@@ -8,7 +8,7 @@ export interface Repository {
 export interface DownloadGroup {
   distro: string;
   category: "os" | "app";
-  urls: Array<{ name: string; url: string }>;
+  urls: Array<{ name: string; url: string; size?: number }>;
 }
 
 export interface IndexDataV1 {

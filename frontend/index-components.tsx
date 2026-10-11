@@ -7,6 +7,17 @@ import {
 } from "./palette";
 import type { DownloadGroup, IndexDataV1 } from "./types";
 
+function downloadSize(bytes: number | undefined): string | null {
+  if (typeof bytes !== "number" || !Number.isFinite(bytes) || bytes < 0)
+    return null;
+  const units = ["B", "KiB", "MiB", "GiB", "TiB", "PiB"];
+  const exponent =
+    bytes < 1
+      ? 0
+      : Math.min(Math.floor(Math.log2(bytes) / 10), units.length - 1);
+  return `${(bytes / 1024 ** exponent).toFixed(exponent === 0 ? 0 : 2)} ${units[exponent]}`;
+}
+
 export function Header() {
   return (
     <>
@@ -152,6 +163,7 @@ export function DownloadModal({
                   <ul class="modalfile-list">
                     {selected.urls.map((entry) => {
                       const arch = uncommonArchitecture(entry.name);
+                      const size = downloadSize(entry.size);
                       return (
                         <li class="modalfile">
                           <a
@@ -168,8 +180,18 @@ export function DownloadModal({
                                 </span>
                               )}
                             </span>
-                            <span class="modalfile-filename">
-                              {filename(entry.url)}
+                            <span class="modalfile-meta">
+                              <span class="modalfile-filename">
+                                {filename(entry.url)}
+                              </span>
+                              {size !== null && (
+                                <span
+                                  class="modalfile-size"
+                                  title={`${entry.size} 字节`}
+                                >
+                                  {size}
+                                </span>
+                              )}
                             </span>
                             <span class="modalfile-action">下载</span>
                           </a>

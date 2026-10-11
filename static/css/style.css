@@ -707,6 +707,18 @@ body.modal-open {
   font-size: 12px;
   font-weight: normal;
 }
+.modalfile-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 3px 12px;
+  min-width: 0;
+}
+.modalfile-size {
+  color: var(--filename-muted);
+  font-size: 12px;
+  white-space: nowrap;
+}
 .modalfile-filename {
   min-width: 0;
   color: var(--filename-muted);
