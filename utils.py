@@ -56,7 +56,7 @@ def get_mirrorz_cname():
     cname_path = CONFIG_FOLDER / "cname.json"
     # download cname
     try:
-        req = requests.get("https://mirrorz.org/static/json/cname.json", timeout=10)
+        req = requests.get("https://mirrors.cernet.edu.cn/static/json/cname.json", timeout=10)
         req.raise_for_status()
         cname = req.json()
         with open(cname_path, "w") as f:
