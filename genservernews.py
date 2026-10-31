@@ -2,6 +2,7 @@
 
 import datetime
 import logging
+import os
 import re
 import xml
 import xml.dom
@@ -9,6 +10,7 @@ import xml.dom.minidom
 from xml.parsers.expat import ExpatError
 
 import utils
+from siteconfig import SITE
 
 """
 Generate HTML Fragment about latest server news.
@@ -52,18 +54,30 @@ def getServerNews(glob_logger: logging.Logger | None = None) -> list:
         for item in doc.getElementsByTagName("entry"):
             if current_num >= SERVERNEWS_MAX_NUM:
                 break
-            if (
-                item.getElementsByTagName("category")[0].getAttribute("term")
-                != "mirrors"
+            category = (
+                SITE.get("newsCategory", "")
+                if SITE
+                else os.environ.get("NEWS_CATEGORY", "mirrors")
+            )
+            if category and not any(
+                node.getAttribute("term") == category
+                for node in item.getElementsByTagName("category")
             ):
                 continue
             current_num += 1
             yield NewsRecord(item)
 
+    feed = (
+        SITE.get("newsFeed", "")
+        if SITE
+        else os.environ.get("NEWS_FEED", SERVERNEWS_FEED)
+    )
+    if not feed:
+        return []
     logger.info("begin generation of ServerNews...")
     newslist = []
     try:
-        resp = utils.get_resp_with_timeout(SERVERNEWS_FEED, logger=logger)
+        resp = utils.get_resp_with_timeout(feed, logger=logger)
         if resp is None:
             # failed
             return newslist

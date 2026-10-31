@@ -9,19 +9,17 @@ import subprocess
 from dataclasses import dataclass
 
 import gencontent
-from utils import CONFIG_FOLDER, get_mirrorz_cname
+from siteconfig import mirrorz_options
+from utils import get_mirrorz_cname
 
 cname = get_mirrorz_cname()
 logger = logging.getLogger(__name__)
 
-with open(CONFIG_FOLDER / "genmirrorz.json") as f:
-    options = json.load(f)
-    base = options["base"]
-    skiplist = options.get("skip", [])
-    descriptions = options.get("descriptions", {})
-    descriptions_by_name = {
-        name.lower(): description for name, description in descriptions.items()
-    }
+options = mirrorz_options()
+base = options["base"]
+skiplist = options.get("skip", [])
+descriptions = options.get("descriptions", {})
+descriptions_by_name = {name.lower(): value for name, value in descriptions.items()}
 
 
 @dataclass(frozen=True)

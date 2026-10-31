@@ -1,3 +1,4 @@
+import { site } from "./site";
 import { render } from "preact";
 import { useEffect, useId, useMemo, useState } from "preact/hooks";
 import { initializePalette } from "./palette";
@@ -212,7 +213,7 @@ function App() {
   const [error, setError] = useState(false);
   const theme = usePreferredColorScheme();
   useEffect(() => {
-    fetch("/status/json")
+    fetch(site?.statusUrl || "/status/json")
       .then((response) => {
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         return response.json();
@@ -227,12 +228,14 @@ function App() {
         setError(true);
       });
   }, []);
-  const panels = [1, 4, 16, 3, 36, 55, 7, 8];
+  const panels = site ? [] : [1, 4, 16, 3, 36, 55, 7, 8];
   return (
     <>
       <div id="nav">
         <a href="#sync">Sync Status</a>
-        <a href="#server">Server Status</a>
+        {(!site || site.monitors?.length) && (
+          <a href="#server">Server Status</a>
+        )}
         <a href="/">Mirrors Index</a>
       </div>
       <div id="sync">
@@ -245,20 +248,25 @@ function App() {
           <p>Loading sync status…</p>
         )}
       </div>
-      <div id="server">
-        <h2>Server Status</h2>
-        <div class="monitor-grid">
-          {panels.map((id, index) => (
-            <iframe
-              src={`https://monitor.ustclug.org/d-solo/000000001/mirrors?theme=${theme}&panelId=${id}`}
-              height={index >= 6 ? "400" : "300"}
-              frameborder="0"
-              loading="lazy"
-              title={`Mirrors server status panel ${id}`}
-            ></iframe>
-          ))}
+      {(!site || site.monitors?.length) && (
+        <div id="server">
+          <h2>Server Status</h2>
+          <div class="monitor-grid">
+            {site?.monitors?.map((panel) => (
+              <iframe src={panel.url} title={panel.label} loading="lazy" />
+            ))}
+            {panels.map((id, index) => (
+              <iframe
+                src={`https://monitor.ustclug.org/d-solo/000000001/mirrors?theme=${theme}&panelId=${id}`}
+                height={index >= 6 ? "400" : "300"}
+                frameborder="0"
+                loading="lazy"
+                title={`Mirrors server status panel ${id}`}
+              ></iframe>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </>
   );
 }

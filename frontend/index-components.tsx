@@ -1,3 +1,4 @@
+import { site } from "./site";
 import { useEffect, useRef, useState } from "preact/hooks";
 import {
   currentPalette,
@@ -19,6 +20,15 @@ function downloadSize(bytes: number | undefined): string | null {
 }
 
 export function Header() {
+  if (site)
+    return (
+      <div id="welcome">
+        {site.logo && <img src={site.logo} alt="" />}
+        <h1>{site.name}</h1>
+        <p>{site.description}</p>
+        <a href="/status/">Status</a>
+      </div>
+    );
   return (
     <>
       <div id="header">
@@ -236,6 +246,35 @@ export function Sidebar({
     ["//cmcc.mirrors.ustc.edu.cn/", "cmcc.mirrors.ustc.edu.cn", "移动线路"],
     ["/help/rsync-guide.html", "rsync.mirrors.ustc.edu.cn", "Rsync 线路"],
   ];
+  if (site)
+    return (
+      <aside id="sidebar">
+        {data.news.map((item) => (
+          <p>
+            <a href={item.url}>{item.title}</a>
+          </p>
+        ))}
+        {(["os", "app"] as const)
+          .filter((kind) =>
+            data.downloads.some((group) => group.category === kind),
+          )
+          .map((kind) => (
+            <button class="btn" onClick={() => open(kind)}>
+              {kind === "os" ? "获取发行版映像" : "获取应用软件"}
+            </button>
+          ))}
+        {site.domains?.map((link) => (
+          <p>
+            <a href={link.url}>{link.label}</a>
+          </p>
+        ))}
+        {site.links?.map((link) => (
+          <p>
+            <a href={link.url}>{link.label}</a>
+          </p>
+        ))}
+      </aside>
+    );
   return (
     <div id="sidebar">
       <div id="mirrorshelp">
@@ -340,6 +379,7 @@ export function Footer() {
     setPalette(nextPalette);
   }
 
+  if (site) return <footer>{site.footer || site.name}</footer>;
   return (
     <div id="footer">
       <div id="footercontent">

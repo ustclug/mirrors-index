@@ -36,7 +36,7 @@ index_html = environment.get_template("index.html").render(
 )
 (DIST / "index.html").write_text(index_html + "\n")
 
-status_template = (ROOT / "status" / "status.html").read_text()
-status_html = status_template.replace("{{ STATUS_SCRIPT }}", manifest["status"])
-status_html = status_html.replace("{{ STATUS_STYLE }}", manifest["status_style"])
-(DIST / "status" / "index.html").write_text(status_html)
+status_html = environment.get_template("status.html").render(
+    STATUS_SCRIPT=manifest["status"], STATUS_STYLE=manifest["status_style"]
+)
+(DIST / "status" / "index.html").write_text(status_html + "\n")

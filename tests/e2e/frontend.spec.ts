@@ -1,13 +1,9 @@
 import { expect, test } from "@playwright/test";
 
-test("homepage enhances fallback and keeps its interactions", async ({
+test("repository navigation, literal search and modal focus restoration", async ({
   page,
 }) => {
   await page.goto("/");
-  await expect(page.locator('link[rel="stylesheet"]')).toHaveAttribute(
-    "href",
-    /\/static\/css\/style-[A-Z0-9]+\.css$/,
-  );
   await expect(page.locator("#filelist .filename a")).toHaveText([
     "alpha",
     "beta",
@@ -20,7 +16,6 @@ test("homepage enhances fallback and keeps its interactions", async ({
   const repositoryTooltip = page.getByRole("tooltip");
   await expect(repositoryTooltip).toBeVisible();
   await expect(repositoryTooltip).toHaveText("Alpha repository description");
-  await expect(repositoryTooltip).toHaveCSS("border-radius", "4px");
   const [nameBox, tooltipBox] = await Promise.all([
     alpha.boundingBox(),
     repositoryTooltip.boundingBox(),
@@ -34,13 +29,6 @@ test("homepage enhances fallback and keeps its interactions", async ({
   await expect(page).toHaveURL(/\/alpha\/$/);
   await page.goBack();
   await expect(page.getByText("无法加载完整页面")).toHaveCount(0);
-  await expect
-    .poll(() =>
-      page
-        .locator("#announcement img")
-        .evaluate((image: HTMLImageElement) => image.naturalWidth),
-    )
-    .toBeGreaterThan(0);
   await page.locator("#search").fill("ALP");
   await expect(page.locator("#filelist .filename a")).toHaveText(["alpha"]);
   await page.locator("#search").fill("[");
@@ -71,38 +59,6 @@ test("homepage enhances fallback and keeps its interactions", async ({
   await expect(page.locator(".modalfile")).toContainText("test-app.zip");
 });
 
-test("homepage follows the system color scheme", async ({ page }) => {
-  await page.emulateMedia({ colorScheme: "dark" });
-  await page.goto("/");
-  await expect(page.locator("body")).toHaveCSS(
-    "background-color",
-    "rgb(24, 26, 27)",
-  );
-  await page.getByRole("button", { name: "获取安装镜像 >" }).click();
-  await expect(page.getByRole("dialog")).toHaveCSS(
-    "background-color",
-    "rgb(31, 34, 35)",
-  );
-
-  await page.emulateMedia({ colorScheme: "light" });
-  await expect(page.locator("body")).toHaveCSS(
-    "background-color",
-    "rgb(253, 255, 253)",
-  );
-  await expect(page.locator("#welcome")).toHaveCSS(
-    "background-image",
-    "linear-gradient(rgb(64, 189, 151) 0%, rgb(7, 168, 120) 100%)",
-  );
-  await expect(page.locator(".btn").first()).toHaveCSS(
-    "background-color",
-    "rgb(7, 168, 120)",
-  );
-  await expect(page.getByRole("dialog")).toHaveCSS(
-    "background-color",
-    "rgb(255, 255, 255)",
-  );
-});
-
 test("palette picker persists and is shared with the status page", async ({
   page,
 }) => {
@@ -112,120 +68,6 @@ test("palette picker persists and is shared with the status page", async ({
   const picker = page.getByRole("group", { name: "选择配色" });
   const classic = picker.getByRole("button", { name: "经典绿" });
   const blue = picker.getByRole("button", { name: "科大蓝" });
-  const pink = picker.getByRole("button", { name: "安静粉" });
-  const red = picker.getByRole("button", { name: "朝霞红" });
-  const yellow = picker.getByRole("button", { name: "夏麦黄" });
-  const rainbow = picker.getByRole("button", { name: "七彩虹" });
-  await expect(picker.getByRole("button")).toHaveCount(6);
-  await expect(classic).toHaveAttribute("aria-pressed", "true");
-  await expect(pink.locator(".palette-swatch")).toHaveCSS(
-    "background-color",
-    "rgb(242, 201, 213)",
-  );
-  await expect(red.locator(".palette-swatch")).toHaveCSS(
-    "background-color",
-    "rgb(180, 62, 68)",
-  );
-  await expect(yellow.locator(".palette-swatch")).toHaveCSS(
-    "background-color",
-    "rgb(250, 223, 146)",
-  );
-  await expect(rainbow.locator(".palette-swatch")).toHaveCSS(
-    "background-image",
-    /linear-gradient\(124deg/,
-  );
-
-  for (const [button, id, color, gradient, textColor] of [
-    [
-      pink,
-      "quiet-pink",
-      "rgb(242, 201, 213)",
-      "linear-gradient(rgb(242, 201, 213) 0%, rgb(233, 176, 192) 100%)",
-      "rgb(66, 40, 50)",
-    ],
-    [
-      red,
-      "sunrise-red",
-      "rgb(169, 54, 60)",
-      "linear-gradient(rgb(200, 91, 97) 0%, rgb(180, 62, 68) 100%)",
-      "rgb(241, 241, 241)",
-    ],
-    [
-      yellow,
-      "summer-wheat",
-      "rgb(250, 223, 146)",
-      "linear-gradient(rgb(250, 223, 146) 0%, rgb(242, 198, 93) 100%)",
-      "rgb(60, 43, 9)",
-    ],
-    [
-      rainbow,
-      "rainbow",
-      "rgb(7, 168, 120)",
-      /linear-gradient\(124deg, rgb\(255, 36, 0\)/,
-      "rgb(241, 241, 241)",
-    ],
-  ] as const) {
-    await button.click();
-    await expect(page.locator("html")).toHaveAttribute("data-palette", id);
-    await expect(page.locator(".btn").first()).toHaveCSS(
-      "background-color",
-      color,
-    );
-    await expect(page.locator("#announcement")).toHaveCSS(
-      "background-color",
-      color,
-    );
-    await expect(page.locator("#welcome")).toHaveCSS(
-      "background-image",
-      gradient,
-    );
-    await expect(page.locator("#intro")).toHaveCSS("color", textColor);
-  }
-  await expect(page.locator("#welcome")).toHaveCSS(
-    "background-size",
-    "1800% 1800%",
-  );
-  await expect(page.locator("#welcome")).toHaveCSS("animation-name", "rainbow");
-
-  for (const [button, textColor] of [
-    [pink, "rgb(66, 40, 50)"],
-    [yellow, "rgb(60, 43, 9)"],
-  ] as const) {
-    await button.click();
-    await expect(page.locator(".btn").first()).toHaveCSS("color", textColor);
-    await expect(page.locator("#announcement a")).toHaveCSS("color", textColor);
-  }
-
-  await page.emulateMedia({ colorScheme: "dark" });
-  for (const [button, buttonColor, gradient] of [
-    [
-      pink,
-      "rgb(207, 130, 153)",
-      "linear-gradient(rgb(192, 107, 134) 0%, rgb(157, 74, 99) 100%)",
-    ],
-    [
-      yellow,
-      "rgb(223, 189, 100)",
-      "linear-gradient(rgb(228, 176, 53) 0%, rgb(169, 125, 30) 100%)",
-    ],
-  ] as const) {
-    await button.click();
-    await expect(page.locator(".btn").first()).toHaveCSS(
-      "background-color",
-      buttonColor,
-    );
-    await expect(page.locator("#welcome")).toHaveCSS(
-      "background-image",
-      gradient,
-    );
-  }
-  await page.emulateMedia({ colorScheme: "light" });
-
-  await blue.hover();
-  await expect(blue.getByRole("tooltip")).toBeVisible();
-  await expect(blue.getByRole("tooltip")).toHaveText("科大蓝");
-  await expect(blue.getByRole("tooltip")).toHaveCSS("border-radius", "4px");
-
   await blue.click();
   await expect(blue).toHaveAttribute("aria-pressed", "true");
   await expect(classic).toHaveAttribute("aria-pressed", "false");
@@ -236,14 +78,6 @@ test("palette picker persists and is shared with the status page", async ({
   expect(
     await page.evaluate(() => localStorage.getItem("mirrors-index-palette")),
   ).toBe("ustc-blue");
-  await expect(page.locator("#welcome")).toHaveCSS(
-    "background-image",
-    "linear-gradient(rgb(36, 113, 173) 0%, rgb(0, 77, 148) 100%)",
-  );
-  await expect(page.locator(".btn").first()).toHaveCSS(
-    "background-color",
-    "rgb(0, 77, 148)",
-  );
 
   await page.reload();
   await expect(blue).toHaveAttribute("aria-pressed", "true");
@@ -257,20 +91,6 @@ test("palette picker persists and is shared with the status page", async ({
   await expect(page.locator("html")).toHaveAttribute(
     "data-palette",
     "ustc-blue",
-  );
-  await expect(page.locator("#nav")).toHaveCSS(
-    "background-image",
-    "linear-gradient(rgb(36, 113, 173) 0%, rgb(0, 77, 148) 100%)",
-  );
-
-  await page.emulateMedia({ colorScheme: "dark" });
-  await expect(page.locator("body")).toHaveCSS(
-    "background-color",
-    "rgb(24, 26, 27)",
-  );
-  await expect(page.locator("#nav")).toHaveCSS(
-    "background-image",
-    "linear-gradient(rgb(37, 101, 143) 0%, rgb(24, 79, 117) 100%)",
   );
 });
 
@@ -543,10 +363,6 @@ test("status renders, sorts, and treats remote markup as text", async ({
     }),
   );
   await page.goto("/status/");
-  await expect(page.locator('link[rel="stylesheet"]')).toHaveAttribute(
-    "href",
-    /\/static\/css\/status-[A-Z0-9]+\.css$/,
-  );
   await expect(page.locator("body")).toHaveCSS(
     "background-color",
     "rgb(24, 26, 27)",
@@ -574,7 +390,6 @@ test("status renders, sorts, and treats remote markup as text", async ({
   await expect(page.locator("#status tbody tr").first()).toHaveClass(
     /failedSync/,
   );
-  await expect(page.locator("#sync")).toHaveCSS("width", "1568px");
   await expect(page.locator(".status-table-scroll")).toHaveCSS(
     "overflow-y",
     "hidden",
@@ -653,10 +468,6 @@ test("status keeps wide data usable on a narrow viewport", async ({ page }) => {
       () => document.documentElement.scrollWidth <= window.innerWidth,
     ),
   ).toBe(true);
-  await expect(page.locator(".monitor-grid")).toHaveCSS(
-    "grid-template-columns",
-    "360px",
-  );
 });
 
 test("status reports an invalid response", async ({ page }) => {

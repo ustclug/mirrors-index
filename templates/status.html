@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>USTC Mirrors Status</title>
+    <title>{{ site.name ~ " Status" if site else "USTC Mirrors Status" }}</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content="light dark" />
     <link href="{{ STATUS_STYLE }}" rel="stylesheet" />
-  </head>
+  {% if site %}<script type="application/json" id="site-config">{{ site | tojson }}</script>{% endif %}
+</head>
 
   <body>
     <div id="root"><p>此页面需要 JavaScript 才能显示同步状态。</p></div>

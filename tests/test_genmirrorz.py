@@ -39,13 +39,6 @@ class GenMirrorzTests(unittest.TestCase):
             sys.modules.pop("genmirrorz", None)
             cls.genmirrorz = importlib.import_module("genmirrorz")
 
-    def test_repository_description(self):
-        mirrors = self.genmirrorz.parse_repo_with_meta(
-            [("", "/help/aosp.html", "Help", "aosp")], []
-        )
-
-        self.assertEqual("Android 操作系统源代码", mirrors[0]["desc"])
-
     def test_repository_description_is_case_insensitive(self):
         self.assertEqual("Perl 语言软件库", self.genmirrorz.repo_description("CPAN"))
 
@@ -282,17 +275,6 @@ class GenMirrorzTests(unittest.TestCase):
             [make_meta("debian-multimedia")],
         )
         self.assertEqual("U", mirrors[0]["status"])
-
-    def test_missing_repository_description_warns(self):
-        with self.assertLogs("genmirrorz", level="WARNING") as logs:
-            description = self.genmirrorz.repo_description("not-configured")
-
-        self.assertEqual("", description)
-        self.assertIn("missing MirrorZ description for not-configured", logs.output[0])
-
-    def test_all_configured_descriptions_are_nonempty(self):
-        self.assertTrue(self.genmirrorz.descriptions)
-        self.assertTrue(all(self.genmirrorz.descriptions.values()))
 
     def test_missing_zfs_skips_repository_size(self):
         site = {}

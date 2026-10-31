@@ -7,19 +7,43 @@ import logging
 import os
 import tempfile
 import time
+from pathlib import Path
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 import gencontent
 import genservernews
+from siteconfig import mirrorz_options, public_site
 from utils import get_isolist
 
 BASEDIR = os.path.dirname(__file__)
-with open(os.path.join(BASEDIR, "config", "genmirrorz.json")) as source:
-    descriptions = json.load(source).get("descriptions", {})
-    descriptions_by_name = {
-        name.lower(): description for name, description in descriptions.items()
+descriptions = mirrorz_options().get("descriptions", {})
+descriptions_by_name = {name.lower(): value for name, value in descriptions.items()}
+
+
+def site_pages(assets_dir):
+    """Render configured HTML using the prebuilt asset manifest."""
+    manifest = json.loads((Path(assets_dir) / "manifest.json").read_text())
+    env = Environment(
+        loader=FileSystemLoader(os.path.join(BASEDIR, "templates")),
+        autoescape=select_autoescape(["html"]),
+    )
+    site = public_site()
+    pages = {
+        "index.html": env.get_template("index.html").render(
+            site=site,
+            index_script=manifest["index"],
+            index_style=manifest["index_style"],
+        ),
+        "status/index.html": env.get_template("status.html").render(
+            site=site,
+            STATUS_SCRIPT=manifest["status"],
+            STATUS_STYLE=manifest["status_style"],
+        ),
     }
+    if site is not None:
+        pages["static/json/site.json"] = json.dumps(site, ensure_ascii=False)
+    return pages
 
 
 def atomic_write(path, content):
@@ -88,6 +112,9 @@ def main():
         help="show verbose information",
         action="store_true",
     )
+    parser.add_argument(
+        "--assets-dir", help="render complete site HTML using a prebuilt manifest"
+    )
     args = parser.parse_args()
 
     if not args.outdir:
@@ -130,6 +157,27 @@ def main():
     newslist = genservernews.getServerNews(logger)
     now = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
 
+    if args.assets_dir:
+        # Render everything before publishing any generated output.
+        pages = site_pages(args.assets_dir)
+        pages["static/json/index.json"] = index_json(
+            repolist, revproxy, isoinfo, newslist, now
+        )
+        pages["index-nojs.html"] = nojs_template.render(
+            site=public_site(),
+            repolist=repolist,
+            descriptions_by_name=descriptions_by_name,
+            now=now,
+        )
+        pages["static/json/mirrorz.json"] = genmirrorz.getMirrorzJson(
+            repolist, copy.deepcopy(isoinfo), meta=mirrorz_meta
+        )
+        for relative, content in sorted(
+            pages.items(), key=lambda item: item[0].endswith(".html")
+        ):
+            atomic_write(os.path.join(OUTDIR, relative), content)
+        return
+
     failures = []
 
     def generate(label, path, producer):
@@ -151,6 +199,7 @@ def main():
         "index-nojs.html",
         nojs_file,
         lambda: nojs_template.render(
+            site=public_site(),
             repolist=repolist,
             descriptions_by_name=descriptions_by_name,
             now=now,

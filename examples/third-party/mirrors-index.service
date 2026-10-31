@@ -1,0 +1,9 @@
+[Unit]
+Description=Generate mirror homepage
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/mirrors-index
+ExecStart=/usr/bin/docker compose run --rm generate

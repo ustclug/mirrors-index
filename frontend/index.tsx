@@ -1,3 +1,4 @@
+import { site } from "./site";
 import { render } from "preact";
 import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 import { fetchIndexData } from "./bootstrap";
@@ -44,33 +45,42 @@ function App({ data }: { data: IndexDataV1 }) {
       <Header />
       <div id="wrapper">
         <div id="filelist">
-          <marquee id="announcement" behavior="alternate">
-            <a href="https://servers.ustclug.org/2026/08/mirrorz/">
-              <span>MirrorZ 震撼发布</span>{" "}
-              <img src="/static/img/new4.gif" alt="New!" />
-            </a>
-          </marquee>
-          <div class="revproxy-section">
-            <input id="revproxy" type="checkbox" />
-            <h3>
-              <label for="revproxy">
-                反向代理列表 <span>+</span>
-                <span>-</span>
-              </label>
-            </h3>
-            <div class="table-scroll">
-              <table>
-                <tbody>
-                  {data.reverseProxies.map((entry) => (
-                    <tr>
-                      <td>{entry.source}</td>
-                      <td>{entry.destination}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+          {site?.announcement && (
+            <p>
+              <a href={site.announcement.url}>{site.announcement.label}</a>
+            </p>
+          )}
+          {!site && (
+            <marquee id="announcement" behavior="alternate">
+              <a href="https://servers.ustclug.org/2026/08/mirrorz/">
+                <span>MirrorZ 震撼发布</span>{" "}
+                <img src="/static/img/new4.gif" alt="New!" />
+              </a>
+            </marquee>
+          )}
+          {data.reverseProxies.length > 0 && (
+            <div class="revproxy-section">
+              <input id="revproxy" type="checkbox" />
+              <h3>
+                <label for="revproxy">
+                  反向代理列表 <span>+</span>
+                  <span>-</span>
+                </label>
+              </h3>
+              <div class="table-scroll">
+                <table>
+                  <tbody>
+                    {data.reverseProxies.map((entry) => (
+                      <tr>
+                        <td>{entry.source}</td>
+                        <td>{entry.destination}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
-          </div>
+          )}
           <div>
             <h3 id="filetitle">文件列表</h3>
             <input

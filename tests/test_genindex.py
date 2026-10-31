@@ -2,32 +2,18 @@ import json
 import os
 import tempfile
 import unittest
+from pathlib import Path
 from types import SimpleNamespace
 from unittest import mock
 
 import genindex
+import siteconfig
 
 
 class GenIndexTests(unittest.TestCase):
-    def test_index_json_schema(self):
-        encoded = genindex.index_json(
-            [("2026-01-02 03:04:05", "/help/debian.html", "Help", "debian")],
-            [("source.example", "proxy.example")],
-            [{"distro": "</script><img>", "category": "os", "urls": []}],
-            [SimpleNamespace(title="News & more", link="https://example.com/news")],
-            "2026-01-02 03:04:05",
-        )
-        data = json.loads(encoded)
-        self.assertEqual(data["schemaVersion"], 1)
-        self.assertEqual(data["generatedAt"], "2026-01-02 03:04:05")
-        self.assertEqual(data["repositories"][0]["name"], "debian")
-        self.assertEqual(
-            data["repositories"][0]["desc"],
-            "Debian Linux 的官方软件包仓库",
-        )
-        self.assertEqual(data["reverseProxies"][0]["destination"], "proxy.example")
-
-    def run_generator(self, directory, mirrorz_generator, httpdir_exists=True):
+    def run_generator(
+        self, directory, mirrorz_generator, httpdir_exists=True, assets_dir=None
+    ):
         fake_mirrorz = SimpleNamespace(
             collect_repo_contributions=mock.Mock(),
             getMirrorzJson=lambda repos, downloads, meta=None: mirrorz_generator(
@@ -61,7 +47,11 @@ class GenIndexTests(unittest.TestCase):
             mock.patch.object(genindex.genservernews, "getServerNews", return_value=[]),
             mock.patch.object(genindex, "httpdir_exists", return_value=httpdir_exists),
             mock.patch.dict("sys.modules", {"genmirrorz": fake_mirrorz}),
-            mock.patch("sys.argv", ["genindex.py", "--outdir", directory]),
+            mock.patch(
+                "sys.argv",
+                ["genindex.py", "--outdir", directory]
+                + (["--assets-dir", assets_dir] if assets_dir else []),
+            ),
         ):
             genindex.main()
 
@@ -119,7 +109,10 @@ class GenIndexTests(unittest.TestCase):
                     "fetch_yuki_metadata",
                     side_effect=genindex.gencontent.YukiMetadataError("unavailable"),
                 ),
-                mock.patch("sys.argv", ["genindex.py", "--outdir", directory]),
+                mock.patch(
+                    "sys.argv",
+                    ["genindex.py", "--outdir", directory],
+                ),
                 self.assertRaises(genindex.gencontent.YukiMetadataError),
             ):
                 genindex.main()
@@ -149,15 +142,73 @@ class GenIndexTests(unittest.TestCase):
             )
             self.assertTrue(os.path.exists(os.path.join(directory, "index-nojs.html")))
 
-    def test_atomic_write_replaces_complete_file(self):
+    def test_site_templates_escape_markup_and_exclude_private_config(self):
         with tempfile.TemporaryDirectory() as directory:
-            target = os.path.join(directory, "index.html")
-            with open(target, "w") as output:
-                output.write("old")
-            genindex.atomic_write(target, "new")
-            with open(target) as output:
-                self.assertEqual(output.read(), "new" + os.linesep)
-            self.assertEqual(os.stat(target).st_mode & 0o777, 0o644)
+            Path(directory, "manifest.json").write_text(
+                json.dumps(
+                    {
+                        "index": "/app.js",
+                        "index_style": "/app.css",
+                        "status": "/status.js",
+                        "status_style": "/status.css",
+                    }
+                )
+            )
+            with mock.patch.object(
+                siteconfig,
+                "SITE",
+                {
+                    "name": "</script><img src=x>",
+                    "abbr": "EX",
+                    "url": "https://example.org",
+                    "newsFeed": "https://private.example/feed",
+                },
+            ):
+                pages = genindex.site_pages(directory)
+            for name in ("index.html", "status/index.html"):
+                with self.subTest(page=name):
+                    self.assertNotIn("</script><img", pages[name])
+                    self.assertIn("&lt;/script&gt;&lt;img src=x&gt;", pages[name])
+                    self.assertNotIn("private.example", pages[name])
+                    payload = (
+                        pages[name]
+                        .split('id="site-config">', 1)[1]
+                        .split("</script>", 1)[0]
+                    )
+                    self.assertEqual(
+                        json.loads(payload)["name"], "</script><img src=x>"
+                    )
+            self.assertNotIn("private.example", pages["static/json/site.json"])
+
+    def test_full_generation_failure_keeps_pages_and_data(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            paths = [
+                "index.html",
+                "index-nojs.html",
+                "status/index.html",
+                "static/json/index.json",
+                "static/json/mirrorz.json",
+                "static/json/site.json",
+            ]
+            for path in paths:
+                target = root / path
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_text("old")
+
+            def fail(_repos, _downloads):
+                raise ValueError("invalid MirrorZ data")
+
+            with (
+                mock.patch.object(
+                    genindex, "site_pages", return_value={"index.html": "new"}
+                ),
+                self.assertRaisesRegex(ValueError, "invalid MirrorZ"),
+            ):
+                self.run_generator(directory, fail, assets_dir="unused")
+            for path in paths:
+                with self.subTest(path=path):
+                    self.assertEqual((root / path).read_text(), "old")
 
 
 if __name__ == "__main__":

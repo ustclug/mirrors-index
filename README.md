@@ -160,6 +160,66 @@ If you need to debug genisolist, use `z-genisolist/utils/rsync-stub-generator.py
 z-genisolist/utils/rsync-stub-generator.py rsync://rsync.mirrors.ustc.edu.cn/archlinux --dist /srv/repo/archlinux
 ```
 
+## Deployment as Container
+
+Build the single-run generator with `docker build -f Dockerfile.release -t mirrors-index .`
+(after initializing submodules). Published images use
+`ghcr.io/ustclug/mirrors-index:edge`; pin a version or digest for production.
+Copy `examples/third-party/` and edit the site identity and Yuki endpoint:
+
+```sh
+mkdir -p output
+docker run --rm --network host --user "$(id -u):$(id -g)" \
+  -v "$PWD/examples/third-party:/config:ro" \
+  -v "$PWD/output:/output" \
+  ghcr.io/ustclug/mirrors-index:edge
+```
+
+The examples use host networking and assume Yuki is listening on
+`127.0.0.1:8000` on the host. The Nginx example likewise assumes Nginx runs
+on the host or uses host networking.
+
+The image exits after generating the complete site. Serve `output` using your
+existing web server, and schedule this command using a host timer. Repository
+files and help documentation remain managed separately. Deploy at the domain
+root. Configure the web server to proxy `/status/json` to Yuki; the browser
+queries it when opening the status page. An alternative browser-visible endpoint
+can be configured with `statusUrl` (cross-origin endpoints require CORS).
+
+`site.json` requires `name`, `abbr`, and `url`; optional fields are `description`,
+`links` (objects with `label` and `url`), `statusUrl`, and `newsFeed` (Atom).
+`gencontent.json` uses the normal Yuki configuration. Optional files include
+`genmirrorz.json` (descriptions and skip list), `revproxy.json`, and
+`genisolist.ini`. For ISO discovery, mount your repository read-only at `/srv/repo`.
+The configuration is never modified. Set `CACHE_DIR=/cache` and mount a writable
+cache directory to retain canonical-name mappings between runs.
+
+The output directory must be writable by the selected UID/GID. Overlapping runs
+on the same output directory fail rather than interleave. The entrypoint uses
+`rsync` to install precompiled assets, then runs
+`python3 /app/genindex.py --outdir /output --assets-dir /app/dist`.
+HTML and build metadata are excluded from the sync; it never uses `--delete`.
+The generator reads `site.json` directly and renders HTML from templates using
+the prebuilt manifest. Without `--assets-dir`, the existing systemd invocation
+continues to update only data and the no-JavaScript page.
+
+Data-fetching or rendering failures leave generated pages and data intact;
+assets may already have been synchronized. Publication uses per-file atomic
+replacement, not a whole-site transaction. Old hashed assets and user files
+are retained.
+
+Additional presentation options in `site.json` are `logo` (URL), `footer`
+(plain text), `announcement` (`label` and `url`), `domains` and `monitors`
+(arrays of `label` and `url`). Unconfigured monitors are hidden. These values
+are public; never put credentials in browser-visible URLs.
+
+Set `newsCategory` to filter Atom entries by category; the container default
+accepts all categories. To schedule generation, install the example service and
+timer after setting their working directory to the directory containing your
+Compose configuration. Run `docker compose run --rm generate` once before
+enabling the timer. The example Nginx locations must be integrated with your
+existing repository routing.
+
 ## Copyright
 
     Copyright © 2013-2024 USTC Linux User Group <lug@ustc.edu.cn>

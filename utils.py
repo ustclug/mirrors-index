@@ -10,7 +10,7 @@ import requests
 from genisolist import gen_from_sections, process_ini
 
 logger = logging.getLogger(__name__)
-CONFIG_FOLDER = Path(os.path.dirname(__file__)) / "config"
+CONFIG_FOLDER = Path(os.environ.get("CONFIG_DIR", Path(__file__).parent / "config"))
 
 
 class AlarmTimeoutException(Exception):
@@ -53,14 +53,20 @@ def get_resp_with_timeout(
 # Currently within one run, we expect to download cname.json only once.
 @functools.cache
 def get_mirrorz_cname():
-    cname_path = CONFIG_FOLDER / "cname.json"
+    cname_path = Path(os.environ.get("CACHE_DIR", str(CONFIG_FOLDER))) / "cname.json"
     # download cname
     try:
-        req = requests.get("https://mirrors.cernet.edu.cn/static/json/cname.json", timeout=10)
+        req = requests.get(
+            "https://mirrors.cernet.edu.cn/static/json/cname.json", timeout=10
+        )
         req.raise_for_status()
         cname = req.json()
-        with open(cname_path, "w") as f:
-            json.dump(cname, f)
+        try:
+            cname_path.parent.mkdir(parents=True, exist_ok=True)
+            with open(cname_path, "w") as f:
+                json.dump(cname, f)
+        except OSError:
+            logger.warning("Cannot persist cname cache")
     except (OSError, ValueError, requests.RequestException):
         # website req timeout, use local cname
         try:
@@ -76,5 +82,7 @@ def get_mirrorz_cname():
 # Used by multiple generators, to directly use reference impl without modification
 def get_isolist():
     genisolist_inifile = CONFIG_FOLDER / "genisolist.ini"
+    if not genisolist_inifile.exists():
+        return []
     sections = process_ini(genisolist_inifile)
     return gen_from_sections(sections)

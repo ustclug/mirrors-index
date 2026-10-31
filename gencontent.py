@@ -7,6 +7,7 @@ from pathlib import Path
 from urllib.parse import urlencode, urljoin
 
 import utils
+from siteconfig import SITE
 from utils import CONFIG_FOLDER, get_mirrorz_cname
 
 with open(CONFIG_FOLDER / "gencontent.json") as f:
@@ -21,7 +22,7 @@ HELPDIR = USER_CONFIG.get("helpdir")
 HELPBASE_MIRRORZ = USER_CONFIG.get(
     "help-mirrorz", "https://help.mirrors.cernet.edu.cn/"
 )
-MIRROR_NAME = USER_CONFIG.get("mirror-name", "USTC")
+MIRROR_NAME = SITE["abbr"] if SITE else USER_CONFIG.get("mirror-name", "USTC")
 MIRRORZ_HELP = USER_CONFIG.get("mirrorz-help", [])
 """Set which repos should use mirrorz-help, if '*' in list then all help links will use mirrorz-help."""
 MANUAL_REPOSITORIES = USER_CONFIG.get("manual-repositories", [])
@@ -169,6 +170,8 @@ def genRepoList(meta: list[dict] | None = None, outdir=None):
 
 
 def getOthers():
+    if not (CONFIG_FOLDER / "revproxy.json").exists():
+        return
     with open(CONFIG_FOLDER / "revproxy.json", "r") as fin:
         info = json.load(fin)
     for repo in info:

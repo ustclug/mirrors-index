@@ -4,11 +4,12 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <meta name="color-scheme" content="light dark">
-    <title>USTC Open Source Software Mirror</title>
+    <title>{{ site.name if site else "USTC Open Source Software Mirror" }}</title>
     <script>document.documentElement.classList.add("index-loading");</script>
     <style>.index-loading #fallback { display: none; }</style>
     <link href="{{ index_style }}" rel="stylesheet">
     <link rel="shortcut icon" type="image/png" href="/static/img/favicon.png">
+{% if site %}<script type="application/json" id="site-config">{{ site | tojson }}</script>{% endif %}
 </head>
 <body>
 <main id="root">
