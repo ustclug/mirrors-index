@@ -1,7 +1,7 @@
 {
   "name": "mirrors-index",
   "private": true,
-  "packageManager": "pnpm@11.3.0",
+  "packageManager": "pnpm@10.34.9",
   "devDependencies": {
     "@playwright/test": "1.62.1"
   },

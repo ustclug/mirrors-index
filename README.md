@@ -117,14 +117,24 @@ Install zh_CN locales since the `genisolist.ini` file contains Chinese character
 
 Here we introduce how to develop this project on your personal computer (without polluting host's filesystem environment).
 
+Open this checkout in VS Code with the Dev Containers extension and run
+**Dev Containers: Reopen in Container**. The configuration in
+`.devcontainer/devcontainer.json` uses `Dockerfile.dev`, mounts the
+checkout at `/workspace`, and keeps `node_modules` in a separate volume. On
+creation it initializes submodules and installs the pinned test dependencies.
+Terminals run as `node`, and port 8000 is forwarded for a local preview.
+Run `make test` to check the project, or use the development commands below.
+
 Build the development image:
 
 ```shell
-docker build -t mirrors-index-dev .
+docker build -f Dockerfile.dev -t mirrors-index-dev .
 ```
 
-The Debian 13-based image contains Node.js 22, the Python dependencies, pinned
-frontend tools, Chromium, and the Playwright development dependency. It runs as
+The image uses `debian:13-slim` and installs Node.js 20, esbuild, TypeScript,
+Chromium, and the Python runtime dependencies from Debian 13 packages. pnpm 10
+(compatible with Debian's Node.js), Prettier, Ruff, and ty use pinned versions
+from npm/PyPI; Playwright uses the project lockfile. The image runs as
 the non-root `node` user (UID 1000). Start a shell using the source tree included
 in the image:
 
@@ -169,9 +179,6 @@ make test        # Python unit tests and Playwright browser tests
 python3 genindex.py --outdir dist/
 python3 -m http.server --directory dist
 ```
-
-Playwright uses `/usr/bin/chromium` by default. Set
-`PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` when Chromium is installed elsewhere.
 
 If you need to debug genisolist, use `z-genisolist/utils/rsync-stub-generator.py` to generate stub files for testing. Example:
 

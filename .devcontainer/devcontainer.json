@@ -1,0 +1,21 @@
+{
+  "name": "mirrors-index",
+  "build": {
+    "dockerfile": "../Dockerfile.dev",
+    "context": ".."
+  },
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind",
+  "workspaceFolder": "/workspace",
+  "remoteUser": "node",
+  "init": true,
+  "mounts": [
+    "source=${devcontainerId}-node-modules,target=/workspace/node_modules,type=volume"
+  ],
+  "forwardPorts": [8000],
+  "portsAttributes": {
+    "8000": {
+      "label": "Site preview"
+    }
+  },
+  "postCreateCommand": "git submodule update --init --recursive && pnpm install --frozen-lockfile --ignore-scripts"
+}
