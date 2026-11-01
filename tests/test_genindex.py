@@ -12,7 +12,6 @@ class GenIndexTests(unittest.TestCase):
     def test_index_json_schema(self):
         encoded = genindex.index_json(
             [("2026-01-02 03:04:05", "/help/debian.html", "Help", "debian")],
-            [("source.example", "proxy.example")],
             [{"distro": "</script><img>", "category": "os", "urls": []}],
             [SimpleNamespace(title="News & more", link="https://example.com/news")],
             "2026-01-02 03:04:05",
@@ -25,7 +24,6 @@ class GenIndexTests(unittest.TestCase):
             data["repositories"][0]["desc"],
             "Debian Linux 的官方软件包仓库",
         )
-        self.assertEqual(data["reverseProxies"][0]["destination"], "proxy.example")
 
     def run_generator(self, directory, mirrorz_generator, httpdir_exists=True):
         def generate_mirrorz(repos, downloads, meta=None):
@@ -51,11 +49,6 @@ class GenIndexTests(unittest.TestCase):
             mock.patch.object(
                 genindex.gencontent, "genRepoList", return_value=repolist
             ) as build_repositories,
-            mock.patch.object(
-                genindex.gencontent,
-                "getOthers",
-                return_value=[("source.example", "proxy.example")],
-            ),
             mock.patch.object(genindex, "get_isolist", return_value=[]),
             mock.patch.object(genindex.genservernews, "getServerNews", return_value=[]),
             mock.patch.object(genindex, "httpdir_exists", return_value=httpdir_exists),

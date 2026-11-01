@@ -151,13 +151,6 @@ def genRepoList(meta: list[dict] | None = None, outdir=None):
         yield (updated_at, help_href, help_text, name)
 
 
-def getOthers():
-    with open(CONFIG_FOLDER / "revproxy.json", "r") as fin:
-        info = json.load(fin)
-    for repo in info:
-        yield (repo["src"], repo["dst"])
-
-
 if __name__ == "__main__":
     for item in genRepoList():
         print(item)

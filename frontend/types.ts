@@ -15,7 +15,6 @@ export interface IndexDataV1 {
   schemaVersion: 1;
   generatedAt: string;
   repositories: Repository[];
-  reverseProxies: Array<{ source: string; destination: string }>;
   downloads: DownloadGroup[];
   news: Array<{ title: string; url: string }>;
 }

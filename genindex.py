@@ -40,7 +40,7 @@ def atomic_write(path, content):
         raise
 
 
-def index_json(repolist, revproxy, isoinfo, newslist, generated_at):
+def index_json(repolist, isoinfo, newslist, generated_at):
     data = {
         "schemaVersion": 1,
         "generatedAt": generated_at,
@@ -52,10 +52,6 @@ def index_json(repolist, revproxy, isoinfo, newslist, generated_at):
                 "desc": descriptions_by_name.get(name.lower(), ""),
             }
             for updated_at, help_url, _help_text, name in repolist
-        ],
-        "reverseProxies": [
-            {"source": source, "destination": destination}
-            for source, destination in revproxy
         ],
         "downloads": isoinfo,
         "news": [{"title": record.title, "url": record.link} for record in newslist],
@@ -123,7 +119,6 @@ def main():
 
     genmirrorz.collect_repo_contributions(metadata)
     repolist = list(gencontent.genRepoList(metadata, outdir=OUTDIR))
-    revproxy = list(gencontent.getOthers())
     isoinfo = get_isolist()
     newslist = genservernews.getServerNews(logger)
     now = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
@@ -143,7 +138,7 @@ def main():
     generate(
         "index.json",
         index_file,
-        lambda: index_json(repolist, revproxy, isoinfo, newslist, now),
+        lambda: index_json(repolist, isoinfo, newslist, now),
     )
     generate(
         "index-nojs.html",

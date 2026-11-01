@@ -139,13 +139,6 @@ body {
   clear: both;
   content: "";
 }
-.revproxy-section {
-  display: none;
-  overflow: hidden;
-}
-.table-scroll {
-  overflow-x: auto;
-}
 #filelist h3 {
   color: var(--accent-bright);
   font-family:
@@ -328,18 +321,6 @@ th {
     opacity: 1;
     visibility: visible;
   }
-}
-#revproxy,
-#revproxy + h3 > label > span + span,
-#revproxy:checked + h3 > label > span,
-#revproxy ~ div {
-  display: none;
-}
-#revproxy:checked + h3 > label > span + span {
-  display: inline-block;
-}
-#revproxy:checked ~ div {
-  display: block;
 }
 .filetime {
   text-align: left;

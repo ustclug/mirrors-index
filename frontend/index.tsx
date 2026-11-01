@@ -50,27 +50,6 @@ function App({ data }: { data: IndexDataV1 }) {
               <img src="/static/img/new4.gif" alt="New!" />
             </a>
           </marquee>
-          <div class="revproxy-section">
-            <input id="revproxy" type="checkbox" />
-            <h3>
-              <label for="revproxy">
-                反向代理列表 <span>+</span>
-                <span>-</span>
-              </label>
-            </h3>
-            <div class="table-scroll">
-              <table>
-                <tbody>
-                  {data.reverseProxies.map((entry) => (
-                    <tr>
-                      <td>{entry.source}</td>
-                      <td>{entry.destination}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
           <div>
             <h3 id="filetitle">文件列表</h3>
             <input

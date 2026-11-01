@@ -36,10 +36,7 @@ env = Environment(
 json_dir = ROOT / "dist" / "static" / "json"
 json_dir.mkdir(parents=True, exist_ok=True)
 (json_dir / "index.json").write_text(
-    genindex.index_json(
-        repolist, [("source", "destination")], downloads, news, "2026-01-02 03:04:05"
-    )
-    + "\n"
+    genindex.index_json(repolist, downloads, news, "2026-01-02 03:04:05") + "\n"
 )
 (ROOT / "dist" / "index-nojs.html").write_text(
     env.get_template("index-nojs.html").render(

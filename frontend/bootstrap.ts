@@ -22,10 +22,6 @@ function isIndexData(value: unknown): value is IndexDataV1 {
       (item) => isObject(item) && strings(item, "name", "updatedAt", "helpUrl"),
     ) &&
     isArrayOf(
-      data.reverseProxies,
-      (item) => isObject(item) && strings(item, "source", "destination"),
-    ) &&
-    isArrayOf(
       data.news,
       (item) => isObject(item) && strings(item, "title", "url"),
     ) &&

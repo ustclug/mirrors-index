@@ -206,7 +206,7 @@ to the absolute URL of the same endpoint for the Python generator.
 `site.json` requires `name`, `abbr`, and `url`; optional fields are `description`,
 `links` (objects with `label` and `url`) and `newsFeed` (Atom).
 `gencontent.json` uses the normal Yuki configuration. Optional files include
-`genmirrorz.json` (descriptions and skip list), `revproxy.json`, and
+`genmirrorz.json` (descriptions and skip list) and
 `genisolist.ini`. For ISO discovery, mount your repository read-only at `/srv/repo`.
 The configuration is never modified. Set `CACHE_DIR=/cache` and mount a writable
 cache directory to retain canonical-name mappings between runs.
