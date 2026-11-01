@@ -18,17 +18,28 @@ All of these can be fetched from Debian 13 official repo:
 
 For running e2e tests, you need to use pnpm to install playwright. This is unnecessary for deployment.
 
-## Install
+## Preparation
 
-genisolist is a submodule of mirrorz-genisolist, so please checkout the submodule first:
+genisolist is a submodule of [mirrorz-org/genisolist](https://github.com/mirrorz-org/genisolist/), so please checkout the submodule first:
 
 ```shell
 git submodule update --init --recursive
 ```
 
 The repository list and synchronization metadata are read from the Yuki API
-endpoints configured in `config/gencontent.json`. Each Yuki `mirrorz.name` must
-exactly match the published top-level directory, including case. A task without
+endpoint configured by `yuki-url` in `config/gencontent.json`. The generator
+requires an absolute HTTP(S) URL, for example `https://example.com/status/json`.
+The homepage and MirrorZ output share one request to this endpoint. The browser
+status page always requests `/status/json` on the same origin.
+
+For multiple Yuki instances, aggregate their task arrays in the web server
+(e.g. with Nginx Lua or njs) and point `yuki-url` to that endpoint. Preserve all
+task fields, including `mirrorz`; handle upstream failures, timeouts, and caching
+in the aggregation service. A single instance only needs a reverse proxy.
+The former `yuki` endpoint array is no longer supported.
+
+Each Yuki `mirrorz.name` must exactly match the published top-level directory,
+including case. A task without
 a `mirrorz` field uses its task name, while `mirrorz: []` excludes it. The legacy
 empty object `mirrorz: {}` is accepted with the same exclusion meaning. Static
 entries without Yuki metadata can be added to the `manual-repositories` string
@@ -54,8 +65,8 @@ make install WEBROOT=/srv/www
 `make install` installs the already-built static homepage, hashed JavaScript and
 CSS bundles, fonts, and `/status/` page. It does not rebuild them. The periodic
 job only needs Python; build tools and Node package managers are not involved in
-hourly updates. All configured Yuki data sources are validated before any
-generated file is replaced, so a failed or malformed response leaves the
+hourly updates. The Yuki response is validated before any generated file is
+replaced, so a failed or malformed response leaves the
 previous data set intact. MirrorZ repository descriptions are maintained
 locally in `config/genmirrorz.json`; site generation does not fetch description
 text from another mirror. Yuki tasks are grouped by their logical `mirrorz`
@@ -189,11 +200,11 @@ The image exits after generating the complete site. Serve `output` using your
 existing web server, and schedule this command using a host timer. Repository
 files and help documentation remain managed separately. Deploy at the domain
 root. Configure the web server to proxy `/status/json` to Yuki; the browser
-queries it when opening the status page. An alternative browser-visible endpoint
-can be configured with `statusUrl` (cross-origin endpoints require CORS).
+queries it when opening the status page. Set `yuki-url` in `gencontent.json`
+to the absolute URL of the same endpoint for the Python generator.
 
 `site.json` requires `name`, `abbr`, and `url`; optional fields are `description`,
-`links` (objects with `label` and `url`), `statusUrl`, and `newsFeed` (Atom).
+`links` (objects with `label` and `url`) and `newsFeed` (Atom).
 `gencontent.json` uses the normal Yuki configuration. Optional files include
 `genmirrorz.json` (descriptions and skip list), `revproxy.json`, and
 `genisolist.ini`. For ISO discovery, mount your repository read-only at `/srv/repo`.

@@ -243,17 +243,12 @@ class GenMirrorzTests(unittest.TestCase):
 
     def test_get_mirrorz_json_fetches_metadata_without_mutating_base(self):
         original_base = json.loads(json.dumps(self.genmirrorz.base))
-        snapshots = [
-            (
-                {"homepage": True, "mirrorz": True},
-                [make_meta("aosp")],
-            )
-        ]
+        metadata = [make_meta("aosp")]
         with (
             mock.patch.object(
                 self.genmirrorz.gencontent,
                 "fetch_yuki_metadata",
-                return_value=snapshots,
+                return_value=metadata,
             ) as fetch,
             mock.patch.object(self.genmirrorz, "add_disk_info_if_available"),
         ):

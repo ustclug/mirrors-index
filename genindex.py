@@ -117,14 +117,12 @@ def main():
     )
     nojs_template = env.get_template("index-nojs.html")
 
-    snapshots = gencontent.fetch_yuki_metadata()
-    homepage_meta = gencontent.metadata_for(snapshots, "homepage")
-    mirrorz_meta = gencontent.metadata_for(snapshots, "mirrorz")
+    metadata = gencontent.fetch_yuki_metadata()
 
     import genmirrorz
 
-    genmirrorz.collect_repo_contributions(mirrorz_meta)
-    repolist = list(gencontent.genRepoList(homepage_meta, outdir=OUTDIR))
+    genmirrorz.collect_repo_contributions(metadata)
+    repolist = list(gencontent.genRepoList(metadata, outdir=OUTDIR))
     revproxy = list(gencontent.getOthers())
     isoinfo = get_isolist()
     newslist = genservernews.getServerNews(logger)
@@ -159,7 +157,7 @@ def main():
 
     def make_mirrorz():
         return genmirrorz.getMirrorzJson(
-            repolist, copy.deepcopy(isoinfo), meta=mirrorz_meta
+            repolist, copy.deepcopy(isoinfo), meta=metadata
         )
 
     generate("mirrorz.json", mirrorz_file, make_mirrorz)

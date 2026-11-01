@@ -244,7 +244,7 @@ def getMirrorzJson(repolist, isolist, meta=None):
     add_disk_info_if_available(mirrorz["site"])
     iso(isolist)
     if meta is None:
-        meta = gencontent.metadata_for(gencontent.fetch_yuki_metadata(), "mirrorz")
+        meta = gencontent.fetch_yuki_metadata()
     mirrors = parse_repo_with_meta(repolist, meta)
 
     mirrorz["info"] = isolist
@@ -256,10 +256,8 @@ def getMirrorzJson(repolist, isolist, meta=None):
 if __name__ == "__main__":
     from utils import get_isolist
 
-    snapshots = gencontent.fetch_yuki_metadata()
+    metadata = gencontent.fetch_yuki_metadata()
     isolist = get_isolist()
-    repolist = gencontent.genRepoList(gencontent.metadata_for(snapshots, "homepage"))
+    repolist = gencontent.genRepoList(metadata)
 
-    print(
-        getMirrorzJson(repolist, isolist, gencontent.metadata_for(snapshots, "mirrorz"))
-    )
+    print(getMirrorzJson(repolist, isolist, metadata))

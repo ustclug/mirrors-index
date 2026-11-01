@@ -28,11 +28,13 @@ class GenIndexTests(unittest.TestCase):
         self.assertEqual(data["reverseProxies"][0]["destination"], "proxy.example")
 
     def run_generator(self, directory, mirrorz_generator, httpdir_exists=True):
+        def generate_mirrorz(repos, downloads, meta=None):
+            self.assertIs(meta, metadata)
+            return mirrorz_generator(repos, downloads)
+
         fake_mirrorz = SimpleNamespace(
             collect_repo_contributions=mock.Mock(),
-            getMirrorzJson=lambda repos, downloads, meta=None: mirrorz_generator(
-                repos, downloads
-            ),
+            getMirrorzJson=generate_mirrorz,
         )
         repolist = [("2026-01-02 03:04:05", "/help/debian.html", "Help", "debian")]
         metadata = [
@@ -42,16 +44,13 @@ class GenIndexTests(unittest.TestCase):
                 "lastSuccess": 1,
             }
         ]
-        snapshots = [
-            ({"homepage": True, "mirrorz": True}, metadata),
-        ]
         with (
             mock.patch.object(
-                genindex.gencontent, "fetch_yuki_metadata", return_value=snapshots
-            ),
+                genindex.gencontent, "fetch_yuki_metadata", return_value=metadata
+            ) as fetch,
             mock.patch.object(
                 genindex.gencontent, "genRepoList", return_value=repolist
-            ),
+            ) as build_repositories,
             mock.patch.object(
                 genindex.gencontent,
                 "getOthers",
@@ -64,6 +63,9 @@ class GenIndexTests(unittest.TestCase):
             mock.patch("sys.argv", ["genindex.py", "--outdir", directory]),
         ):
             genindex.main()
+            fetch.assert_called_once_with()
+            build_repositories.assert_called_once_with(metadata, outdir=directory)
+            fake_mirrorz.collect_repo_contributions.assert_called_once_with(metadata)
 
     def test_directory_generation_does_not_touch_index_html(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -113,20 +115,40 @@ class GenIndexTests(unittest.TestCase):
                 with open(path, "w") as output:
                     output.write("old")
 
-            with (
-                mock.patch.object(
-                    genindex.gencontent,
-                    "fetch_yuki_metadata",
-                    side_effect=genindex.gencontent.YukiMetadataError("unavailable"),
-                ),
-                mock.patch("sys.argv", ["genindex.py", "--outdir", directory]),
-                self.assertRaises(genindex.gencontent.YukiMetadataError),
+            empty_response = mock.Mock()
+            empty_response.json.return_value = []
+            malformed_response = mock.Mock()
+            malformed_response.json.side_effect = ValueError("invalid JSON")
+            invalid_task_response = mock.Mock()
+            invalid_task_response.json.return_value = [
+                {"name": "debian", "mirrorz": [{"name": "../debian"}]}
+            ]
+            for response in (
+                None,
+                empty_response,
+                malformed_response,
+                invalid_task_response,
             ):
-                genindex.main()
+                with (
+                    self.subTest(response=response),
+                    mock.patch.object(
+                        genindex.gencontent,
+                        "USER_CONFIG",
+                        {"yuki-url": "https://example.com/status/json"},
+                    ),
+                    mock.patch.object(
+                        genindex.gencontent.utils,
+                        "get_resp_with_timeout",
+                        return_value=response,
+                    ),
+                    mock.patch("sys.argv", ["genindex.py", "--outdir", directory]),
+                    self.assertRaises(genindex.gencontent.YukiMetadataError),
+                ):
+                    genindex.main()
 
-            for path in paths:
-                with open(path) as source:
-                    self.assertEqual("old", source.read())
+                for path in paths:
+                    with open(path) as source:
+                        self.assertEqual("old", source.read())
 
     def test_mirrorz_failure_keeps_old_file_and_publishes_other_outputs(self):
         with tempfile.TemporaryDirectory() as directory:

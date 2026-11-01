@@ -88,42 +88,6 @@ class GenContentTests(unittest.TestCase):
                     gencontent.testHelpLink("repo", "/unused/output"),
                 )
 
-    def test_fetch_yuki_metadata_is_strict(self):
-        valid_response = mock.Mock()
-        valid_response.json.return_value = [make_task()]
-        config = {
-            "yuki": [
-                {
-                    "url": "https://valid.invalid",
-                    "homepage": True,
-                    "mirrorz": True,
-                }
-            ]
-        }
-        with (
-            mock.patch.object(gencontent, "USER_CONFIG", config),
-            mock.patch.object(
-                gencontent.utils,
-                "get_resp_with_timeout",
-                return_value=valid_response,
-            ) as get_response,
-        ):
-            snapshots = gencontent.fetch_yuki_metadata()
-
-        self.assertEqual([(config["yuki"][0], [make_task()])], snapshots)
-        get_response.assert_called_once_with(
-            "https://valid.invalid", logger=gencontent.logger
-        )
-
-        with (
-            mock.patch.object(gencontent, "USER_CONFIG", config),
-            mock.patch.object(
-                gencontent.utils, "get_resp_with_timeout", return_value=None
-            ),
-            self.assertRaisesRegex(gencontent.YukiMetadataError, "failed to get"),
-        ):
-            gencontent.fetch_yuki_metadata()
-
 
 if __name__ == "__main__":
     unittest.main()

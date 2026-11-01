@@ -4,7 +4,7 @@ import json
 import logging
 import time
 from pathlib import Path
-from urllib.parse import urlencode, urljoin
+from urllib.parse import urlencode, urljoin, urlsplit
 
 import utils
 from utils import CONFIG_FOLDER, get_mirrorz_cname
@@ -68,42 +68,25 @@ def task_mappings(task: dict) -> list[dict]:
     return mappings
 
 
-def fetch_yuki_metadata() -> list[tuple[dict, list[dict]]]:
-    snapshots = []
-    for endpoint in USER_CONFIG.get("yuki", []):
-        if not endpoint.get("homepage") and not endpoint.get("mirrorz"):
-            continue
-        url = endpoint.get("url")
-        if not isinstance(url, str) or not url:
-            raise YukiMetadataError("Yuki endpoint URL must be a non-empty string")
-        response = utils.get_resp_with_timeout(url, logger=logger)
-        if response is None:
-            raise YukiMetadataError(f"failed to get Yuki metadata from {url}")
-        try:
-            metadata = response.json()
-        except ValueError as error:
-            raise YukiMetadataError(
-                f"failed to decode Yuki metadata from {url}"
-            ) from error
-        if not isinstance(metadata, list) or not metadata:
-            raise YukiMetadataError(
-                f"Yuki metadata from {url} must be a non-empty list"
-            )
-        for task in metadata:
-            task_mappings(task)
-        snapshots.append((endpoint, metadata))
-    if not any(endpoint.get("homepage") for endpoint, _metadata in snapshots):
-        raise YukiMetadataError("at least one homepage Yuki endpoint is required")
-    return snapshots
-
-
-def metadata_for(snapshots: list[tuple[dict, list[dict]]], purpose: str) -> list[dict]:
-    return [
-        task
-        for endpoint, metadata in snapshots
-        if endpoint.get(purpose)
-        for task in metadata
-    ]
+def fetch_yuki_metadata() -> list[dict]:
+    url = USER_CONFIG.get("yuki-url")
+    if not isinstance(url, str) or not url:
+        raise YukiMetadataError("yuki-url must be an absolute HTTP(S) URL")
+    parsed = urlsplit(url)
+    if parsed.scheme not in {"http", "https"} or not parsed.netloc:
+        raise YukiMetadataError("yuki-url must be an absolute HTTP(S) URL")
+    response = utils.get_resp_with_timeout(url, logger=logger)
+    if response is None:
+        raise YukiMetadataError(f"failed to get Yuki metadata from {url}")
+    try:
+        metadata = response.json()
+    except ValueError as error:
+        raise YukiMetadataError(f"failed to decode Yuki metadata from {url}") from error
+    if not isinstance(metadata, list) or not metadata:
+        raise YukiMetadataError(f"Yuki metadata from {url} must be a non-empty list")
+    for task in metadata:
+        task_mappings(task)
+    return metadata
 
 
 def getMirrorzURL(name):
@@ -131,7 +114,7 @@ def testHelpLink(name, outdir=None):
 
 def genRepoList(meta: list[dict] | None = None, outdir=None):
     if meta is None:
-        meta = metadata_for(fetch_yuki_metadata(), "homepage")
+        meta = fetch_yuki_metadata()
 
     homepage_repos: dict[str, int] = {}
     for task in meta:
