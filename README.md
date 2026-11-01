@@ -70,7 +70,7 @@ job only needs Python; build tools and Node package managers are not involved in
 hourly updates. The Yuki response is validated before any generated file is
 replaced, so a failed or malformed response leaves the
 previous data set intact. MirrorZ repository descriptions are maintained
-locally in `config/genmirrorz.json`; site generation does not fetch description
+locally in `config/descriptions.json`; site generation does not fetch description
 text from another mirror. Yuki tasks are grouped by their logical `mirrorz`
 repository mapping, using the mapping name directly rather than `cname.json`,
 before status generation. `cname.json` only controls the canonical name in
@@ -214,9 +214,10 @@ to the absolute URL of the same endpoint for the Python generator.
 
 `site.json` requires `name`, `abbr`, and `url`; optional fields are `description`,
 `links` (objects with `label` and `url`) and `newsFeed` (Atom).
-`gencontent.json` uses the normal Yuki configuration. Optional files include
-`genmirrorz.json` (descriptions and skip list) and
-`genisolist.ini`. For ISO discovery, mount your repository read-only at `/srv/repo`.
+`gencontent.json` uses the normal Yuki configuration. Repository descriptions
+are stored in `descriptions.json`; MirrorZ metadata and the skip list are stored
+in `genmirrorz.json`. `genisolist.ini` configures ISO discovery; mount your
+repository read-only at `/srv/repo`.
 The configuration is never modified. Set `CACHE_DIR=/cache` and mount a writable
 cache directory to retain canonical-name mappings between runs.
 

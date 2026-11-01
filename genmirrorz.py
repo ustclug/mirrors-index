@@ -18,7 +18,9 @@ with open(CONFIG_FOLDER / "genmirrorz.json") as f:
     options = json.load(f)
     base = options["base"]
     skiplist = options.get("skip", [])
-    descriptions = options.get("descriptions", {})
+
+with open(CONFIG_FOLDER / "descriptions.json") as source:
+    descriptions = json.load(source)
     descriptions_by_name = {
         name.lower(): description for name, description in descriptions.items()
     }

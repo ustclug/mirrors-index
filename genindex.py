@@ -12,11 +12,11 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 import gencontent
 import genservernews
-from utils import get_isolist
+from utils import CONFIG_FOLDER, get_isolist
 
 BASEDIR = os.path.dirname(__file__)
-with open(os.path.join(BASEDIR, "config", "genmirrorz.json")) as source:
-    descriptions = json.load(source).get("descriptions", {})
+with open(CONFIG_FOLDER / "descriptions.json") as source:
+    descriptions = json.load(source)
     descriptions_by_name = {
         name.lower(): description for name, description in descriptions.items()
     }
