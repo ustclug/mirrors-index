@@ -66,7 +66,7 @@ def httpdir_exists(path):
 def main():
     logger = logging.getLogger("mirrors-genindex")
     ch = logging.StreamHandler()
-    OUTDIR = os.getenv("OUTDIR") or gencontent.OUTDIR
+    default_outdir = os.getenv("OUTDIR") or gencontent.OUTDIR
     parser = argparse.ArgumentParser(
         description="USTC Mirrors Index Page Generator",
         epilog="Brought to you by LUG@USTC.",
@@ -75,7 +75,7 @@ def main():
         "-d",
         "--outdir",
         type=str,
-        default=OUTDIR,
+        default=default_outdir,
         help="specify output directory",
     )
     parser.add_argument(
@@ -86,21 +86,21 @@ def main():
     )
     args = parser.parse_args()
 
-    if not args.outdir:
+    outdir = args.outdir
+    if not outdir:
         parser.error("--outdir is required when OUTDIR is not configured")
 
-    LOGLEVEL = logging.DEBUG if args.verbose else logging.INFO
-    logger.setLevel(LOGLEVEL)
-    ch.setLevel(LOGLEVEL)
+    log_level = logging.DEBUG if args.verbose else logging.INFO
+    logger.setLevel(log_level)
+    ch.setLevel(log_level)
     ch.setFormatter(logging.Formatter("[%(asctime)s] [%(levelname)s] %(message)s"))
     logger.addHandler(ch)
     logger.debug(f'received command arguments: "{args!s}"')
 
-    OUTDIR = args.outdir or OUTDIR
-    index_file = os.path.join(OUTDIR, "static", "json", "index.json")
-    nojs_file = os.path.join(OUTDIR, "index-nojs.html")
-    mirrorz_file = os.path.join(OUTDIR, "static", "json", "mirrorz.json")
-    logger.info(f'OUTDIR is "{OUTDIR}"')
+    index_file = os.path.join(outdir, "static", "json", "index.json")
+    nojs_file = os.path.join(outdir, "index-nojs.html")
+    mirrorz_file = os.path.join(outdir, "static", "json", "mirrorz.json")
+    logger.info(f'OUTDIR is "{outdir}"')
     logger.info(f'BASEDIR is "{BASEDIR}"')
     if not httpdir_exists(gencontent.HTTPDIR):
         logger.warning(
@@ -118,9 +118,9 @@ def main():
     import genmirrorz
 
     genmirrorz.collect_repo_contributions(metadata)
-    repolist = list(gencontent.genRepoList(metadata, outdir=OUTDIR))
+    repolist = list(gencontent.generate_repo_list(metadata, outdir=outdir))
     isoinfo = get_isolist()
-    newslist = genservernews.getServerNews(logger)
+    newslist = genservernews.get_server_news(logger)
     now = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
 
     failures = []
@@ -151,7 +151,7 @@ def main():
     )
 
     def make_mirrorz():
-        return genmirrorz.getMirrorzJson(
+        return genmirrorz.get_mirrorz_json(
             repolist, copy.deepcopy(isoinfo), meta=metadata
         )
 

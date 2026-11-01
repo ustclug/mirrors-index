@@ -18,6 +18,8 @@ All of these can be fetched from Debian 13 official repo:
 
 For running e2e tests, you need to use pnpm to install playwright. This is unnecessary for deployment.
 
+For Python linting and type checking, you need to install ruff and ty yourself. This is also unnecessary for deployment.
+
 ## Preparation
 
 genisolist is a submodule of [mirrorz-org/genisolist](https://github.com/mirrorz-org/genisolist/), so please checkout the submodule first:

@@ -18,9 +18,9 @@ class GenContentTests(unittest.TestCase):
     def repositories(self, metadata, manual=None):
         with (
             mock.patch.object(gencontent, "MANUAL_REPOSITORIES", manual or []),
-            mock.patch.object(gencontent, "testHelpLink", return_value=""),
+            mock.patch.object(gencontent, "get_help_link", return_value=""),
         ):
-            return list(gencontent.genRepoList(metadata))
+            return list(gencontent.generate_repo_list(metadata))
 
     def test_repository_list_uses_mappings_and_latest_success(self):
         metadata = [
@@ -73,9 +73,9 @@ class GenContentTests(unittest.TestCase):
             (helpdir / "repo.html").write_text("help")
             with mock.patch.object(gencontent, "HELPDIR", None):
                 self.assertEqual(
-                    "/help/repo.html", gencontent.testHelpLink("repo", directory)
+                    "/help/repo.html", gencontent.get_help_link("repo", directory)
                 )
-                self.assertEqual("", gencontent.testHelpLink("missing", directory))
+                self.assertEqual("", gencontent.get_help_link("missing", directory))
 
     def test_help_link_uses_configured_local_directory(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -85,7 +85,7 @@ class GenContentTests(unittest.TestCase):
             with mock.patch.object(gencontent, "HELPDIR", str(helpdir)):
                 self.assertEqual(
                     "/help/repo.html",
-                    gencontent.testHelpLink("repo", "/unused/output"),
+                    gencontent.get_help_link("repo", "/unused/output"),
                 )
 
 

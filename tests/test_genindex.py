@@ -32,7 +32,7 @@ class GenIndexTests(unittest.TestCase):
 
         fake_mirrorz = SimpleNamespace(
             collect_repo_contributions=mock.Mock(),
-            getMirrorzJson=generate_mirrorz,
+            get_mirrorz_json=generate_mirrorz,
         )
         repolist = [("2026-01-02 03:04:05", "/help/debian.html", "Help", "debian")]
         metadata = [
@@ -47,10 +47,12 @@ class GenIndexTests(unittest.TestCase):
                 genindex.gencontent, "fetch_yuki_metadata", return_value=metadata
             ) as fetch,
             mock.patch.object(
-                genindex.gencontent, "genRepoList", return_value=repolist
+                genindex.gencontent, "generate_repo_list", return_value=repolist
             ) as build_repositories,
             mock.patch.object(genindex, "get_isolist", return_value=[]),
-            mock.patch.object(genindex.genservernews, "getServerNews", return_value=[]),
+            mock.patch.object(
+                genindex.genservernews, "get_server_news", return_value=[]
+            ),
             mock.patch.object(genindex, "httpdir_exists", return_value=httpdir_exists),
             mock.patch.dict("sys.modules", {"genmirrorz": fake_mirrorz}),
             mock.patch("sys.argv", ["genindex.py", "--outdir", directory]),

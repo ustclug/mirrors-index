@@ -253,7 +253,7 @@ class GenMirrorzTests(unittest.TestCase):
             mock.patch.object(self.genmirrorz, "add_disk_info_if_available"),
         ):
             result = json.loads(
-                self.genmirrorz.getMirrorzJson([("", "", "", "aosp")], [])
+                self.genmirrorz.get_mirrorz_json([("", "", "", "aosp")], [])
             )
 
         fetch.assert_called_once_with()

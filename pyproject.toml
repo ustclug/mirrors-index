@@ -1,0 +1,16 @@
+[tool.ruff]
+target-version = "py313"
+extend-exclude = ["z-genisolist", "genisolist.py", "version.py"]
+force-exclude = true
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I", "N", "UP"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/render_fixture.py" = ["E402"]
+
+[tool.ty.environment]
+python-version = "3.13"
+
+[tool.ty.src]
+exclude = ["z-genisolist", "genisolist.py", "version.py"]

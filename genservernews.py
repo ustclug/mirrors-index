@@ -18,7 +18,7 @@ SERVERNEWS_FEED = "https://servers.ustclug.org/feed/mirrors.xml"
 SERVERNEWS_MAX_NUM = 3
 
 
-def getServerNews(glob_logger: logging.Logger | None = None) -> list:
+def get_server_news(glob_logger: logging.Logger | None = None) -> list:
     """
     return list of NewsRecord object.
 
@@ -27,7 +27,7 @@ def getServerNews(glob_logger: logging.Logger | None = None) -> list:
 
     logger = glob_logger or logging.getLogger()
 
-    def parseFeedData(text):
+    def parse_feed_data(text):
         """
         Will return proper HTML String by input.
         """
@@ -67,7 +67,7 @@ def getServerNews(glob_logger: logging.Logger | None = None) -> list:
         if resp is None:
             # failed
             return newslist
-        newslist = list(parseFeedData(resp.text))
+        newslist = list(parse_feed_data(resp.text))
         logger.info(f"newslist generation successful, size is {len(newslist)}.")
     except (AttributeError, ExpatError, IndexError, ValueError) as e:
         logger.error(f'unknown exception caught: "{e!s}".')
@@ -75,7 +75,7 @@ def getServerNews(glob_logger: logging.Logger | None = None) -> list:
 
 
 if __name__ == "__main__":
-    for i in getServerNews():
+    for i in get_server_news():
         print(i.title, i.link)
 
 # vim:set ts=8 sw=4 tw=0 et:

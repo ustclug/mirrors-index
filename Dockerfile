@@ -4,6 +4,7 @@ ARG ESBUILD_VERSION=0.28.2
 ARG PNPM_VERSION=11.3.0
 ARG PRETTIER_VERSION=3.8.1
 ARG RUFF_VERSION=0.16.6
+ARG TY_VERSION=0.0.95
 
 ENV DEBIAN_FRONTEND=noninteractive \
     LANG=zh_CN.UTF-8 \
@@ -32,7 +33,9 @@ RUN npm install --global \
         "pnpm@${PNPM_VERSION}" \
         "prettier@${PRETTIER_VERSION}" \
     && PIPX_HOME=/opt/pipx PIPX_BIN_DIR=/usr/local/bin \
-        pipx install "ruff==${RUFF_VERSION}"
+        pipx install "ruff==${RUFF_VERSION}" \
+    && PIPX_HOME=/opt/pipx PIPX_BIN_DIR=/usr/local/bin \
+        pipx install "ty==${TY_VERSION}"
 
 WORKDIR /workspace
 

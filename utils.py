@@ -13,16 +13,16 @@ logger = logging.getLogger(__name__)
 CONFIG_FOLDER = Path(os.path.dirname(__file__)) / "config"
 
 
-class AlarmTimeoutException(Exception):
+class AlarmTimeoutError(Exception):
     pass
 
 
-class BadRequestException(Exception):
+class BadRequestError(Exception):
     pass
 
 
 def alarm_handler(signum, frame):
-    raise AlarmTimeoutException
+    raise AlarmTimeoutError
 
 
 # return None when exception caught
@@ -36,11 +36,11 @@ def get_resp_with_timeout(
     try:
         resp = requests.get(url)
         if resp.status_code != 200:
-            raise BadRequestException
+            raise BadRequestError
         return resp
-    except AlarmTimeoutException:
+    except AlarmTimeoutError:
         logger.error(f"requesting {url} timed out")
-    except BadRequestException:
+    except BadRequestError:
         logger.error(f"failed to retrieve data from {url}")
     except requests.RequestException as e:
         logger.error(f'unknown exception caught: "{e!s}".')
@@ -56,7 +56,9 @@ def get_mirrorz_cname():
     cname_path = CONFIG_FOLDER / "cname.json"
     # download cname
     try:
-        req = requests.get("https://mirrors.cernet.edu.cn/static/json/cname.json", timeout=10)
+        req = requests.get(
+            "https://mirrors.cernet.edu.cn/static/json/cname.json", timeout=10
+        )
         req.raise_for_status()
         cname = req.json()
         with open(cname_path, "w") as f:

@@ -89,30 +89,31 @@ def fetch_yuki_metadata() -> list[dict]:
     return metadata
 
 
-def getMirrorzURL(name):
+def get_mirrorz_url(name):
     params = {"mirror": MIRROR_NAME}
     if cname.get(name):
         name = cname[name]
     return urljoin(HELPBASE_MIRRORZ, name + "?" + urlencode(params))
 
 
-def testHelpLink(name, outdir=None):
+def get_help_link(name, outdir=None):
     """Return the configured help URL for a repository, if one is available."""
     if "*" in MIRRORZ_HELP:
-        return getMirrorzURL(name)
+        return get_mirrorz_url(name)
 
     helpdir = HELPDIR
-    if helpdir is None and (outdir or OUTDIR):
-        helpdir = Path(outdir or OUTDIR) / "help"
+    output_directory = outdir or OUTDIR
+    if helpdir is None and output_directory:
+        helpdir = Path(output_directory) / "help"
     if helpdir is not None and (Path(helpdir) / f"{name}.html").is_file():
         return f"/help/{name}.html"
 
     if name in MIRRORZ_HELP:
-        return getMirrorzURL(name)
+        return get_mirrorz_url(name)
     return ""
 
 
-def genRepoList(meta: list[dict] | None = None, outdir=None):
+def generate_repo_list(meta: list[dict] | None = None, outdir=None):
     if meta is None:
         meta = fetch_yuki_metadata()
 
@@ -146,11 +147,11 @@ def genRepoList(meta: list[dict] | None = None, outdir=None):
             if timestamp > 0
             else ""
         )
-        help_href = testHelpLink(name, outdir=outdir)
+        help_href = get_help_link(name, outdir=outdir)
         help_text = "Help" if help_href.strip() else ""
         yield (updated_at, help_href, help_text, name)
 
 
 if __name__ == "__main__":
-    for item in genRepoList():
+    for item in generate_repo_list():
         print(item)

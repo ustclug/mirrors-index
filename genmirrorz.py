@@ -239,7 +239,7 @@ def add_disk_info_if_available(site: dict) -> None:
     disk_info(site)
 
 
-def getMirrorzJson(repolist, isolist, meta=None):
+def get_mirrorz_json(repolist, isolist, meta=None):
     mirrorz = copy.deepcopy(base)
     add_disk_info_if_available(mirrorz["site"])
     iso(isolist)
@@ -258,6 +258,6 @@ if __name__ == "__main__":
 
     metadata = gencontent.fetch_yuki_metadata()
     isolist = get_isolist()
-    repolist = gencontent.genRepoList(metadata)
+    repolist = gencontent.generate_repo_list(metadata)
 
-    print(getMirrorzJson(repolist, isolist, metadata))
+    print(get_mirrorz_json(repolist, isolist, metadata))
