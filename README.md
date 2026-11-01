@@ -28,14 +28,15 @@ genisolist is a submodule of [mirrorz-org/genisolist](https://github.com/mirrorz
 git submodule update --init --recursive
 ```
 
-The repository list and synchronization metadata are read from the Yuki API
-endpoint configured by `yuki-url` in `config/gencontent.json`. The generator
-requires an absolute HTTP(S) URL, for example `https://example.com/status/json`.
-The homepage and MirrorZ output share one request to this endpoint. The browser
-status page always requests `/status/json` on the same origin.
+The repository list and synchronization metadata are read from `/status/json`
+on the site configured by `baseURL` in `config/gencontent.json`. Set `baseURL`
+to the HTTP(S) origin only, for example `https://example.com` (an optional port
+is supported); do not include a path, credentials, query, or fragment. A trailing
+slash is accepted. The homepage and MirrorZ output share one request to this
+endpoint. The browser status page also requests `/status/json` on the same origin.
 
 For multiple Yuki instances, aggregate their task arrays in the web server
-(e.g. with Nginx Lua or njs) and point `yuki-url` to that endpoint. Preserve all
+(e.g. with Nginx Lua or njs) and serve the result at `/status/json`. Preserve all
 task fields, including `mirrorz`; handle upstream failures, timeouts, and caching
 in the aggregation service. A single instance only needs a reverse proxy.
 The former `yuki` endpoint array is no longer supported.
@@ -209,8 +210,8 @@ The image exits after generating the complete site. Serve `output` using your
 existing web server, and schedule this command using a host timer. Repository
 files and help documentation remain managed separately. Deploy at the domain
 root. Configure the web server to proxy `/status/json` to Yuki; the browser
-queries it when opening the status page. Set `yuki-url` in `gencontent.json`
-to the absolute URL of the same endpoint for the Python generator.
+queries it when opening the status page. Set `baseURL` in `gencontent.json`
+to the site origin; the Python generator appends `/status/json`.
 
 `site.json` requires `name`, `abbr`, and `url`; optional fields are `description`,
 `links` (objects with `label` and `url`) and `newsFeed` (Atom).

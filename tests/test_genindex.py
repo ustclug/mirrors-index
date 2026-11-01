@@ -129,7 +129,7 @@ class GenIndexTests(unittest.TestCase):
                     mock.patch.object(
                         genindex.gencontent,
                         "USER_CONFIG",
-                        {"yuki-url": "https://example.com/status/json"},
+                        {"baseURL": "https://example.com"},
                     ),
                     mock.patch.object(
                         genindex.gencontent.utils,

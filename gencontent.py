@@ -69,12 +69,24 @@ def task_mappings(task: dict) -> list[dict]:
 
 
 def fetch_yuki_metadata() -> list[dict]:
-    url = USER_CONFIG.get("yuki-url")
-    if not isinstance(url, str) or not url:
-        raise YukiMetadataError("yuki-url must be an absolute HTTP(S) URL")
-    parsed = urlsplit(url)
-    if parsed.scheme not in {"http", "https"} or not parsed.netloc:
-        raise YukiMetadataError("yuki-url must be an absolute HTTP(S) URL")
+    base_url = USER_CONFIG.get("baseURL")
+    error_message = "baseURL must be an HTTP(S) origin without a path, credentials, query, or fragment"
+    if not isinstance(base_url, str) or not base_url:
+        raise YukiMetadataError(error_message)
+    try:
+        parsed = urlsplit(base_url)
+        if (
+            parsed.scheme not in {"http", "https"}
+            or not parsed.hostname
+            or parsed.username is not None
+            or parsed.path not in {"", "/"}
+            or parsed.query
+            or parsed.fragment
+        ):
+            raise YukiMetadataError(error_message)
+    except ValueError as error:
+        raise YukiMetadataError(error_message) from error
+    url = urljoin(base_url, "/status/json")
     response = utils.get_resp_with_timeout(url, logger=logger)
     if response is None:
         raise YukiMetadataError(f"failed to get Yuki metadata from {url}")
