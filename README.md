@@ -1,6 +1,6 @@
 # mirrors-index
 
-This repo contains frontend source code (`/` and `/status/`).
+This repo contains frontend source code (`/` and `/status/`) of USTC Mirror, and could be used to build third-party mirror sites. This is intended to be used with [Yuki](https://github.com/ustclug/Yuki) mirror management tool.
 
 For *Help documentation*, see: https://github.com/ustclug/mirrorhelp/
 
@@ -16,9 +16,7 @@ All of these can be fetched from Debian 13 official repo:
 * typescript
 * systemd (optional: the timer to run generation)
 
-For running e2e tests, you need to use pnpm to install playwright. This is unnecessary for deployment.
-
-For Python linting and type checking, you need to install ruff and ty yourself. This is also unnecessary for deployment.
+pnpm and Playwright are only needed for e2e tests (Debian bug [#1153120](https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1153120) makes it necessary to be installed from npmjs); ruff and ty are only needed for Python linting and type checking. None of them are required for deployment.
 
 ## Preparation
 
@@ -28,72 +26,58 @@ genisolist is a submodule of [mirrorz-org/genisolist](https://github.com/mirrorz
 git submodule update --init --recursive
 ```
 
-The repository list and synchronization metadata are read from `/status/json`
-on the site configured by `baseURL` in `config/gencontent.json`. Set `baseURL`
-to the HTTP(S) origin only, for example `https://example.com` (an optional port
-is supported); do not include a path, credentials, query, or fragment. A trailing
-slash is accepted. The homepage and MirrorZ output share one request to this
-endpoint. The browser status page also requests `/status/json` on the same origin.
+## Configuration
 
-For multiple Yuki instances, aggregate their task arrays in the web server
-(e.g. with Nginx Lua or njs) and serve the result at `/status/json`. Preserve all
-task fields, including `mirrorz`; handle upstream failures, timeouts, and caching
-in the aggregation service. A single instance only needs a reverse proxy.
-The former `yuki` endpoint array is no longer supported.
+Site configuration files live in `config/`.
 
-Each Yuki `mirrorz.name` must exactly match the published top-level directory,
-including case. A task without
-a `mirrorz` field uses its task name, while `mirrorz: []` excludes it. The legacy
-empty object `mirrorz: {}` is accepted with the same exclusion meaning. Static
-entries without Yuki metadata can be added to the `manual-repositories` string
-list; their Last Update column is left blank.
+### `gencontent.json`
 
-`httpdir` defaults to `/srv/repo` and is checked as a deployment diagnostic.
-If it does not exist, generation logs a warning and continues; repository
-discovery never reads it.
+`baseURL` is required and must be the HTTP(S) origin that serves `/status/json`, for example `https://example.com`; the generator and the browser both request that endpoint. For multiple Yuki instances, aggregate their task arrays in the web server (with lua or njs in Nginx, for example) and serve the result at `/status/json`.
 
-### Build and deploy
+A repo could have multiple Yuki tasks. Yuki tasks are mapped to repositories as follows: `mirrorz.name` must exactly match the published top-level directory, including case; a task without a `mirrorz` field uses its task name, while `mirrorz: []` excludes it.
 
-The browser application uses the audited Preact copy under `vendor/`, while
-repository discovery and page data generation remain in Python. Production
-does not need npm or pnpm. Build on the production machine and install the
-static application into the web root:
+Optional keys:
+
+* `manual-repositories`: repository names to include without Yuki metadata; their Last Update column is left blank.
+* `outdir`: default output directory, overridden by `--outdir` or the `OUTDIR` environment variable.
+* `httpdir`: repository root checked as a deployment diagnostic; defaults to `/srv/repo`.
+* `helpdir`: local directory containing `help/<repository>.html`; links are emitted only when the file exists, and the default is `<outdir>/help`.
+* `mirror-name`: name used in MirrorZ help links; defaults to `USTC`.
+* `mirrorz-help` and `help-mirrorz`: list of repositories whose help links use MirrorZ (`"*"` for all) and the MirrorZ help base URL, which defaults to `https://help.mirrors.cernet.edu.cn/`.
+
+### `descriptions.json`
+
+Object mapping repository names to description text, matched case-insensitively and used by both the homepage and MirrorZ output.
+
+### `genmirrorz.json`
+
+`skip` lists repository names excluded from generated output (case-insensitive). `base` is copied into `mirrorz.json`; its `site` object typically sets `url`, `abbr`, `name`, `logo`, `logo_darkmode`, `homepage`, `issue`, `request`, `email`, `group`, and `big`.
+
+### `cname.json`
+
+Canonical-name mapping used in MirrorZ output. It is refreshed from `https://mirrors.cernet.edu.cn/static/json/cname.json` during generation, with this local file as fallback.
+
+### `genisolist.ini`
+
+ISO discovery configuration passed to genisolist, including the files under `z-genisolist/includes/`. Install zh_CN locales because the file contains Chinese characters.
+
+## Build and deploy
+
+The browser application uses the Preact copy under `vendor/`, while repository discovery and page data generation remain in Python. Production does not need npm or pnpm. Build on the production machine and install the static application into the web root:
 
 ```shell
-make build
+make build  # only run this when the frontend source code is updated
 python3 genindex.py --outdir /srv/www/
 make install WEBROOT=/srv/www
 ```
 
-`make install` installs the already-built static homepage, hashed JavaScript and
-CSS bundles, fonts, and `/status/` page. It does not rebuild them. The periodic
-job only needs Python; build tools and Node package managers are not involved in
-hourly updates. The Yuki response is validated before any generated file is
-replaced, so a failed or malformed response leaves the
-previous data set intact. MirrorZ repository descriptions are maintained
-locally in `config/descriptions.json`; site generation does not fetch description
-text from another mirror. Yuki tasks are grouped by their logical `mirrorz`
-repository mapping, using the mapping name directly rather than `cname.json`,
-before status generation. `cname.json` only controls the canonical name in
-MirrorZ output. Cache mappings take precedence; otherwise a
-failure takes precedence over syncing and success, disabled tasks are ignored
-unless all tasks are disabled, repository size is the largest task size, and
-conflicting upstream URLs are omitted. The `mirror` user running the periodic
-job must be able to create and replace files in `/srv/www/` and
-`/srv/www/static/`. See
-`vendor/preact/VENDORING.md` for the vendored source and update procedure.
+`make install` installs the already-built static homepage, hashed JavaScript and CSS bundles, fonts, and `/status/` page. It does not rebuild them. The periodic job only needs Python.
 
-The generated homepage links browsers without JavaScript or ES module support
-to a separate `index-nojs.html` containing the repository list. The full
-interface fetches versioned data from `/static/json/index.json`. The periodic job
-atomically updates that file, `index-nojs.html`, and
-`/static/json/mirrorz.json`; it never modifies `index.html`.
-Repository help links are included when `help/<repository>.html` exists under
-the selected output directory. Set `helpdir` in `config/gencontent.json` to
-override the local directory checked for these files; links remain under
-`/help/` on the generated site.
+The `mirror` user running the periodic job must be able to create and replace files in `/srv/www/` and `/srv/www/static/`.
 
-### Periodic updates
+Generation atomically updates `/static/json/index.json`, `index-nojs.html`, and `/static/json/mirrorz.json`.
+
+## Periodic updates
 
 Install the service and timer, then enable the timer:
 
@@ -103,154 +87,46 @@ systemctl daemon-reload
 systemctl enable --now mirrors-index.timer
 ```
 
-The timer regenerates the homepage data files every hour at minute 10. Run an
-initial generation immediately after deployment with:
+The timer regenerates the homepage data files every hour. Run an initial generation immediately after deployment with:
 
 ```shell
 systemctl start mirrors-index.service
 ```
 
-### Locales
-
-Install zh_CN locales since the `genisolist.ini` file contains Chinese characters.
-
 ## Development
 
-Here we introduce how to develop this project on your personal computer (without polluting host's filesystem environment).
+This project supports devcontainer (or you can start a container yourself). It's recommended to do development inside the (Debian 13) container, as things might be different with newer or older versions of esbuild or TypeScript.
 
-Open this checkout in VS Code with the Dev Containers extension and run
-**Dev Containers: Reopen in Container**. The configuration in
-`.devcontainer/devcontainer.json` uses `Dockerfile.dev`, mounts the
-checkout at `/workspace`, and keeps `node_modules` in a separate volume. On
-creation it initializes submodules and installs the pinned test dependencies.
-Terminals run as `node`, and port 8000 is forwarded for a local preview.
-Run `make test` to check the project, or use the development commands below.
-
-Build the development image:
+If you prefer to run container yourself, build the development image manually:
 
 ```shell
 docker build -f Dockerfile.dev -t mirrors-index-dev .
 ```
 
-The image uses `debian:13-slim` and installs Node.js 20, esbuild, TypeScript,
-Chromium, and the Python runtime dependencies from Debian 13 packages. pnpm 10
-(compatible with Debian's Node.js), Prettier, Ruff, and ty use pinned versions
-from npm/PyPI; Playwright uses the project lockfile. The image runs as
-the non-root `node` user (UID 1000). Start a shell using the source tree included
-in the image:
+Start a shell using the source tree included in the image:
 
 ```shell
-docker run --rm -it -p 8000:8000 mirrors-index-dev
+docker run --rm -it -v "$(pwd):/workspace" -p 8000:8000 mirrors-index-dev
 ```
-
-For live editing, bind mount the checkout and keep `node_modules` in a named
-volume. Run `pnpm install` once after creating or replacing that volume:
-
-```shell
-docker run --rm -it -p 8000:8000 \
-    -v "$PWD:/workspace" \
-    -v mirrors-index-node-modules:/workspace/node_modules \
-    mirrors-index-dev
-pnpm install --frozen-lockfile --ignore-scripts
-```
-
-The image provides a writable `/srv/repo` directory for fake download files.
-Run `make example` to populate it with a small representative repository tree.
-The generator is idempotent and refuses to touch a non-empty directory it did
-not create. It also writes example sync data to `dist/status/json`, so the status
-page works with the same local server. A different destination can be passed
-directly, for example:
-
-```shell
-python3 tools/create_example_tree.py /tmp/example-repo
-```
-
-Run
-`python3 -m http.server --directory /srv/repo 8000` to serve it on the exposed
-port when needed.
 
 Use these entry points during development:
 
 ```shell
 make build       # type-check and create production assets under dist/
-make dev         # watch the TypeScript entry points
+make dev         # build and watch file changes
 make format      # format project-owned Python files with Ruff
 make lint        # check Ruff formatting and lint rules
 make test        # Python unit tests and Playwright browser tests
+make example     # populate /srv/repo with a small representative repository tree and example sync data under dist/status/json
 python3 genindex.py --outdir dist/
 python3 -m http.server --directory dist
 ```
 
-If you need to debug genisolist, use `z-genisolist/utils/rsync-stub-generator.py` to generate stub files for testing. Example:
-
-```shell
-z-genisolist/utils/rsync-stub-generator.py rsync://rsync.mirrors.ustc.edu.cn/archlinux --dist /srv/repo/archlinux
-```
-
-## Deployment as Container
-
-Build the single-run generator with `docker build -f Dockerfile.release -t mirrors-index .`
-(after initializing submodules). Published images use
-`ghcr.io/ustclug/mirrors-index:edge`; pin a version or digest for production.
-Copy `examples/third-party/` and edit the site identity and Yuki endpoint:
-
-```sh
-mkdir -p output
-docker run --rm --network host --user "$(id -u):$(id -g)" \
-  -v "$PWD/examples/third-party:/config:ro" \
-  -v "$PWD/output:/output" \
-  ghcr.io/ustclug/mirrors-index:edge
-```
-
-The examples use host networking and assume Yuki is listening on
-`127.0.0.1:8000` on the host. The Nginx example likewise assumes Nginx runs
-on the host or uses host networking.
-
-The image exits after generating the complete site. Serve `output` using your
-existing web server, and schedule this command using a host timer. Repository
-files and help documentation remain managed separately. Deploy at the domain
-root. Configure the web server to proxy `/status/json` to Yuki; the browser
-queries it when opening the status page. Set `baseURL` in `gencontent.json`
-to the site origin; the Python generator appends `/status/json`.
-
-`site.json` requires `name`, `abbr`, and `url`; optional fields are `description`,
-`links` (objects with `label` and `url`) and `newsFeed` (Atom).
-`gencontent.json` uses the normal Yuki configuration. Repository descriptions
-are stored in `descriptions.json`; MirrorZ metadata and the skip list are stored
-in `genmirrorz.json`. `genisolist.ini` configures ISO discovery; mount your
-repository read-only at `/srv/repo`.
-The configuration is never modified. Set `CACHE_DIR=/cache` and mount a writable
-cache directory to retain canonical-name mappings between runs.
-
-The output directory must be writable by the selected UID/GID. Overlapping runs
-on the same output directory fail rather than interleave. The entrypoint uses
-`rsync` to install precompiled assets, then runs
-`python3 /app/genindex.py --outdir /output --assets-dir /app/dist`.
-HTML and build metadata are excluded from the sync; it never uses `--delete`.
-The generator reads `site.json` directly and renders HTML from templates using
-the prebuilt manifest. Without `--assets-dir`, the existing systemd invocation
-continues to update only data and the no-JavaScript page.
-
-Data-fetching or rendering failures leave generated pages and data intact;
-assets may already have been synchronized. Publication uses per-file atomic
-replacement, not a whole-site transaction. Old hashed assets and user files
-are retained.
-
-Additional presentation options in `site.json` are `logo` (URL), `footer`
-(plain text), `announcement` (`label` and `url`), `domains` and `monitors`
-(arrays of `label` and `url`). Unconfigured monitors are hidden. These values
-are public; never put credentials in browser-visible URLs.
-
-Set `newsCategory` to filter Atom entries by category; the container default
-accepts all categories. To schedule generation, install the example service and
-timer after setting their working directory to the directory containing your
-Compose configuration. Run `docker compose run --rm generate` once before
-enabling the timer. The example Nginx locations must be integrated with your
-existing repository routing.
-
 ## Copyright
 
-    Copyright © 2013-2024 USTC Linux User Group <lug@ustc.edu.cn>
+### License
+
+    Copyright © 2013-2026 USTC Linux User Group <lug@ustc.edu.cn>
     All rights reserved.
 
     This file is part of Mirrors-index.
@@ -267,5 +143,10 @@ existing repository routing.
     You should have received a copy of the GNU General Public License
     along with Mirrors-index.  If not, see <http://www.gnu.org/licenses/>.
 
+### Extra notice for third-party deployments
+
+You **MUST** clearly indicate that your site is **NOT affiliated** with USTC Linux User Group, and provide a link to the original project. You **MUST** also publicize your source code with GPLv2.
+
 * * *
+
 LUG@USTC
