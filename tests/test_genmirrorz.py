@@ -39,6 +39,18 @@ class GenMirrorzTests(unittest.TestCase):
             sys.modules.pop("genmirrorz", None)
             cls.genmirrorz = importlib.import_module("genmirrorz")
 
+    def test_cname_cache_write_failure_preserves_download(self):
+        with (
+            mock.patch.object(utils.requests, "get") as get,
+            mock.patch.object(utils, "atomic_write", side_effect=PermissionError),
+        ):
+            get.return_value.json.return_value = {"local": "canonical"}
+            upstream = "https://mirror.example.org/cname.json"
+            self.assertEqual(
+                utils.get_mirrorz_cname.__wrapped__(upstream), {"local": "canonical"}
+            )
+            get.assert_called_once_with(upstream, timeout=10)
+
     def test_repository_description(self):
         mirrors = self.genmirrorz.parse_repo_with_meta(
             [("", "/help/aosp.html", "Help", "aosp")], []

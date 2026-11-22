@@ -12,6 +12,7 @@ from utils import CONFIG_FOLDER, get_mirrorz_cname
 with open(CONFIG_FOLDER / "gencontent.json") as f:
     USER_CONFIG: dict = json.load(f)
 
+CNAME_UPSTREAM = USER_CONFIG.get("cname-upstream")
 OUTDIR = USER_CONFIG.get("outdir")
 """Default directory for generated output, if configured."""
 HTTPDIR = USER_CONFIG.get("httpdir", "/srv/repo")
@@ -29,7 +30,10 @@ MANUAL_REPOSITORIES = USER_CONFIG.get("manual-repositories", [])
 logger = logging.getLogger(__name__)
 
 if MIRRORZ_HELP:
-    cname = get_mirrorz_cname()
+    if "mirror-name" not in USER_CONFIG:
+        with (CONFIG_FOLDER / "genmirrorz.json").open() as source:
+            MIRROR_NAME = json.load(source)["base"]["site"]["abbr"]
+    cname = get_mirrorz_cname(CNAME_UPSTREAM)
 
 
 class YukiMetadataError(RuntimeError):

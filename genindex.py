@@ -5,14 +5,13 @@ import copy
 import json
 import logging
 import os
-import tempfile
 import time
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 import gencontent
 import genservernews
-from utils import CONFIG_FOLDER, get_isolist
+from utils import CONFIG_FOLDER, atomic_write, get_isolist
 
 BASEDIR = os.path.dirname(__file__)
 with open(CONFIG_FOLDER / "descriptions.json") as source:
@@ -20,24 +19,6 @@ with open(CONFIG_FOLDER / "descriptions.json") as source:
     descriptions_by_name = {
         name.lower(): description for name, description in descriptions.items()
     }
-
-
-def atomic_write(path, content):
-    directory = os.path.dirname(os.path.abspath(path))
-    os.makedirs(directory, exist_ok=True)
-    fd, temporary = tempfile.mkstemp(prefix=".mirrors-index-", dir=directory, text=True)
-    try:
-        with os.fdopen(fd, "w") as output:
-            output.write(content)
-            output.write(os.linesep)
-        os.chmod(temporary, 0o644)
-        os.replace(temporary, path)
-    except Exception:
-        try:
-            os.unlink(temporary)
-        except FileNotFoundError:
-            pass
-        raise
 
 
 def index_json(repolist, isoinfo, newslist, generated_at):

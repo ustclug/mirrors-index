@@ -3,6 +3,7 @@ import json
 import logging
 import os
 import signal
+import tempfile
 from pathlib import Path
 
 import requests
@@ -10,7 +11,8 @@ import requests
 from genisolist import gen_from_sections, process_ini
 
 logger = logging.getLogger(__name__)
-CONFIG_FOLDER = Path(os.path.dirname(__file__)) / "config"
+BUNDLED_CONFIG = Path(__file__).parent / "config"
+CONFIG_FOLDER = Path(os.environ.get("MIRRORS_CONFIG_DIR", BUNDLED_CONFIG))
 
 
 class AlarmTimeoutError(Exception):
@@ -52,26 +54,27 @@ def get_resp_with_timeout(
 
 # Currently within one run, we expect to download cname.json only once.
 @functools.cache
-def get_mirrorz_cname():
+def get_mirrorz_cname(upstream: str | None = None):
     cname_path = CONFIG_FOLDER / "cname.json"
-    # download cname
+    url = upstream or "https://mirrors.cernet.edu.cn/static/json/cname.json"
     try:
-        req = requests.get(
-            "https://mirrors.cernet.edu.cn/static/json/cname.json", timeout=10
-        )
+        req = requests.get(url, timeout=10)
         req.raise_for_status()
         cname = req.json()
-        with open(cname_path, "w") as f:
-            json.dump(cname, f)
     except (OSError, ValueError, requests.RequestException):
-        # website req timeout, use local cname
+        logger.warning("Failed to fetch MirrorZ canonical names")
+        for path in (cname_path, BUNDLED_CONFIG / "cname.json"):
+            try:
+                with path.open() as source:
+                    return json.load(source)
+            except (OSError, ValueError):
+                continue
+        return {}
+    if CONFIG_FOLDER == BUNDLED_CONFIG:
         try:
-            logger.warning("Failed to fetch mirrorz cname.json, try using local one")
-            with open(cname_path) as f:
-                cname = json.load(f)
-        except (OSError, ValueError):
-            logger.warning("Failed to load mirrorz cname.json")
-            cname = {}
+            atomic_write(cname_path, json.dumps(cname))
+        except OSError:
+            logger.warning("Could not cache MirrorZ canonical names")
     return cname
 
 
@@ -80,3 +83,21 @@ def get_isolist():
     genisolist_inifile = CONFIG_FOLDER / "genisolist.ini"
     sections = process_ini(genisolist_inifile)
     return gen_from_sections(sections)
+
+
+def atomic_write(path, content):
+    directory = os.path.dirname(os.path.abspath(path))
+    os.makedirs(directory, exist_ok=True)
+    fd, temporary = tempfile.mkstemp(prefix=".mirrors-index-", dir=directory, text=True)
+    try:
+        with os.fdopen(fd, "w") as output:
+            output.write(content)
+            output.write(os.linesep)
+        os.chmod(temporary, 0o644)
+        os.replace(temporary, path)
+    except Exception:
+        try:
+            os.unlink(temporary)
+        except FileNotFoundError:
+            pass
+        raise

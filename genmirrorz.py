@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 
+import argparse
 import copy
 import json
 import logging
@@ -9,9 +10,9 @@ import subprocess
 from dataclasses import dataclass
 
 import gencontent
-from utils import CONFIG_FOLDER, get_mirrorz_cname
+from utils import BUNDLED_CONFIG, CONFIG_FOLDER, atomic_write, get_mirrorz_cname
 
-cname = get_mirrorz_cname()
+cname = get_mirrorz_cname(gencontent.CNAME_UPSTREAM)
 logger = logging.getLogger(__name__)
 
 with open(CONFIG_FOLDER / "genmirrorz.json") as f:
@@ -19,7 +20,10 @@ with open(CONFIG_FOLDER / "genmirrorz.json") as f:
     base = options["base"]
     skiplist = options.get("skip", [])
 
-with open(CONFIG_FOLDER / "descriptions.json") as source:
+description_path = CONFIG_FOLDER / "descriptions.json"
+if not description_path.exists():
+    description_path = BUNDLED_CONFIG / "descriptions.json"
+with description_path.open() as source:
     descriptions = json.load(source)
     descriptions_by_name = {
         name.lower(): description for name, description in descriptions.items()
@@ -258,8 +262,15 @@ def get_mirrorz_json(repolist, isolist, meta=None):
 if __name__ == "__main__":
     from utils import get_isolist
 
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--output", metavar="FILE")
+    args = parser.parse_args()
     metadata = gencontent.fetch_yuki_metadata()
-    isolist = get_isolist()
+    isolist = get_isolist() if (CONFIG_FOLDER / "genisolist.ini").exists() else []
     repolist = gencontent.generate_repo_list(metadata)
 
-    print(get_mirrorz_json(repolist, isolist, metadata))
+    content = get_mirrorz_json(repolist, isolist, metadata)
+    if args.output:
+        atomic_write(args.output, content)
+    else:
+        print(content)

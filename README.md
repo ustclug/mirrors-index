@@ -38,6 +38,7 @@ A repo could have multiple Yuki tasks. Yuki tasks are mapped to repositories as 
 
 Optional keys:
 
+* `cname-upstream`: optional URL for the MirrorZ canonical-name mapping. Each generation first fetches this URL (default `https://mirrors.cernet.edu.cn/static/json/cname.json`), even when a local `cname.json` exists.
 * `manual-repositories`: repository names to include without Yuki metadata; their Last Update column is left blank.
 * `outdir`: default output directory, overridden by `--outdir` or the `OUTDIR` environment variable.
 * `httpdir`: repository root checked as a deployment diagnostic; defaults to `/srv/repo`.
@@ -55,7 +56,7 @@ Object mapping repository names to description text, matched case-insensitively 
 
 ### `cname.json`
 
-Canonical-name mapping used in MirrorZ output. It is refreshed from `https://mirrors.cernet.edu.cn/static/json/cname.json` during generation, with this local file as fallback.
+Canonical-name mapping used in MirrorZ output. The generator reads this local file if the upstream fetch fails.
 
 ### `genisolist.ini`
 
@@ -121,6 +122,43 @@ make example     # populate /srv/repo with a small representative repository tre
 python3 genindex.py --outdir dist/
 python3 -m http.server --directory dist
 ```
+
+## MirrorZ JSON generator container
+
+If you only need to generate mirrorz.json info from Yuki and local disk state, you can use our container image (`ghcr.io/ustclug/mirrors-index-mirrorz`) for this.
+
+Mount a read-only directory at `/config` containing these two files.
+For example, `gencontent.json` can contain:
+
+```json
+{"baseURL":"https://mirror.example.org"}
+```
+
+In `genmirrorz.json`, supply your site's own details:
+
+```json
+{"base":{"site":{"url":"https://mirror.example.org","abbr":"EX","name":"Example Mirror"}}}
+```
+
+Mount a writable directory at `/output` and serve its `mirrorz.json`.
+The image runs once, replacing the file after successful generation.
+
+ISO discovery is optional. To enable it, mount the repository tree read-only
+at `/srv/repo` and add `genisolist.ini` to the config directory. An example:
+
+```ini
+[%main%]
+root = /srv/repo/
+urlbase = /
+
+!include /app/includes/distro.ini
+!include /app/includes/os/**/*.ini
+!include /app/includes/app/**/*.ini
+```
+
+For local help links, mount your help directory read-only and set `helpdir`
+to its container path. Optional `descriptions.json` overrides the bundled
+descriptions.
 
 ## Copyright
 
